@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<widget xmlns="http://www.w3.org/ns/widgets" xmlns:gap="http://phonegap.com/ns/1.0" id="com.byBjorn.Push" versionCode="10" version="0.1">
+    <icon src="res/icon.png"/>
+
+    <name>Push</name>
+    <description>Push is a minimalistic Push Up Application.</description>
+    <author email="bjoerndragonfire@gmail.com">by Bjørn</author>
+</widget>
