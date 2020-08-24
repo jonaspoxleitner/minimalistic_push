@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:minimalisticpush/models/custom_colors.dart';
 
 // ignore: must_be_immutable
 class HomePage extends StatefulWidget {
@@ -14,11 +15,6 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  Color grey = Color(0xFFADB6C4);
-  Color yellow = Color(0xFFFFEFD3);
-  Color green = Color(0xFF3F5E5A);
-  Color darkGreen = Color(0xFF263D42);
-
   int _counter = 0;
 
   void _incrementCounter() {
@@ -33,7 +29,7 @@ class _HomePageState extends State<HomePage> {
 
     if (widget.start) {
       return Scaffold(
-        backgroundColor: green,
+        backgroundColor: CustomColors.green,
         body: Stack(
           alignment: Alignment.bottomCenter,
           children: [
@@ -43,7 +39,7 @@ class _HomePageState extends State<HomePage> {
               ),
               height: size.height / 2,
               width: size.width,
-              color: darkGreen,
+              color: CustomColors.darkGreen,
             ),
             Container(
               height: size.height / 2,
