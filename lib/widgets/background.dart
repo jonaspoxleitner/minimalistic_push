@@ -20,6 +20,7 @@ class _BackgroundState extends State<Background>
   @override
   void afterFirstLayout(BuildContext context) {
     height = widget.size.height / 2;
+    super.setState(() {});
   }
 
   @override
