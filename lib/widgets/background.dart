@@ -1,30 +1,45 @@
 import 'package:flutter/material.dart';
 
+import 'package:after_layout/after_layout.dart';
+
 import '../models/custom_colors.dart';
 
-class Background extends StatelessWidget {
+class Background extends StatefulWidget {
   final Size size;
 
   Background({@required this.size});
 
   @override
+  _BackgroundState createState() => _BackgroundState();
+}
+
+class _BackgroundState extends State<Background>
+    with AfterLayoutMixin<Background> {
+  var height = 0.0;
+
+  @override
+  void afterFirstLayout(BuildContext context) {
+    height = widget.size.height / 2;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Container(
-      height: size.height,
-      width: size.width,
-      child: Stack(
-        alignment: Alignment.bottomCenter,
-        children: [
-          Container(
-            height: size.height,
-            color: CustomColors.green,
-          ),
-          Container(
-            height: size.height / 2,
-            width: size.width,
-            color: CustomColors.darkGreen,
-          ),
-        ],
+      height: widget.size.height,
+      width: widget.size.width,
+      alignment: Alignment.bottomCenter,
+      color: CustomColors.green,
+      child: AnimatedContainer(
+        duration: Duration(milliseconds: 400),
+        curve: Curves.easeInOutQuart,
+        height: height,
+        width: widget.size.width,
+        color: CustomColors.darkGreen,
       ),
     );
   }

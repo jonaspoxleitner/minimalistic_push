@@ -8,6 +8,8 @@ import '../enums/application_state.dart';
 import '../models/session.dart';
 import '../models/custom_colors.dart';
 
+import '../screens/onboarding_screen.dart';
+
 import '../widgets/background.dart';
 
 // ignore: must_be_immutable
@@ -20,15 +22,24 @@ class Screen extends StatefulWidget {
   Screen({this.onboardingVersion});
 
   @override
-  _ScreenState createState() => _ScreenState();
+  ScreenState createState() => ScreenState();
 }
 
-class _ScreenState extends State<Screen> {
+class ScreenState extends State<Screen> {
   int _counter = 0;
 
   void _incrementCounter() {
     setState(() {
       _counter++;
+    });
+  }
+
+  void acceptOnboarding() {
+    setState(() {
+      OnboardingController onboardingController = OnboardingController();
+      onboardingController.setOnboardingVersion(widget.newestOnboardingVersion);
+      widget.onboardingVersion = widget.newestOnboardingVersion;
+      widget.state = ApplicationState.start;
     });
   }
 
@@ -44,58 +55,7 @@ class _ScreenState extends State<Screen> {
 
     switch (widget.state) {
       case ApplicationState.onboarding:
-        return Scaffold(
-          body: Stack(
-            alignment: Alignment.bottomCenter,
-            children: [
-              Background(size: size),
-              Container(
-                height: size.height,
-                width: size.width,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Text(
-                        'Welcome  to',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 18.0,
-                        ),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Text(
-                        'Minimalistic Push',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 30.0,
-                        ),
-                      ),
-                    ),
-                    FlatButton(
-                      onPressed: () {
-                        setState(() {
-                          OnboardingController onboardingController =
-                              OnboardingController();
-                          onboardingController.setOnboardingVersion(
-                              widget.newestOnboardingVersion);
-                          widget.onboardingVersion =
-                              widget.newestOnboardingVersion;
-                          widget.state = ApplicationState.start;
-                        });
-                      },
-                      child: Text('start'),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        );
+        return OnboardingScreen(size: size, screenState: this);
         break;
       case ApplicationState.start:
         return Scaffold(
