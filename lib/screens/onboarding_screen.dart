@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 
 import '../screens/screen.dart';
 
+import '../widgets/widgets.dart';
+
 class OnboardingScreen extends StatelessWidget {
   const OnboardingScreen({
     @required this.screenState,
@@ -42,12 +44,12 @@ class OnboardingScreen extends StatelessWidget {
               ),
             ),
           ),
-          FlatButton(
-            onPressed: () {
+          CustomButton(
+            text: 'Start Application!',
+            onTap: () {
               screenState.acceptOnboarding();
             },
-            child: Text('start'),
-          ),
+          )
         ],
       ),
     );
