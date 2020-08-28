@@ -16,23 +16,28 @@ class Screen extends StatefulWidget {
   ApplicationState state;
   int newestOnboardingVersion = 2; // change to force new onboarding
   int onboardingVersion;
+  ScreenState screenState = ScreenState();
 
-  Background background = Background();
   SessionController controller = SessionController();
 
-  Screen({this.onboardingVersion});
+  Screen({this.onboardingVersion}) {
+    screenState = ScreenState();
+  }
 
   @override
-  ScreenState createState() => ScreenState();
+  ScreenState createState() => screenState;
 }
 
 class ScreenState extends State<Screen> {
+  Background background = Background();
+
   void acceptOnboarding() {
     setState(() {
       OnboardingController onboardingController = OnboardingController();
       onboardingController.setOnboardingVersion(widget.newestOnboardingVersion);
       widget.onboardingVersion = widget.newestOnboardingVersion;
       widget.state = ApplicationState.start;
+      background.animateTo(0.6);
     });
   }
 
@@ -43,6 +48,7 @@ class ScreenState extends State<Screen> {
       onboardingController.setOnboardingVersion(0);
       widget.onboardingVersion = 0;
       widget.state = ApplicationState.onboarding;
+      background.animateTo(0.3);
     });
   }
 
@@ -59,7 +65,9 @@ class ScreenState extends State<Screen> {
 
     switch (widget.state) {
       case ApplicationState.onboarding:
-        overlay = OnboardingScreen(size: size, screenState: this);
+        overlay = OnboardingScreen(
+          screenState: this,
+        );
         break;
       case ApplicationState.start:
         overlay = StartScreen(
@@ -68,32 +76,32 @@ class ScreenState extends State<Screen> {
         break;
       case ApplicationState.sessions:
         overlay = Container(
-          height: MediaQuery.of(context).size.height,
-          width: MediaQuery.of(context).size.width,
+          height: size.height,
+          width: size.width,
         );
         break;
       case ApplicationState.settings:
         overlay = Container(
-          height: MediaQuery.of(context).size.height,
-          width: MediaQuery.of(context).size.width,
+          height: size.height,
+          width: size.width,
           color: Colors.red,
         );
         break;
       default:
         overlay = Container(
-          height: MediaQuery.of(context).size.height,
-          width: MediaQuery.of(context).size.width,
+          height: size.height,
+          width: size.width,
           color: Colors.green,
         );
     }
 
     return Scaffold(
       body: Container(
-          height: MediaQuery.of(context).size.height,
-          width: MediaQuery.of(context).size.width,
+          height: size.height,
+          width: size.width,
           child: Stack(
             children: [
-              widget.background,
+              background,
               overlay,
             ],
           )),

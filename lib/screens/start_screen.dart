@@ -22,7 +22,11 @@ class _StartScreenState extends State<StartScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
+    var size = MediaQuery.of(context).size;
+
+    return Container(
+      height: size.height,
+      width: size.width,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -45,13 +49,23 @@ class _StartScreenState extends State<StartScreen> {
               //widget.widget.controller
               //.insertSession(Session(id: 1, count: _counter));
             },
-            child: Text('add to db'),
+            child: Text(
+              'add to db',
+              style: TextStyle(
+                color: Colors.white,
+              ),
+            ),
           ),
           FlatButton(
             onPressed: () {
               widget.screenState.returnToOnboarding();
             },
-            child: Text('return to onboarding'),
+            child: Text(
+              'return to onboarding',
+              style: TextStyle(
+                color: Colors.white,
+              ),
+            ),
           )
         ],
       ),

@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 
-import 'package:after_layout/after_layout.dart';
-
 import '../models/custom_colors.dart';
 
+import '../screens/screens.dart';
+
 class Background extends StatefulWidget {
-  final _BackgroundState _backgroundState = _BackgroundState();
+  var size;
+  var height = 0.0;
+
+  static final _BackgroundState _backgroundState = _BackgroundState();
 
   Background();
 
@@ -16,8 +19,9 @@ class Background extends StatefulWidget {
       factor = 1.0;
     }
 
+    //height = size.height * factor;
     _backgroundState.setState(() {
-      _backgroundState.height = _backgroundState.size.height * factor;
+      height = size.height * factor;
     });
   }
 
@@ -25,38 +29,27 @@ class Background extends StatefulWidget {
   _BackgroundState createState() => _backgroundState;
 }
 
-class _BackgroundState extends State<Background>
-    with AfterLayoutMixin<Background> {
-  var size;
-  var height = 0.0;
-
-  @override
-  void setState(Function fn) => super.setState(fn);
-
-  @override
-  void afterFirstLayout(BuildContext context) {
-    super.setState(() {});
-  }
-
+class _BackgroundState extends State<Background> {
   @override
   void initState() {
+    print('init state background');
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    size = MediaQuery.of(context).size;
+    widget.size = MediaQuery.of(context).size;
 
-    return Expanded(
-      child: Container(
-        alignment: Alignment.bottomCenter,
-        color: CustomColors.green,
-        child: AnimatedContainer(
-          duration: Duration(milliseconds: 400),
-          curve: Curves.easeInOutQuart,
-          height: height,
-          color: CustomColors.darkGreen,
-        ),
+    return Container(
+      height: widget.size.height,
+      width: widget.size.width,
+      alignment: Alignment.bottomCenter,
+      color: CustomColors.green,
+      child: AnimatedContainer(
+        duration: Duration(milliseconds: 400),
+        curve: Curves.easeInOutQuart,
+        height: widget.height,
+        color: CustomColors.darkGreen,
       ),
     );
   }
