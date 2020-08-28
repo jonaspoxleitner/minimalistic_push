@@ -6,17 +6,18 @@ import '../controllers/session_controller.dart';
 import '../enums/application_state.dart';
 
 import '../models/session.dart';
-import '../models/custom_colors.dart';
 
-import '../screens/onboarding_screen.dart';
+import '../screens/screens.dart';
 
-import '../widgets/background.dart';
+import '../widgets/widgets.dart';
 
 // ignore: must_be_immutable
 class Screen extends StatefulWidget {
   ApplicationState state;
-  int newestOnboardingVersion = 1;
+  int newestOnboardingVersion = 2; // change to force new onboarding
   int onboardingVersion;
+
+  Background background = Background();
   SessionController controller = SessionController();
 
   Screen({this.onboardingVersion});
@@ -26,14 +27,6 @@ class Screen extends StatefulWidget {
 }
 
 class ScreenState extends State<Screen> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
-  }
-
   void acceptOnboarding() {
     setState(() {
       OnboardingController onboardingController = OnboardingController();
@@ -43,8 +36,19 @@ class ScreenState extends State<Screen> {
     });
   }
 
+  // for debug purposes only
+  void returnToOnboarding() {
+    setState(() {
+      OnboardingController onboardingController = OnboardingController();
+      onboardingController.setOnboardingVersion(0);
+      widget.onboardingVersion = 0;
+      widget.state = ApplicationState.onboarding;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
+    Widget overlay;
     var size = MediaQuery.of(context).size;
 
     if (widget.onboardingVersion < widget.newestOnboardingVersion) {
@@ -55,73 +59,44 @@ class ScreenState extends State<Screen> {
 
     switch (widget.state) {
       case ApplicationState.onboarding:
-        return OnboardingScreen(size: size, screenState: this);
+        overlay = OnboardingScreen(size: size, screenState: this);
         break;
       case ApplicationState.start:
-        return Scaffold(
-          body: Container(
-            height: MediaQuery.of(context).size.height,
-            width: MediaQuery.of(context).size.width,
-            child: Stack(
-              alignment: Alignment.bottomCenter,
-              children: [
-                Background(size: size),
-                Column(
-                  children: [
-                    Expanded(
-                      child: Padding(
-                        padding: EdgeInsets.all(32.0),
-                        child: GestureDetector(
-                          onTap: _incrementCounter,
-                          child: Container(
-                            alignment: Alignment.center,
-                            decoration: BoxDecoration(
-                                color: Colors.white, shape: BoxShape.circle),
-                            child: Text('$_counter'),
-                          ),
-                        ),
-                      ),
-                    ),
-                    FlatButton(
-                      onPressed: () {
-                        widget.controller
-                            .insertSession(Session(id: 1, count: _counter));
-                      },
-                      child: Text('add to db'),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
+        overlay = StartScreen(
+          screenState: this,
         );
         break;
       case ApplicationState.sessions:
-        return Scaffold(
-          body: Container(
-            height: MediaQuery.of(context).size.height,
-            width: MediaQuery.of(context).size.width,
-            color: Colors.blue,
-          ),
+        overlay = Container(
+          height: MediaQuery.of(context).size.height,
+          width: MediaQuery.of(context).size.width,
         );
         break;
       case ApplicationState.settings:
-        return Scaffold(
-          body: Container(
-            height: MediaQuery.of(context).size.height,
-            width: MediaQuery.of(context).size.width,
-            color: Colors.red,
-          ),
+        overlay = Container(
+          height: MediaQuery.of(context).size.height,
+          width: MediaQuery.of(context).size.width,
+          color: Colors.red,
         );
         break;
       default:
-        return Scaffold(
-          body: Container(
-            height: MediaQuery.of(context).size.height,
-            width: MediaQuery.of(context).size.width,
-            color: Colors.green,
-          ),
+        overlay = Container(
+          height: MediaQuery.of(context).size.height,
+          width: MediaQuery.of(context).size.width,
+          color: Colors.green,
         );
     }
+
+    return Scaffold(
+      body: Container(
+          height: MediaQuery.of(context).size.height,
+          width: MediaQuery.of(context).size.width,
+          child: Stack(
+            children: [
+              widget.background,
+              overlay,
+            ],
+          )),
+    );
   }
 }
