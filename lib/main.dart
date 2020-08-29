@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_statusbarcolor/flutter_statusbarcolor.dart';
 import 'package:minimalisticpush/controllers/onboarding_controller.dart';
 
 import 'package:path/path.dart';
@@ -31,6 +33,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     OnboardingController onboardingController = OnboardingController();
+    FlutterStatusbarcolor.setStatusBarWhiteForeground(true);
 
     return MaterialApp(
       title: 'Minimalistic Push',

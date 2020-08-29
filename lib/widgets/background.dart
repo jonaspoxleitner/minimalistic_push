@@ -12,6 +12,10 @@ class Background extends StatefulWidget {
 
   Background();
 
+  void setSize(Size size) {
+    this.size = size;
+  }
+
   void animateTo(double factor) {
     if (factor < 0.0) {
       factor = 0.0;
@@ -19,10 +23,13 @@ class Background extends StatefulWidget {
       factor = 1.0;
     }
 
-    //height = size.height * factor;
-    _backgroundState.setState(() {
+    if (!_backgroundState.mounted) {
       height = size.height * factor;
-    });
+    } else {
+      _backgroundState.setState(() {
+        height = size.height * factor;
+      });
+    }
   }
 
   @override

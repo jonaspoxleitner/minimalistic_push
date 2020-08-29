@@ -48,14 +48,18 @@ class ScreenState extends State<Screen> {
       onboardingController.setOnboardingVersion(0);
       widget.onboardingVersion = 0;
       widget.state = ApplicationState.onboarding;
-      background.animateTo(0.3);
     });
+  }
+
+  Background getBackground() {
+    return background;
   }
 
   @override
   Widget build(BuildContext context) {
     Widget overlay;
     var size = MediaQuery.of(context).size;
+    background.setSize(size);
 
     if (widget.onboardingVersion < widget.newestOnboardingVersion) {
       widget.state = ApplicationState.onboarding;
@@ -65,11 +69,13 @@ class ScreenState extends State<Screen> {
 
     switch (widget.state) {
       case ApplicationState.onboarding:
+        background.animateTo(0.0);
         overlay = OnboardingScreen(
           screenState: this,
         );
         break;
       case ApplicationState.start:
+        background.animateTo(0.5);
         overlay = StartScreen(
           screenState: this,
         );
