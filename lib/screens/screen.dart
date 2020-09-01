@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../controllers/onboarding_controller.dart';
 import '../controllers/session_controller.dart';
 
 import '../enums/application_state.dart';
-
-import '../models/session.dart';
 
 import '../screens/screens.dart';
 
@@ -94,23 +93,31 @@ class ScreenState extends State<Screen> {
         );
         break;
       default:
-        overlay = Container(
-          height: size.height,
-          width: size.width,
-          color: Colors.green,
-        );
+        overlay = ErrorScreen();
     }
 
-    return Scaffold(
-      body: Container(
-          height: size.height,
-          width: size.width,
-          child: Stack(
-            children: [
-              background,
-              overlay,
-            ],
-          )),
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: const SystemUiOverlayStyle(
+        // For Android.
+        // Use [light] for white status bar and [dark] for black status bar.
+        statusBarIconBrightness: Brightness.light,
+        // For iOS.
+        // Use [dark] for white status bar and [light] for black status bar.
+        statusBarBrightness: Brightness.dark,
+      ),
+      child: Scaffold(
+        body: Container(
+            height: size.height,
+            width: size.width,
+            child: Stack(
+              children: [
+                background,
+                SafeArea(
+                  child: overlay,
+                ),
+              ],
+            )),
+      ),
     );
   }
 }

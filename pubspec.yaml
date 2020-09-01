@@ -26,7 +26,6 @@ dependencies:
   sqflite:
   path:
   shared_preferences:
-  flutter_statusbarcolor:
 
 
   # The following adds the Cupertino Icons font to your application.

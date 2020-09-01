@@ -26,44 +26,42 @@ class _StartScreenState extends State<StartScreen> {
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
 
-    return SafeArea(
-      child: Container(
-        height: size.height,
-        width: size.width,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Expanded(
-              child: Padding(
-                padding: EdgeInsets.all(32.0),
-                child: GestureDetector(
-                  onTap: _incrementCounter,
-                  child: Container(
-                    alignment: Alignment.center,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      shape: BoxShape.circle,
-                    ),
-                    child: Text('${_counter}'),
+    return Container(
+      height: size.height,
+      width: size.width,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Expanded(
+            child: Padding(
+              padding: EdgeInsets.all(32.0),
+              child: GestureDetector(
+                onTap: _incrementCounter,
+                child: Container(
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    shape: BoxShape.circle,
                   ),
+                  child: Text('${_counter}'),
                 ),
               ),
             ),
-            CustomButton(
-              text: 'Add session to database',
-              onTap: () {
-                //widget.widget.controller
-                //.insertSession(Session(id: 1, count: _counter));
-              },
-            ),
-            CustomButton(
-              text: 'Return to Onboarding',
-              onTap: () {
-                widget.screenState.returnToOnboarding();
-              },
-            ),
-          ],
-        ),
+          ),
+          CustomButton(
+            text: 'Add session to database',
+            onTap: () {
+              //widget.widget.controller
+              //.insertSession(Session(id: 1, count: _counter));
+            },
+          ),
+          CustomButton(
+            text: 'Return to Onboarding',
+            onTap: () {
+              widget.screenState.returnToOnboarding();
+            },
+          ),
+        ],
       ),
     );
   }

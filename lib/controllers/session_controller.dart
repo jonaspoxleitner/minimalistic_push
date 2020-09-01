@@ -1,11 +1,12 @@
 import 'dart:async';
 
+import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
 import '../models/session.dart';
 
 class SessionController {
-  Future<Database> database;
+  var database;
 
   static final SessionController _sessionController =
       SessionController._internal();
@@ -16,8 +17,17 @@ class SessionController {
 
   SessionController._internal();
 
-  void setDatabase(Future<Database> database) {
-    this.database = database;
+  Future<Database> setDatabase() async {
+    this.database = await openDatabase(
+      join(await getDatabasesPath(), 'sessions_database.db'),
+      onCreate: (db, version) {
+        return db.execute(
+          "CREATE TABLE sessions(id INTEGER PRIMARY KEY, count INTEGER)",
+        );
+      },
+      version: 1,
+    );
+    return this.database;
   }
 
   Future<void> insertSession(Session session) async {

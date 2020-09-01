@@ -8,11 +8,6 @@ class LoadingScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: CustomColors.green,
-      height: 40,
-      width: 40,
-      child: Center(child: CircularProgressIndicator()),
-    );
+    return Container(color: CustomColors.green);
   }
 }
