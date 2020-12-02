@@ -7,6 +7,7 @@ import '../models/session.dart';
 
 class SessionController {
   var database;
+  List<Session> sessionList;
 
   static final SessionController _sessionController =
       SessionController._internal();
@@ -22,16 +23,26 @@ class SessionController {
       join(await getDatabasesPath(), 'sessions_database.db'),
       onCreate: (db, version) {
         return db.execute(
-          "CREATE TABLE sessions(id INTEGER PRIMARY KEY, count INTEGER)",
+          "CREATE TABLE sessions (id INTEGER PRIMARY KEY, count INTEGER)",
         );
       },
-      version: 1,
+      version: 2,
     );
+    print('Database set');
     return this.database;
   }
 
-  Future<void> insertSession(Session session) async {
+  void insertSession(Session session) async {
     final Database db = await database;
+
+    var sessions = await loadSessions();
+
+    if (sessions.isEmpty) {
+      session.id = 1;
+    } else {
+      var last = sessions.last;
+      session.id = last['id'] + 1;
+    }
 
     await db.insert(
       'sessions',
@@ -40,17 +51,23 @@ class SessionController {
     );
   }
 
-  Future<List<Session>> getSessions() async {
+  Future<List<Map>> loadSessions() async {
     final Database db = await database;
 
-    final List<Map<String, dynamic>> maps = await db.query('sessions');
+    final List<Map<String, dynamic>> maps =
+        await db.query('sessions', orderBy: 'id');
 
-    return List.generate(maps.length, (i) {
+    this.sessionList = List.generate(maps.length, (i) {
       return Session(
         id: maps[i]['id'],
         count: maps[i]['count'],
       );
     });
+    return maps;
+  }
+
+  List<Session> getSessions() {
+    return this.sessionList;
   }
 
   Future<void> deleteSession(int id) async {
@@ -61,5 +78,11 @@ class SessionController {
       where: "id = ?",
       whereArgs: [id],
     );
+  }
+
+  void clear() async {
+    final db = await database;
+
+    await db.delete('sessions');
   }
 }
