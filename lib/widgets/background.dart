@@ -10,7 +10,16 @@ class Background extends StatefulWidget {
 
   static final _BackgroundState _backgroundState = _BackgroundState();
 
-  Background();
+  static Background _instance;
+  static get instance {
+    if (_instance == null) {
+      _instance = Background._internal();
+    }
+
+    return _instance;
+  }
+
+  Background._internal();
 
   void setSize(Size size) {
     this.size = size;

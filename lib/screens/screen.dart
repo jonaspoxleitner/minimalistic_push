@@ -28,15 +28,13 @@ class Screen extends StatefulWidget {
 }
 
 class ScreenState extends State<Screen> {
-  Background background = Background();
-
   void acceptOnboarding() {
     setState(() {
       OnboardingController onboardingController = OnboardingController();
       onboardingController.setOnboardingVersion(widget.newestOnboardingVersion);
       widget.onboardingVersion = widget.newestOnboardingVersion;
       widget.state = ApplicationState.start;
-      background.animateTo(0.6);
+      Background.instance.animateTo(0.6);
     });
   }
 
@@ -50,15 +48,11 @@ class ScreenState extends State<Screen> {
     });
   }
 
-  Background getBackground() {
-    return background;
-  }
-
   @override
   Widget build(BuildContext context) {
     Widget overlay;
     var size = MediaQuery.of(context).size;
-    background.setSize(size);
+    Background.instance.setSize(size);
 
     if (widget.onboardingVersion < widget.newestOnboardingVersion) {
       widget.state = ApplicationState.onboarding;
@@ -68,13 +62,13 @@ class ScreenState extends State<Screen> {
 
     switch (widget.state) {
       case ApplicationState.onboarding:
-        background.animateTo(0.0);
+        Background.instance.animateTo(0.0);
         overlay = OnboardingScreen(
           screenState: this,
         );
         break;
       case ApplicationState.start:
-        background.animateTo(0.5);
+        Background.instance.animateTo(0.5);
         overlay = StartScreen(
           screenState: this,
         );
@@ -111,7 +105,7 @@ class ScreenState extends State<Screen> {
             width: size.width,
             child: Stack(
               children: [
-                background,
+                Background.instance,
                 SafeArea(
                   child: overlay,
                 ),

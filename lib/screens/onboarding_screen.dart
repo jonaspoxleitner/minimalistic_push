@@ -23,7 +23,7 @@ class OnboardingScreen extends StatelessWidget {
       width: size.width,
       child: PageView.builder(
         onPageChanged: (value) {
-          screenState.getBackground().animateTo(value / 2);
+          Background.instance.animateTo(value / 2);
         },
         controller: pageController,
         itemCount: 3,
