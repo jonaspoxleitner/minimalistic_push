@@ -14,10 +14,27 @@ class Screen extends StatefulWidget {
   ApplicationState state;
   int newestOnboardingVersion = 2; // change to force new onboarding
   int onboardingVersion;
-  ScreenState screenState = ScreenState();
+  ScreenState screenState;
+  PageController pageController = PageController(initialPage: 1);
 
-  Screen({this.onboardingVersion}) {
-    screenState = ScreenState();
+  static Screen _instance;
+  static get instance {
+    if (_instance == null) {
+      _instance = Screen._internal();
+    }
+
+    return _instance;
+  }
+
+  Screen._internal() {
+    this.screenState = ScreenState();
+  }
+
+  void setOnboardingVersion(int onboardingVersion) {
+    this.screenState.setState(() {
+      this.onboardingVersion = onboardingVersion;
+      state = ApplicationState.onboarding;
+    });
   }
 
   @override
@@ -32,15 +49,6 @@ class ScreenState extends State<Screen> {
       widget.onboardingVersion = widget.newestOnboardingVersion;
       widget.state = ApplicationState.start;
       Background.instance.animateTo(0.6);
-    });
-  }
-
-  // for debug purposes only
-  void returnToOnboarding() {
-    setState(() {
-      SharedPreferencesController.instance.setOnboardingVersion(0);
-      widget.onboardingVersion = 0;
-      widget.state = ApplicationState.onboarding;
     });
   }
 
@@ -65,8 +73,20 @@ class ScreenState extends State<Screen> {
         break;
       case ApplicationState.start:
         Background.instance.animateTo(0.5);
-        overlay = StartScreen(
-          screenState: this,
+        overlay = Container(
+          height: size.height,
+          width: size.width,
+          child: PageView(
+            onPageChanged: (int) {
+              this.setState(() {});
+            },
+            controller: widget.pageController,
+            children: [
+              SessionsScreen(),
+              TrainingScreen(),
+              SettingsScreen(),
+            ],
+          ),
         );
         break;
       case ApplicationState.sessions:

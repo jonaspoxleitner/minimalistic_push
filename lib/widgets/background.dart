@@ -44,7 +44,6 @@ class Background extends StatefulWidget {
 
   void setSessions(List<Session> sessions) {
     this.sessions = sessions;
-    print(sessions.length.toString());
 
     peaks = [];
 
@@ -68,12 +67,6 @@ class Background extends StatefulWidget {
 }
 
 class _BackgroundState extends State<Background> {
-  @override
-  void initState() {
-    print('init state background');
-    super.initState();
-  }
-
   @override
   Widget build(BuildContext context) {
     widget.size = MediaQuery.of(context).size;

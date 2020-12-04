@@ -1,3 +1,4 @@
+import 'package:minimalisticpush/screens/screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SharedPreferencesController {
@@ -16,6 +17,10 @@ class SharedPreferencesController {
 
   Future<SharedPreferences> setSharedPreferences() async {
     this.prefs = await SharedPreferences.getInstance();
+
+    // TODO make nice
+    Screen.instance.onboardingVersion = this.getOnboardingVersion();
+
     return this.prefs;
   }
 

@@ -36,11 +36,7 @@ class MyApp extends StatelessWidget {
                         .setSharedPreferences(),
                     builder: (context, snapshot) {
                       if (snapshot.hasData) {
-                        return Screen(
-                          onboardingVersion: SharedPreferencesController
-                              .instance
-                              .getOnboardingVersion(),
-                        );
+                        return Screen.instance;
                       } else if (snapshot.hasError) {
                         return Text("${snapshot.error}");
                       } else {
