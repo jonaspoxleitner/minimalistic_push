@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../controllers/onboarding_controller.dart';
-import '../controllers/session_controller.dart';
 
 import '../enums/application_state.dart';
 
@@ -16,8 +15,6 @@ class Screen extends StatefulWidget {
   int newestOnboardingVersion = 2; // change to force new onboarding
   int onboardingVersion;
   ScreenState screenState = ScreenState();
-
-  SessionController controller = SessionController();
 
   Screen({this.onboardingVersion}) {
     screenState = ScreenState();

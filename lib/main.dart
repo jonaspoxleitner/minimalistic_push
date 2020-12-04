@@ -13,7 +13,6 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     OnboardingController onboardingController = OnboardingController();
-    SessionController sessionController = SessionController();
 
     return MaterialApp(
       title: 'Minimalistic Push',
@@ -22,7 +21,7 @@ class MyApp extends StatelessWidget {
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
       home: FutureBuilder<Object>(
-        future: sessionController.setDatabase(),
+        future: SessionController.instance.setDatabase(),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             return FutureBuilder<Object>(

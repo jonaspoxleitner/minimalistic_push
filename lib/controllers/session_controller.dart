@@ -8,15 +8,20 @@ import '../models/session.dart';
 class SessionController {
   var database;
   List<Session> sessionList;
+  var modified;
 
-  static final SessionController _sessionController =
-      SessionController._internal();
+  static SessionController _instance;
+  static get instance {
+    if (_instance == null) {
+      _instance = SessionController._internal();
+    }
 
-  factory SessionController() {
-    return _sessionController;
+    return _instance;
   }
 
-  SessionController._internal();
+  SessionController._internal() {
+    modified = false;
+  }
 
   Future<Database> setDatabase() async {
     this.database = await openDatabase(
@@ -35,13 +40,10 @@ class SessionController {
   void insertSession(Session session) async {
     final Database db = await database;
 
-    var sessions = await loadSessions();
-
-    if (sessions.isEmpty) {
+    if (this.sessionList.isEmpty) {
       session.id = 1;
     } else {
-      var last = sessions.last;
-      session.id = last['id'] + 1;
+      session.id = this.sessionList.last.id + 1;
     }
 
     await db.insert(
@@ -49,9 +51,11 @@ class SessionController {
       session.toMap(),
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
+
+    modified = true;
   }
 
-  Future<List<Map>> loadSessions() async {
+  Future<List<Session>> loadSessions() async {
     final Database db = await database;
 
     final List<Map<String, dynamic>> maps =
@@ -63,10 +67,15 @@ class SessionController {
         count: maps[i]['count'],
       );
     });
-    return maps;
+
+    return this.sessionList;
   }
 
   List<Session> getSessions() {
+    if (modified) {
+      loadSessions();
+      modified = false;
+    }
     return this.sessionList;
   }
 
