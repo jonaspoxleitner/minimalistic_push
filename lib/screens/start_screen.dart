@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-
-import 'package:minimalisticpush/styles/styles.dart';
+import 'package:theme_provider/theme_provider.dart';
 
 import '../controllers/controllers.dart';
 
@@ -97,11 +96,12 @@ class _TrainingScreenState extends State<TrainingScreen> {
           ),
           actions: <Widget>[
             TextButton(
-              style: TextButton.styleFrom(primary: CustomColors.dark),
+              style:
+                  TextButton.styleFrom(primary: Theme.of(context).primaryColor),
               child: Text(
                 'Okay.',
                 style: TextStyle(
-                  color: CustomColors.dark,
+                  color: Theme.of(context).primaryColor,
                 ),
               ),
               onPressed: () {
@@ -277,7 +277,24 @@ class SettingsScreen extends StatelessWidget {
           text: 'Clear database (debug)',
           onTap: () {
             SessionController.instance.clear();
-            //this.setState(() {});
+          },
+        ),
+        CustomButton(
+          text: 'green theme',
+          onTap: () {
+            ThemeProvider.controllerOf(context).setTheme('green_theme');
+          },
+        ),
+        CustomButton(
+          text: 'blue theme',
+          onTap: () {
+            ThemeProvider.controllerOf(context).setTheme('blue_theme');
+          },
+        ),
+        CustomButton(
+          text: 'red theme',
+          onTap: () {
+            ThemeProvider.controllerOf(context).setTheme('red_theme');
           },
         ),
       ],

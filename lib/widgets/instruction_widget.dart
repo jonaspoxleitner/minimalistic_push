@@ -26,7 +26,7 @@ class InstructionWidget extends StatelessWidget {
               ),
               child: Text(number.toString(),
                   style: TextStyle(
-                    color: CustomColors.dark,
+                    color: Theme.of(context).primaryColor,
                     fontWeight: FontWeight.bold,
                     fontSize: 22.0,
                   )),

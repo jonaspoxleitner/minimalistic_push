@@ -82,7 +82,7 @@ class _BackgroundState extends State<Background> {
       height: widget.size.height,
       width: widget.size.width,
       alignment: Alignment.bottomCenter,
-      color: CustomColors.light,
+      color: Theme.of(context).accentColor,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
@@ -91,7 +91,7 @@ class _BackgroundState extends State<Background> {
             duration: Duration(milliseconds: 400),
             curve: Curves.easeInOutQuart,
             height: widget.height,
-            color: CustomColors.dark,
+            color: Theme.of(context).primaryColor,
           ),
         ],
       ),
