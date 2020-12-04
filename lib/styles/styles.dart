@@ -1,8 +1,37 @@
+import 'package:theme_provider/theme_provider.dart';
+
 import 'package:flutter/material.dart';
 
-class CustomColors {
-  static Color grey = Color(0xFFADB6C4);
-  static Color yellow = Color(0xFFFFEFD3);
+class AppThemes {
+  static List<AppTheme> list = [
+    AppTheme(
+      id: "green_theme",
+      data: ThemeData(
+        primaryColor: Color(0xFF263D42),
+        accentColor: Color(0xFF3F5E5A),
+        visualDensity: VisualDensity.adaptivePlatformDensity,
+      ),
+      description: 'green theme',
+    ),
+    AppTheme(
+      id: "blue_theme",
+      data: ThemeData(
+        primaryColor: Colors.blue,
+        accentColor: Colors.lightBlue,
+        visualDensity: VisualDensity.adaptivePlatformDensity,
+      ),
+      description: 'blue theme',
+    ),
+    AppTheme(
+      id: "red_theme",
+      data: ThemeData(
+        primaryColor: Color(0xFF070707),
+        accentColor: Color(0xFFD1345B),
+        visualDensity: VisualDensity.adaptivePlatformDensity,
+      ),
+      description: 'red theme',
+    ),
+  ];
 }
 
 class TextStyles {

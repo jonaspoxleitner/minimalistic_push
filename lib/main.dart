@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:minimalisticpush/styles/styles.dart';
+
 import 'package:theme_provider/theme_provider.dart';
 
 import 'controllers/controllers.dart';
 
 import 'screens/screens.dart';
+
+import 'package:minimalisticpush/styles/styles.dart';
 
 void main() {
   runApp(MyApp());
@@ -18,35 +20,7 @@ class MyApp extends StatelessWidget {
       saveThemesOnChange: true,
       loadThemeOnInit: true,
       defaultThemeId: 'green_theme',
-      themes: [
-        AppTheme(
-          id: "green_theme",
-          data: ThemeData(
-            primaryColor: Color(0xFF263D42),
-            accentColor: Color(0xFF3F5E5A),
-            visualDensity: VisualDensity.adaptivePlatformDensity,
-          ),
-          description: 'green theme',
-        ),
-        AppTheme(
-          id: "blue_theme",
-          data: ThemeData(
-            primaryColor: Colors.blue,
-            accentColor: Colors.lightBlue,
-            visualDensity: VisualDensity.adaptivePlatformDensity,
-          ),
-          description: 'blue theme',
-        ),
-        AppTheme(
-          id: "red_theme",
-          data: ThemeData(
-            primaryColor: Color(0xFF070707),
-            accentColor: Color(0xFFD1345B),
-            visualDensity: VisualDensity.adaptivePlatformDensity,
-          ),
-          description: 'red theme',
-        ),
-      ],
+      themes: AppThemes.list,
       child: ThemeConsumer(
         child: Builder(
           builder: (themeContext) => MaterialApp(
