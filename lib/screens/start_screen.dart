@@ -20,6 +20,7 @@ class StartScreen extends StatefulWidget {
 class _StartScreenState extends State<StartScreen> {
   int _counter = 0;
   SessionController sessionController = SessionController();
+  PageController pageController = PageController();
   List<Widget> sessionWidgets = [];
   var sessions;
 
@@ -54,13 +55,38 @@ class _StartScreenState extends State<StartScreen> {
         onPageChanged: (int) {
           this.setState(() {});
         },
+        controller: pageController,
         children: [
           Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              LocationText(
-                text: 'Training Mode',
+              Stack(
+                alignment: Alignment.center,
+                children: [
+                  LocationText(
+                    text: 'Training Mode',
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      IconButton(
+                        icon: Icon(
+                          Icons.settings,
+                          color: Colors.white,
+                        ),
+                        onPressed: () {
+                          // show settings
+                          pageController.animateToPage(
+                            2,
+                            duration: Duration(milliseconds: 300),
+                            curve: Curves.easeInOutQuart,
+                          );
+                        },
+                      )
+                    ],
+                  )
+                ],
               ),
               Spacer(),
               Expanded(
@@ -84,6 +110,7 @@ class _StartScreenState extends State<StartScreen> {
                 text: 'Add session to database',
                 onTap: () {
                   sessionController.insertSession(Session(count: _counter));
+                  _counter = 0;
                   this.setState(() {});
                 },
               ),
@@ -94,11 +121,21 @@ class _StartScreenState extends State<StartScreen> {
                   this.setState(() {});
                 },
               ),
-              CustomButton(
-                text: 'show sessions',
-                onTap: () {
-                  // show sessions
-                },
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  CustomButton(
+                    text: 'Sessions',
+                    onTap: () {
+                      // show sessions
+                      pageController.animateToPage(
+                        1,
+                        duration: Duration(milliseconds: 300),
+                        curve: Curves.easeInOutQuart,
+                      );
+                    },
+                  ),
+                ],
               )
             ],
           ),
@@ -135,13 +172,13 @@ class _StartScreenState extends State<StartScreen> {
                 text: 'Settings/Tests',
               ),
               CustomButton(
-                text: 'Return to Onboarding',
+                text: 'Return to Onboarding (debug)',
                 onTap: () {
                   widget.screenState.returnToOnboarding();
                 },
               ),
               CustomButton(
-                text: 'Clear database',
+                text: 'Clear database (debug)',
                 onTap: () {
                   sessionController.clear();
                   this.setState(() {});
