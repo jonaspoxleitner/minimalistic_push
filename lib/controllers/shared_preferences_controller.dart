@@ -1,16 +1,18 @@
 import 'package:shared_preferences/shared_preferences.dart';
 
-class OnboardingController {
+class SharedPreferencesController {
   var prefs;
 
-  static final OnboardingController _onboardingController =
-      OnboardingController._internal();
+  static SharedPreferencesController _instance;
+  static get instance {
+    if (_instance == null) {
+      _instance = SharedPreferencesController._internal();
+    }
 
-  factory OnboardingController() {
-    return _onboardingController;
+    return _instance;
   }
 
-  OnboardingController._internal();
+  SharedPreferencesController._internal();
 
   Future<SharedPreferences> setSharedPreferences() async {
     this.prefs = await SharedPreferences.getInstance();

@@ -169,6 +169,7 @@ class _TrainingScreenState extends State<TrainingScreen> {
           text: 'Add session to database',
           onTap: () {
             if (_counter >= 1) {
+              print('clicked button');
               SessionController.instance
                   .insertSession(Session(count: _counter));
               _counter = 0;
@@ -206,7 +207,7 @@ class _TrainingScreenState extends State<TrainingScreen> {
   }
 }
 
-class SessionsScreen extends StatelessWidget {
+class SessionsScreen extends StatefulWidget {
   const SessionsScreen({
     Key key,
     @required this.sessionWidgets,
@@ -214,6 +215,11 @@ class SessionsScreen extends StatelessWidget {
 
   final List<Widget> sessionWidgets;
 
+  @override
+  _SessionsScreenState createState() => _SessionsScreenState();
+}
+
+class _SessionsScreenState extends State<SessionsScreen> {
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -229,7 +235,7 @@ class SessionsScreen extends StatelessWidget {
             builder: (context, snapshot) {
               if (snapshot.hasData) {
                 return ListView(
-                  children: sessionWidgets,
+                  children: widget.sessionWidgets,
                 );
               } else if (snapshot.hasError) {
                 return Text('Something went wrong.');

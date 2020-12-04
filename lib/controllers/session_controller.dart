@@ -1,14 +1,14 @@
 import 'dart:async';
 
+import 'package:minimalisticpush/widgets/background.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
 import '../models/session.dart';
 
 class SessionController {
-  var database;
+  Database database;
   List<Session> sessionList;
-  var modified;
 
   static SessionController _instance;
   static get instance {
@@ -19,70 +19,63 @@ class SessionController {
     return _instance;
   }
 
-  SessionController._internal() {
-    modified = false;
-  }
+  SessionController._internal();
 
   Future<Database> setDatabase() async {
     this.database = await openDatabase(
-      join(await getDatabasesPath(), 'sessions_database.db'),
-      onCreate: (db, version) {
-        return db.execute(
+      join(await getDatabasesPath(), 'sessions_database.database'),
+      onCreate: (database, version) {
+        return database.execute(
           "CREATE TABLE sessions (id INTEGER PRIMARY KEY, count INTEGER)",
         );
       },
       version: 2,
     );
-    print('Database set');
+
+    await this
+        .loadSessions()
+        .then((value) => {Background.instance.setSessions(this.sessionList)});
+
     return this.database;
   }
 
   void insertSession(Session session) async {
-    final Database db = await database;
-
     if (this.sessionList.isEmpty) {
       session.id = 1;
     } else {
       session.id = this.sessionList.last.id + 1;
     }
 
-    await db.insert(
+    await database.insert(
       'sessions',
       session.toMap(),
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
 
-    modified = true;
+    await this
+        .loadSessions()
+        .then((value) => {Background.instance.setSessions(this.sessionList)});
   }
 
   Future<List<Session>> loadSessions() async {
-    final Database db = await database;
-
-    final List<Map<String, dynamic>> maps =
-        await db.query('sessions', orderBy: 'id');
-
-    this.sessionList = List.generate(maps.length, (i) {
-      return Session(
-        id: maps[i]['id'],
-        count: maps[i]['count'],
-      );
+    await database.query('sessions', orderBy: 'id').then((value) {
+      this.sessionList = List.generate(value.length, (i) {
+        return Session(
+          id: value[i]['id'],
+          count: value[i]['count'],
+        );
+      });
     });
 
     return this.sessionList;
   }
 
   List<Session> getSessions() {
-    if (modified) {
-      loadSessions();
-      modified = false;
-    }
     return this.sessionList;
   }
 
   Future<void> deleteSession(int id) async {
-    final db = await database;
-
-    await db.delete(
+    await database.delete(
       'sessions',
       where: "id = ?",
       whereArgs: [id],
@@ -90,8 +83,9 @@ class SessionController {
   }
 
   void clear() async {
-    final db = await database;
-
-    await db.delete('sessions');
+    await database.delete('sessions');
+    await this
+        .loadSessions()
+        .then((value) => {Background.instance.setSessions(this.sessionList)});
   }
 }

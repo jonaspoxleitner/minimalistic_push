@@ -12,8 +12,6 @@ void main() {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    OnboardingController onboardingController = OnboardingController();
-
     return MaterialApp(
       title: 'Minimalistic Push',
       debugShowCheckedModeBanner: false,
@@ -25,12 +23,13 @@ class MyApp extends StatelessWidget {
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             return FutureBuilder<Object>(
-              future: onboardingController.setSharedPreferences(),
+              future:
+                  SharedPreferencesController.instance.setSharedPreferences(),
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
                   return Screen(
-                    onboardingVersion:
-                        onboardingController.getOnboardingVersion(),
+                    onboardingVersion: SharedPreferencesController.instance
+                        .getOnboardingVersion(),
                   );
                 } else if (snapshot.hasError) {
                   return Text("${snapshot.error}");

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import '../controllers/onboarding_controller.dart';
+import '../controllers/shared_preferences_controller.dart';
 
 import '../enums/application_state.dart';
 
@@ -27,8 +27,8 @@ class Screen extends StatefulWidget {
 class ScreenState extends State<Screen> {
   void acceptOnboarding() {
     setState(() {
-      OnboardingController onboardingController = OnboardingController();
-      onboardingController.setOnboardingVersion(widget.newestOnboardingVersion);
+      SharedPreferencesController.instance
+          .setOnboardingVersion(widget.newestOnboardingVersion);
       widget.onboardingVersion = widget.newestOnboardingVersion;
       widget.state = ApplicationState.start;
       Background.instance.animateTo(0.6);
@@ -38,8 +38,7 @@ class ScreenState extends State<Screen> {
   // for debug purposes only
   void returnToOnboarding() {
     setState(() {
-      OnboardingController onboardingController = OnboardingController();
-      onboardingController.setOnboardingVersion(0);
+      SharedPreferencesController.instance.setOnboardingVersion(0);
       widget.onboardingVersion = 0;
       widget.state = ApplicationState.onboarding;
     });

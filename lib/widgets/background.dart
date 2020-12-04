@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 
-import '../styles/styles.dart';
-
-import '../screens/screens.dart';
+import 'package:minimalisticpush/models/session.dart';
+import 'package:minimalisticpush/styles/styles.dart';
 
 class Background extends StatefulWidget {
   var size;
   var height = 0.0;
+  List<Session> sessions = [];
+  List<int> peaks = [];
 
   static final _BackgroundState _backgroundState = _BackgroundState();
 
@@ -41,6 +42,27 @@ class Background extends StatefulWidget {
     }
   }
 
+  void setSessions(List<Session> sessions) {
+    this.sessions = sessions;
+    print(sessions.length.toString());
+
+    peaks = [];
+
+    for (Session session in sessions) {
+      peaks.add(session.count);
+    }
+
+    while (peaks.length < 5) {
+      peaks.insert(0, 0);
+    }
+
+    if (peaks.length > 5) {
+      peaks = peaks.sublist(peaks.length - 5, peaks.length);
+    }
+
+    //_backgroundState.setState(() {});
+  }
+
   @override
   _BackgroundState createState() => _backgroundState;
 }
@@ -61,11 +83,17 @@ class _BackgroundState extends State<Background> {
       width: widget.size.width,
       alignment: Alignment.bottomCenter,
       color: CustomColors.light,
-      child: AnimatedContainer(
-        duration: Duration(milliseconds: 400),
-        curve: Curves.easeInOutQuart,
-        height: widget.height,
-        color: CustomColors.dark,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          // Curves
+          AnimatedContainer(
+            duration: Duration(milliseconds: 400),
+            curve: Curves.easeInOutQuart,
+            height: widget.height,
+            color: CustomColors.dark,
+          ),
+        ],
       ),
     );
   }
