@@ -65,7 +65,7 @@ class _StartScreenState extends State<StartScreen> {
               Spacer(),
               Expanded(
                 child: Padding(
-                  padding: EdgeInsets.all(32.0),
+                  padding: EdgeInsets.all(16.0),
                   child: GestureDetector(
                     onTap: _incrementCounter,
                     child: Container(

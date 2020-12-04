@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'package:minimalisticpush/styles/styles.dart';
 import '../models/session.dart';
 
 class SessionWidget extends StatelessWidget {
@@ -17,9 +18,11 @@ class SessionWidget extends StatelessWidget {
       children: [
         Text(
           'Session ' + session.id.toString(),
+          style: TextStyles.body,
         ),
         Text(
           session.count.toString(),
+          style: TextStyles.body,
         ),
       ],
     );

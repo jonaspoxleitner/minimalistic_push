@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:minimalisticpush/models/custom_colors.dart';
+import 'package:minimalisticpush/styles/styles.dart';
 
 class LoadingScreen extends StatelessWidget {
   const LoadingScreen({
@@ -8,6 +8,6 @@ class LoadingScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(color: CustomColors.green);
+    return Container(color: CustomColors.light);
   }
 }

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '../screens/screens.dart';
-
 import '../widgets/widgets.dart';
+import '../styles/styles.dart';
 
 class OnboardingScreen extends StatelessWidget {
   const OnboardingScreen({
@@ -44,32 +44,21 @@ class OnboardingScreen extends StatelessWidget {
                     padding: const EdgeInsets.all(8.0),
                     child: Text(
                       'Welcome to',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.w600,
-                        fontSize: 22.0,
-                      ),
+                      style: TextStyles.subHeading,
                     ),
                   ),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Text(
                       'Minimalistic Push',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.w800,
-                        fontSize: 30.0,
-                      ),
+                      style: TextStyles.heading,
                     ),
                   ),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Text(
                       'The simplest push-up tracker.',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 18.0,
-                      ),
+                      style: TextStyles.subHeading,
                     ),
                   ),
                   Spacer(),
@@ -98,15 +87,18 @@ class OnboardingScreen extends StatelessWidget {
                     text: 'Page 2',
                   ),
                   Spacer(),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text(
-                      'How it works!',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 18.0,
-                      ),
-                    ),
+                  Column(
+                    children: [
+                      InstructionWidget(
+                          number: 1,
+                          text: "Record you sessions in the training mode."),
+                      InstructionWidget(
+                          number: 2,
+                          text:
+                              "Edit and delete sessions in the sessions overview."),
+                      InstructionWidget(
+                          number: 3, text: "Watch your improvement."),
+                    ],
                   ),
                   Spacer(),
                   Padding(
@@ -134,15 +126,21 @@ class OnboardingScreen extends StatelessWidget {
                     text: 'Page 3',
                   ),
                   Spacer(),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text(
-                      'benefits of this app',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 18.0,
+                  Column(
+                    children: [
+                      BenefitWidget(
+                        iconData: Icons.bar_chart,
+                        text: "Track your improvements over time.",
                       ),
-                    ),
+                      BenefitWidget(
+                        iconData: Icons.cloud_off,
+                        text: "Keep your data on your device.",
+                      ),
+                      BenefitWidget(
+                        iconData: Icons.code,
+                        text: "Support open-source development.",
+                      ),
+                    ],
                   ),
                   Spacer(),
                   Padding(
