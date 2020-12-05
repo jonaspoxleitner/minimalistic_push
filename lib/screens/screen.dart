@@ -82,9 +82,8 @@ class ScreenState extends State<Screen> {
             },
             controller: widget.pageController,
             children: [
-              SessionsScreen(),
+              SessionsScreen(pageController: widget.pageController),
               TrainingScreen(),
-              SettingsScreen(),
             ],
           ),
         );

@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:minimalisticpush/controllers/controllers.dart';
 import 'package:minimalisticpush/models/session.dart';
@@ -6,6 +7,10 @@ import 'package:minimalisticpush/widgets/widgets.dart';
 import 'screens.dart';
 
 class SessionsScreen extends StatefulWidget {
+  PageController pageController;
+
+  SessionsScreen({@required this.pageController});
+
   @override
   _SessionsScreenState createState() => _SessionsScreenState();
 }
@@ -32,8 +37,31 @@ class _SessionsScreenState extends State<SessionsScreen> {
       crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
-        LocationText(
-          text: 'Your Sessions',
+        Stack(
+          alignment: Alignment.center,
+          children: [
+            LocationText(
+              text: 'Your Sessions',
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                IconButton(
+                  icon: Icon(
+                    Icons.navigate_next,
+                    color: Colors.white,
+                  ),
+                  onPressed: () {
+                    widget.pageController.animateToPage(
+                      1,
+                      duration: Duration(milliseconds: 300),
+                      curve: Curves.easeInOutQuart,
+                    );
+                  },
+                )
+              ],
+            )
+          ],
         ),
         Expanded(
           child: FutureBuilder(
