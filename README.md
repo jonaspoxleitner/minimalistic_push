@@ -25,7 +25,7 @@ The main purpose of the app is to do your push-ups and track your progress with 
 The design is planned to be both simple and beatiful. One of the key design elements is the variable background. Is should inform the user about the training progress and also show the progress from session to session in a subtile way.
 
 ## Features (final version)
-* oboarding experience
+* onboarding experience
 * track sessions with your nose
 * insert session into the database
 * list you previous sessions
