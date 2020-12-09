@@ -50,10 +50,12 @@ class RouteManagerState extends State<RouteManager> {
     switch (widget.state) {
       case ApplicationState.onboarding:
         Background.instance.animateTo(0.0);
+        Background.instance.focus(true);
         overlay = OnboardingScreen();
         break;
       case ApplicationState.main:
         Background.instance.animateTo(0.5);
+        Background.instance.focus(false);
         overlay = Container(
           height: size.height,
           width: size.width,

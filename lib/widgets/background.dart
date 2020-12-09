@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
 
-import 'package:minimalisticpush/models/session.dart';
-
 class Background extends StatefulWidget {
   var chartVisibility = false;
   var size;
   var height = 0.0;
-  List<Session> sessions = [];
   List<double> normalizedPeaks = [];
   var padding = EdgeInsets.all(16.0);
 
@@ -27,70 +24,30 @@ class Background extends StatefulWidget {
     this.size = size;
   }
 
+  // this animates the height of the darker portion between 0 and 100 percent
   void animateTo(double factor) {
-    if (factor < 0.0) {
-      factor = 0.0;
-    } else if (factor > 1.0) {
-      factor = 1.0;
-    }
-
-    if (!_backgroundState.mounted) {
-      height = size.height * factor * 0.8;
-    } else {
-      _backgroundState.setState(() {
-        height = size.height * factor * 0.8;
-      });
+    height = size.height * factor * 0.8;
+    if (_backgroundState.mounted) {
+      _backgroundState.setState(() {});
     }
   }
 
+  // focuses the darker portion with padding
   void focus(bool focus) {
-    _backgroundState.setState(() {
-      if (focus) {
-        padding = EdgeInsets.all(0.0);
-      } else {
-        padding = EdgeInsets.all(16.0);
-      }
-    });
+    if (focus) {
+      padding = EdgeInsets.all(0.0);
+    } else {
+      padding = EdgeInsets.all(16.0);
+    }
+
+    if (_backgroundState.mounted) {
+      _backgroundState.setState(() {});
+    }
   }
 
-  void setSessions(List<Session> sessions) {
-    var length = 5;
-    this.sessions = sessions;
-
-    List<int> peaks = [];
-
-    for (Session session in sessions) {
-      peaks.add(session.count);
-    }
-
-    while (peaks.length < length) {
-      peaks.insert(0, 0);
-    }
-
-    if (peaks.length > length) {
-      peaks = peaks.sublist(peaks.length - length);
-    }
-
-    var min = peaks[0];
-    var max = peaks[0];
-
-    // find min and max
-    for (int peak in peaks) {
-      if (peak < min) {
-        min = peak;
-      }
-      if (peak > max) {
-        max = peak;
-      }
-    }
-
-    normalizedPeaks.clear();
-    // normalize list
-    for (int peak in peaks) {
-      normalizedPeaks.add((peak - min) / (max - min));
-    }
-
-    print(normalizedPeaks.toString());
+  // normalized sessions get set and the background gets updated
+  void setSessions(List<double> normalized) {
+    this.normalizedPeaks = normalized;
 
     if (_backgroundState.mounted) {
       _backgroundState.setState(() {});

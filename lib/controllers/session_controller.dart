@@ -32,9 +32,7 @@ class SessionController {
       version: 2,
     );
 
-    await this
-        .loadSessions()
-        .then((value) => {Background.instance.setSessions(this.sessionList)});
+    await this.loadSessions().then((value) => this.setNormalizedSessions());
 
     return this.database;
   }
@@ -53,9 +51,7 @@ class SessionController {
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
 
-    await this
-        .loadSessions()
-        .then((value) => {Background.instance.setSessions(this.sessionList)});
+    await this.loadSessions().then((value) => this.setNormalizedSessions());
   }
 
   // loads all sessions from the database ordered by the id
@@ -91,8 +87,46 @@ class SessionController {
   // this method clears the whole session database
   void clear() async {
     await database.delete('sessions');
-    await this
-        .loadSessions()
-        .then((value) => {Background.instance.setSessions(this.sessionList)});
+    await this.loadSessions().then((value) => this.setNormalizedSessions());
+  }
+
+  // sets 5 normlized sessions into the background
+  void setNormalizedSessions() {
+    List<double> normalizedPeaks = [];
+    var length = 5;
+
+    List<int> peaks = [];
+
+    for (Session session in this.sessionList) {
+      peaks.add(session.count);
+    }
+
+    while (peaks.length < length) {
+      peaks.insert(0, 0);
+    }
+
+    if (peaks.length > length) {
+      peaks = peaks.sublist(peaks.length - length);
+    }
+
+    var min = peaks[0];
+    var max = peaks[0];
+
+    // find min and max
+    for (int peak in peaks) {
+      if (peak < min) {
+        min = peak;
+      }
+      if (peak > max) {
+        max = peak;
+      }
+    }
+
+    // normalize list
+    for (int peak in peaks) {
+      normalizedPeaks.add((peak - min) / (max - min));
+    }
+
+    Background.instance.setSessions(normalizedPeaks);
   }
 }
