@@ -1,19 +1,19 @@
 import 'package:minimalisticpush/screens/screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class SharedPreferencesController {
+class OnboardingController {
   var prefs;
 
-  static SharedPreferencesController _instance;
+  static OnboardingController _instance;
   static get instance {
     if (_instance == null) {
-      _instance = SharedPreferencesController._internal();
+      _instance = OnboardingController._internal();
     }
 
     return _instance;
   }
 
-  SharedPreferencesController._internal();
+  OnboardingController._internal();
 
   Future<SharedPreferences> setSharedPreferences() async {
     this.prefs = await SharedPreferences.getInstance();
@@ -37,5 +37,11 @@ class SharedPreferencesController {
 
   void setOnboardingVersion(int version) {
     prefs.setInt('onboarding', version);
+  }
+
+  // for debug purposes only
+  void returnToOnboarding() {
+    OnboardingController.instance.setOnboardingVersion(0);
+    Screen.instance.setOnboardingVersion(0);
   }
 }

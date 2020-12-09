@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import '../controllers/shared_preferences_controller.dart';
+import '../controllers/onboarding_controller.dart';
 
 import '../enums/application_state.dart';
 
@@ -44,7 +44,7 @@ class Screen extends StatefulWidget {
 class ScreenState extends State<Screen> {
   void acceptOnboarding() {
     setState(() {
-      SharedPreferencesController.instance
+      OnboardingController.instance
           .setOnboardingVersion(widget.newestOnboardingVersion);
       widget.onboardingVersion = widget.newestOnboardingVersion;
       widget.state = ApplicationState.start;
@@ -83,22 +83,9 @@ class ScreenState extends State<Screen> {
             controller: widget.pageController,
             children: [
               SessionsScreen(pageController: widget.pageController),
-              TrainingScreen(),
+              MainScreen(),
             ],
           ),
-        );
-        break;
-      case ApplicationState.sessions:
-        overlay = Container(
-          height: size.height,
-          width: size.width,
-        );
-        break;
-      case ApplicationState.settings:
-        overlay = Container(
-          height: size.height,
-          width: size.width,
-          color: Colors.red,
         );
         break;
       default:

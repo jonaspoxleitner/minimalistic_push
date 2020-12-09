@@ -4,12 +4,12 @@ import 'package:minimalisticpush/models/session.dart';
 import 'package:minimalisticpush/screens/screens.dart';
 import 'package:minimalisticpush/widgets/widgets.dart';
 
-class TrainingScreen extends StatefulWidget {
+class MainScreen extends StatefulWidget {
   @override
-  TrainingScreenState createState() => TrainingScreenState();
+  MainScreenState createState() => MainScreenState();
 }
 
-class TrainingScreenState extends State<TrainingScreen> {
+class MainScreenState extends State<MainScreen> {
   List<Widget> sessionWidgets = [];
   var sessions;
   var visibility = true;

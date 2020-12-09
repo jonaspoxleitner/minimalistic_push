@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:minimalisticpush/controllers/controllers.dart';
-import 'package:minimalisticpush/screens/training_screen.dart';
+import 'package:minimalisticpush/screens/main_screen.dart';
 import 'package:minimalisticpush/widgets/widgets.dart';
 import 'package:theme_provider/theme_provider.dart';
 
 class SettingsScreen extends OverlayRoute {
-  TrainingScreenState underlyingState;
+  MainScreenState underlyingState;
   Widget child;
 
   SettingsScreen({@required this.underlyingState, this.child});
@@ -52,7 +52,7 @@ class SettingsScreen extends OverlayRoute {
                     text: 'Return to Onboarding (debug)',
                     onTap: () {
                       Navigator.of(context).pop();
-                      DebugController.instance.returnToOnboarding();
+                      OnboardingController.instance.returnToOnboarding();
                     },
                   ),
                   CustomButton(

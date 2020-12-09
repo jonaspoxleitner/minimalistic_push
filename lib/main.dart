@@ -32,8 +32,8 @@ class MyApp extends StatelessWidget {
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
                   return FutureBuilder<Object>(
-                    future: SharedPreferencesController.instance
-                        .setSharedPreferences(),
+                    future:
+                        OnboardingController.instance.setSharedPreferences(),
                     builder: (context, snapshot) {
                       if (snapshot.hasData) {
                         return Screen.instance;

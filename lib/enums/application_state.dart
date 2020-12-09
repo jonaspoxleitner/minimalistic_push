@@ -1,1 +1,1 @@
-enum ApplicationState { onboarding, start, sessions, settings }
+enum ApplicationState { onboarding, start }
