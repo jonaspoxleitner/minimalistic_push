@@ -1,16 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:minimalisticpush/controllers/controllers.dart';
 
 import '../screens/screens.dart';
 import '../widgets/widgets.dart';
 import '../styles/styles.dart';
 
 class OnboardingScreen extends StatelessWidget {
-  const OnboardingScreen({
-    @required this.screenState,
-  });
-
-  final ScreenState screenState;
-
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
@@ -148,7 +143,7 @@ class OnboardingScreen extends StatelessWidget {
                     child: CustomButton(
                       text: 'Start Application!',
                       onTap: () {
-                        screenState.acceptOnboarding();
+                        OnboardingController.instance.acceptOnboarding();
                       },
                     ),
                   )

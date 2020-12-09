@@ -36,7 +36,8 @@ class MyApp extends StatelessWidget {
                         OnboardingController.instance.setSharedPreferences(),
                     builder: (context, snapshot) {
                       if (snapshot.hasData) {
-                        return Screen.instance;
+                        // the route manager handles the push and pop of the onboarding
+                        return RouteManager.instance;
                       } else if (snapshot.hasError) {
                         return Text("${snapshot.error}");
                       } else {

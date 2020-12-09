@@ -1,64 +1,48 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-
-import '../controllers/onboarding_controller.dart';
+import 'package:minimalisticpush/controllers/controllers.dart';
 
 import '../enums/application_state.dart';
 
-import '../screens/screens.dart';
+import 'screens.dart';
 
 import '../widgets/widgets.dart';
 
 // ignore: must_be_immutable
-class Screen extends StatefulWidget {
+class RouteManager extends StatefulWidget {
   ApplicationState state;
-  int newestOnboardingVersion = 2; // change to force new onboarding
-  int onboardingVersion;
-  ScreenState screenState;
+  RouteManagerState routeManagerState;
   PageController pageController = PageController(initialPage: 1);
 
-  static Screen _instance;
+  static RouteManager _instance;
   static get instance {
     if (_instance == null) {
-      _instance = Screen._internal();
+      _instance = RouteManager._internal();
     }
 
     return _instance;
   }
 
-  Screen._internal() {
-    this.screenState = ScreenState();
+  RouteManager._internal() {
+    this.routeManagerState = RouteManagerState();
   }
 
-  void setOnboardingVersion(int onboardingVersion) {
-    this.screenState.setState(() {
-      this.onboardingVersion = onboardingVersion;
-      state = ApplicationState.onboarding;
-    });
+  void reloadRouteManagerState() {
+    this.routeManagerState.setState(() {});
   }
 
   @override
-  ScreenState createState() => screenState;
+  RouteManagerState createState() => routeManagerState;
 }
 
-class ScreenState extends State<Screen> {
-  void acceptOnboarding() {
-    setState(() {
-      OnboardingController.instance
-          .setOnboardingVersion(widget.newestOnboardingVersion);
-      widget.onboardingVersion = widget.newestOnboardingVersion;
-      widget.state = ApplicationState.start;
-      Background.instance.animateTo(0.6);
-    });
-  }
-
+class RouteManagerState extends State<RouteManager> {
   @override
   Widget build(BuildContext context) {
     Widget overlay;
     var size = MediaQuery.of(context).size;
     Background.instance.setSize(size);
 
-    if (widget.onboardingVersion < widget.newestOnboardingVersion) {
+    if (OnboardingController.instance.showOnboarding()) {
       widget.state = ApplicationState.onboarding;
     } else {
       widget.state = ApplicationState.start;
@@ -67,9 +51,7 @@ class ScreenState extends State<Screen> {
     switch (widget.state) {
       case ApplicationState.onboarding:
         Background.instance.animateTo(0.0);
-        overlay = OnboardingScreen(
-          screenState: this,
-        );
+        overlay = OnboardingScreen();
         break;
       case ApplicationState.start:
         Background.instance.animateTo(0.5);

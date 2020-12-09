@@ -60,7 +60,7 @@ class MainScreenState extends State<MainScreen> {
                       //     MaterialPageRoute(
                       //         builder: (context) => SessionsScreen()));
 
-                      Screen.instance.pageController.animateToPage(
+                      RouteManager.instance.pageController.animateToPage(
                         0,
                         duration: Duration(milliseconds: 300),
                         curve: Curves.easeInOutQuart,

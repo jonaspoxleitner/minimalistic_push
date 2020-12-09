@@ -1,4 +1,4 @@
-export 'screen.dart';
+export 'route_manager.dart';
 
 export 'onboarding_screen.dart';
 export 'loading_screen.dart';
