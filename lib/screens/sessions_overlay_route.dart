@@ -9,10 +9,11 @@ class SessionsOverlayRoute extends OverlayRoute {
   Widget child;
   List<Widget> sessionWidgets;
 
-  SessionsOverlayRoute(
-      {@required this.underlyingState,
-      this.child,
-      @required this.sessionWidgets});
+  SessionsOverlayRoute({
+    @required this.underlyingState,
+    this.child,
+    @required this.sessionWidgets,
+  });
 
   @override
   Iterable<OverlayEntry> createOverlayEntries() {
