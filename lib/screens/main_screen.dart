@@ -17,6 +17,7 @@ class MainScreenState extends State<MainScreen> {
   int _counter = 0;
 
   void _incrementCounter() {
+    Background.instance.focus(true);
     super.setState(() {
       _counter++;
     });
@@ -34,7 +35,7 @@ class MainScreenState extends State<MainScreen> {
 
     return new Visibility(
       visible: visibility,
-      child: new Column(
+      child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -54,17 +55,23 @@ class MainScreenState extends State<MainScreen> {
                     ),
                     onPressed: () {
                       // show sessions
+                      var sessions = SessionController.instance.getSessions();
+                      sessionWidgets = [];
 
-                      // Navigator.push(
-                      //     context,
-                      //     MaterialPageRoute(
-                      //         builder: (context) => SessionsScreen()));
+                      for (Session session in sessions) {
+                        sessionWidgets.add(
+                          SessionWidget(session: session),
+                        );
+                      }
 
-                      RouteManager.instance.pageController.animateToPage(
-                        0,
-                        duration: Duration(milliseconds: 300),
-                        curve: Curves.easeInOutQuart,
-                      );
+                      super.setState(() {
+                        visibility = false;
+                        Navigator.push(
+                            context,
+                            SessionsOverlayRoute(
+                                underlyingState: this,
+                                sessionWidgets: sessionWidgets));
+                      });
                     },
                   ),
                   IconButton(
@@ -76,11 +83,11 @@ class MainScreenState extends State<MainScreen> {
                       // show settings
                       super.setState(() {
                         visibility = false;
-                        Navigator.push(
-                            context, SettingsScreen(underlyingState: this));
+                        Navigator.push(context,
+                            SettingsOverlayRoute(underlyingState: this));
                       });
                     },
-                  )
+                  ),
                 ],
               )
             ],
@@ -109,6 +116,7 @@ class MainScreenState extends State<MainScreen> {
               if (_counter >= 1) {
                 SessionController.instance
                     .insertSession(Session(count: _counter));
+                Background.instance.focus(false);
                 _counter = 0;
                 this.setState(() {});
               } else {
@@ -119,6 +127,7 @@ class MainScreenState extends State<MainScreen> {
           CustomButton(
             text: 'Clear counter',
             onTap: () {
+              Background.instance.focus(false);
               _counter = 0;
               this.setState(() {});
             },

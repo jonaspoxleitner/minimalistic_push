@@ -1,1 +1,1 @@
-enum ApplicationState { onboarding, start }
+enum ApplicationState { onboarding, main }

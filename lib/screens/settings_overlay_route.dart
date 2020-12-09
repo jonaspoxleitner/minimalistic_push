@@ -4,11 +4,11 @@ import 'package:minimalisticpush/screens/main_screen.dart';
 import 'package:minimalisticpush/widgets/widgets.dart';
 import 'package:theme_provider/theme_provider.dart';
 
-class SettingsScreen extends OverlayRoute {
+class SettingsOverlayRoute extends OverlayRoute {
   MainScreenState underlyingState;
   Widget child;
 
-  SettingsScreen({@required this.underlyingState, this.child});
+  SettingsOverlayRoute({@required this.underlyingState, this.child});
 
   @override
   Iterable<OverlayEntry> createOverlayEntries() {
@@ -79,6 +79,12 @@ class SettingsScreen extends OverlayRoute {
                     text: 'red theme',
                     onTap: () {
                       ThemeProvider.controllerOf(context).setTheme('red_theme');
+                    },
+                  ),
+                  CustomButton(
+                    text: 'toggle chart',
+                    onTap: () {
+                      Background.instance.toggleChartVisibility();
                     },
                   ),
                 ],

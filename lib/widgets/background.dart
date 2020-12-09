@@ -8,6 +8,7 @@ class Background extends StatefulWidget {
   var height = 0.0;
   List<Session> sessions = [];
   List<double> normalizedPeaks = [];
+  var padding = EdgeInsets.all(16.0);
 
   static final _BackgroundState _backgroundState = _BackgroundState();
 
@@ -40,6 +41,16 @@ class Background extends StatefulWidget {
         height = size.height * factor * 0.8;
       });
     }
+  }
+
+  void focus(bool focus) {
+    _backgroundState.setState(() {
+      if (focus) {
+        padding = EdgeInsets.all(0.0);
+      } else {
+        padding = EdgeInsets.all(16.0);
+      }
+    });
   }
 
   void setSessions(List<Session> sessions) {
@@ -79,6 +90,8 @@ class Background extends StatefulWidget {
       normalizedPeaks.add((peak - min) / (max - min));
     }
 
+    print(normalizedPeaks.toString());
+
     if (_backgroundState.mounted) {
       _backgroundState.setState(() {});
     }
@@ -103,24 +116,35 @@ class _BackgroundState extends State<Background> {
       height: widget.size.height,
       width: widget.size.width,
       color: Theme.of(context).accentColor,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: [
-          Visibility(
-            visible: widget.chartVisibility,
-            child: CustomPaint(
-              size: Size(widget.size.width, widget.size.height * 0.2),
-              painter:
-                  CurvePainter(peaks: widget.normalizedPeaks, context: context),
+      child: AnimatedPadding(
+        padding: widget.padding,
+        duration: Duration(milliseconds: 500),
+        curve: Curves.easeInOutQuart,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            Visibility(
+              visible: widget.chartVisibility,
+              child: CustomPaint(
+                size: Size(widget.size.width, widget.size.height * 0.2),
+                painter: CurvePainter(
+                    peaks: widget.normalizedPeaks, context: context),
+              ),
             ),
-          ),
-          AnimatedContainer(
-            duration: Duration(milliseconds: 400),
-            curve: Curves.easeInOutQuart,
-            height: widget.height,
-            color: Theme.of(context).primaryColor,
-          ),
-        ],
+            AnimatedContainer(
+              duration: Duration(milliseconds: 400),
+              curve: Curves.easeInOutQuart,
+              height: widget.height,
+              decoration: BoxDecoration(
+                color: Theme.of(context).primaryColor,
+                borderRadius: BorderRadius.only(
+                  bottomLeft: Radius.circular(8.0),
+                  bottomRight: Radius.circular(8.0),
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -134,7 +158,7 @@ class CurvePainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    var steps = this.peaks.length * 2;
+    var steps = this.peaks.length * 2 - 2;
     var stepWidth = size.width / steps;
 
     Paint paint = Paint()
@@ -146,18 +170,16 @@ class CurvePainter extends CustomPainter {
     path.moveTo(0.0, size.height);
     path.lineTo(0.0, getHeight(size.height, peaks.first));
 
-    // TODO not right yet
-    var counter = 1;
+    var offset = 0;
     for (int i = 0; i < peaks.length - 1; i++) {
-      var offset = counter + i;
       path.cubicTo(
-          stepWidth * (offset + 2),
+          stepWidth * (offset + i + 1),
           getHeight(size.height, peaks[i]),
-          stepWidth * (offset + 2),
+          stepWidth * (offset + i + 1),
           getHeight(size.height, peaks[i + 1]),
-          stepWidth * (offset + 3),
+          stepWidth * (offset + i + 2),
           getHeight(size.height, peaks[i + 1]));
-      counter++;
+      offset++;
     }
 
     path.lineTo(size.width, getHeight(size.height, peaks.last));

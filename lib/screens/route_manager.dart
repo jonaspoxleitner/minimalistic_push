@@ -12,7 +12,6 @@ import '../widgets/widgets.dart';
 class RouteManager extends StatefulWidget {
   ApplicationState state;
   RouteManagerState routeManagerState;
-  PageController pageController = PageController(initialPage: 1);
 
   static RouteManager _instance;
   static get instance {
@@ -45,7 +44,7 @@ class RouteManagerState extends State<RouteManager> {
     if (OnboardingController.instance.showOnboarding()) {
       widget.state = ApplicationState.onboarding;
     } else {
-      widget.state = ApplicationState.start;
+      widget.state = ApplicationState.main;
     }
 
     switch (widget.state) {
@@ -53,21 +52,12 @@ class RouteManagerState extends State<RouteManager> {
         Background.instance.animateTo(0.0);
         overlay = OnboardingScreen();
         break;
-      case ApplicationState.start:
+      case ApplicationState.main:
         Background.instance.animateTo(0.5);
         overlay = Container(
           height: size.height,
           width: size.width,
-          child: PageView(
-            onPageChanged: (int) {
-              this.setState(() {});
-            },
-            controller: widget.pageController,
-            children: [
-              SessionsScreen(pageController: widget.pageController),
-              MainScreen(),
-            ],
-          ),
+          child: MainScreen(),
         );
         break;
       default:
