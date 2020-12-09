@@ -15,12 +15,12 @@ class SessionController {
     if (_instance == null) {
       _instance = SessionController._internal();
     }
-
     return _instance;
   }
 
   SessionController._internal();
 
+  // sets the database or creates it on first start of the app
   Future<Database> setDatabase() async {
     this.database = await openDatabase(
       join(await getDatabasesPath(), 'sessions_database.database'),
@@ -39,6 +39,7 @@ class SessionController {
     return this.database;
   }
 
+  // inserts a new session into the database
   void insertSession(Session session) async {
     if (this.sessionList.isEmpty) {
       session.id = 1;
@@ -57,6 +58,7 @@ class SessionController {
         .then((value) => {Background.instance.setSessions(this.sessionList)});
   }
 
+  // loads all sessions from the database ordered by the id
   Future<List<Session>> loadSessions() async {
     await database.query('sessions', orderBy: 'id').then((value) {
       this.sessionList = List.generate(value.length, (i) {
@@ -70,10 +72,13 @@ class SessionController {
     return this.sessionList;
   }
 
+  // returns the sessions in a list
+  // does not call this.loadSessions() for performace reasons
   List<Session> getSessions() {
     return this.sessionList;
   }
 
+  // delete a session from the database by id
   Future<void> deleteSession(int id) async {
     await database.delete(
       'sessions',
@@ -82,6 +87,8 @@ class SessionController {
     );
   }
 
+  // debug
+  // this method clears the whole session database
   void clear() async {
     await database.delete('sessions');
     await this
