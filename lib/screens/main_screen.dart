@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:minimalisticpush/controllers/controllers.dart';
+import 'package:minimalisticpush/controllers/session_controller.dart';
 import 'package:minimalisticpush/models/session.dart';
 import 'package:minimalisticpush/screens/screens.dart';
 import 'package:minimalisticpush/widgets/widgets.dart';
@@ -20,6 +20,7 @@ class MainScreenState extends State<MainScreen> {
   void _buttonTap() {
     if (_counter == -1) {
       Background.instance.focus(true);
+      Background.instance.setStateIfMounted();
       this.trainingMode = true;
       _counter = 0;
     } else {
@@ -163,6 +164,7 @@ class MainScreenState extends State<MainScreen> {
                         this.trainingMode = false;
                         _counter = -1;
                         Background.instance.focus(false);
+                        Background.instance.setStateIfMounted();
                       });
                     } else {
                       this._showCancelDialog(_counter);
@@ -242,6 +244,7 @@ class MainScreenState extends State<MainScreen> {
                     .insertSession(Session(count: _counter));
                 this.trainingMode = false;
                 Background.instance.focus(false);
+                Background.instance.setStateIfMounted();
                 _counter = -1;
                 this.setState(() {});
                 Navigator.of(context).pop();
@@ -259,6 +262,7 @@ class MainScreenState extends State<MainScreen> {
               onPressed: () {
                 this.trainingMode = false;
                 Background.instance.focus(false);
+                Background.instance.setStateIfMounted();
                 _counter = -1;
                 this.setState(() {});
                 Navigator.of(context).pop();

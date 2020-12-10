@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:minimalisticpush/controllers/onboarding_controller.dart';
+import 'package:minimalisticpush/controllers/session_controller.dart';
 
 import 'package:theme_provider/theme_provider.dart';
-
-import 'controllers/controllers.dart';
 
 import 'screens/screens.dart';
 

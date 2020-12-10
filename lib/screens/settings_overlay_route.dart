@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:minimalisticpush/controllers/controllers.dart';
+import 'package:minimalisticpush/controllers/onboarding_controller.dart';
+import 'package:minimalisticpush/controllers/session_controller.dart';
 import 'package:minimalisticpush/screens/main_screen.dart';
 import 'package:minimalisticpush/widgets/widgets.dart';
 import 'package:theme_provider/theme_provider.dart';
