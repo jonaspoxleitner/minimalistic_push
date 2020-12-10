@@ -1,7 +1,7 @@
 # Minimalistic Push
 Minimalistic Push is one of the simplest push-up trackers out there. You can track your push-ups in the training mode and see an overview of your sessions.
 
-<img src="https://user-images.githubusercontent.com/18596113/101342862-71707a00-3883-11eb-951b-51d66f3c611f.gif" style="width: 300px; height: 300px">
+<img src="https://user-images.githubusercontent.com/18596113/101342862-71707a00-3883-11eb-951b-51d66f3c611f.gif" style="width: 300px">
 
 ## Table of Contents
 - [Minimalistic Push](#minimalistic-push)
