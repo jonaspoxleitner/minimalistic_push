@@ -30,14 +30,8 @@ class MainScreenState extends State<MainScreen> {
   }
 
   @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    var size = MediaQuery.of(context).size;
+    Background.instance.setChartVisibility(true);
 
     return new Visibility(
       visible: visibility,
@@ -73,10 +67,12 @@ class MainScreenState extends State<MainScreen> {
                       super.setState(() {
                         visibility = false;
                         Navigator.push(
-                            context,
-                            SessionsOverlayRoute(
-                                underlyingState: this,
-                                sessionWidgets: sessionWidgets));
+                          context,
+                          SessionsOverlayRoute(
+                            underlyingState: this,
+                            sessionWidgets: sessionWidgets,
+                          ),
+                        );
                       });
                     },
                   ),
@@ -89,8 +85,12 @@ class MainScreenState extends State<MainScreen> {
                       // show settings
                       super.setState(() {
                         visibility = false;
-                        Navigator.push(context,
-                            SettingsOverlayRoute(underlyingState: this));
+                        Navigator.push(
+                          context,
+                          SettingsOverlayRoute(
+                            underlyingState: this,
+                          ),
+                        );
                       });
                     },
                   ),

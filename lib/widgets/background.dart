@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 
 class Background extends StatefulWidget {
   var chartVisibility = false;
-  var size;
-  var height = 0.0;
+  var factor = 0.0;
   List<double> normalizedPeaks = [];
   var padding = EdgeInsets.all(16.0);
 
@@ -20,44 +19,42 @@ class Background extends StatefulWidget {
 
   Background._internal();
 
-  void setSize(Size size) {
-    this.size = size;
-  }
-
   // this animates the height of the darker portion between 0 and 100 percent
   void animateTo(double factor) {
-    height = size.height * factor * 0.8;
-    if (_backgroundState.mounted) {
-      _backgroundState.setState(() {});
-    }
+    this.factor = factor * 0.8;
+    this.setStateIfMounted();
   }
 
   // focuses the darker portion with padding
   void focus(bool focus) {
-    if (focus) {
-      padding = EdgeInsets.all(0.0);
-    } else {
-      padding = EdgeInsets.all(16.0);
-    }
-
-    if (_backgroundState.mounted) {
-      _backgroundState.setState(() {});
-    }
+    this.padding = focus ? EdgeInsets.all(0.0) : EdgeInsets.all(16.0);
+    this.setStateIfMounted();
   }
 
   // normalized sessions get set and the background gets updated
   void setSessions(List<double> normalized) {
     this.normalizedPeaks = normalized;
+    this.setStateIfMounted();
+  }
 
+  // set a new visibility for the chart
+  void setChartVisibility(bool visibility) {
+    this.chartVisibility = visibility;
+    //this.setStateIfMounted();
+  }
+
+  // debug
+  // toogle the visibility of the chart
+  void toggleChartVisibility() {
+    this.chartVisibility = !this.chartVisibility;
+    this.setStateIfMounted();
+  }
+
+  // only sets state if the background is mounted
+  void setStateIfMounted() {
     if (_backgroundState.mounted) {
       _backgroundState.setState(() {});
     }
-  }
-
-  void toggleChartVisibility() {
-    _backgroundState.setState(() {
-      chartVisibility = !chartVisibility;
-    });
   }
 
   @override
@@ -67,11 +64,10 @@ class Background extends StatefulWidget {
 class _BackgroundState extends State<Background> {
   @override
   Widget build(BuildContext context) {
-    widget.size = MediaQuery.of(context).size;
+    Size size = MediaQuery.of(context).size;
 
     return Container(
-      height: widget.size.height,
-      width: widget.size.width,
+      constraints: BoxConstraints.expand(),
       color: Theme.of(context).accentColor,
       child: AnimatedPadding(
         padding: widget.padding,
@@ -83,7 +79,7 @@ class _BackgroundState extends State<Background> {
             Visibility(
               visible: widget.chartVisibility,
               child: CustomPaint(
-                size: Size(widget.size.width, widget.size.height * 0.2),
+                size: Size(size.width, size.height * 0.2),
                 painter: CurvePainter(
                     peaks: widget.normalizedPeaks, context: context),
               ),
@@ -91,12 +87,12 @@ class _BackgroundState extends State<Background> {
             AnimatedContainer(
               duration: Duration(milliseconds: 400),
               curve: Curves.easeInOutQuart,
-              height: widget.height,
+              height: size.height * widget.factor,
               decoration: BoxDecoration(
                 color: Theme.of(context).primaryColor,
                 borderRadius: BorderRadius.only(
-                  bottomLeft: Radius.circular(8.0),
-                  bottomRight: Radius.circular(8.0),
+                  bottomLeft: Radius.circular(32.0),
+                  bottomRight: Radius.circular(32.0),
                 ),
               ),
             ),

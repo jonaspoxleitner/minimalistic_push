@@ -2,15 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:minimalisticpush/controllers/controllers.dart';
 
-import '../enums/application_state.dart';
-
 import 'screens.dart';
 
 import '../widgets/widgets.dart';
 
 // ignore: must_be_immutable
 class RouteManager extends StatefulWidget {
-  ApplicationState state;
   RouteManagerState routeManagerState;
 
   static RouteManager _instance;
@@ -39,21 +36,14 @@ class RouteManagerState extends State<RouteManager> {
   Widget build(BuildContext context) {
     Widget overlay;
     var size = MediaQuery.of(context).size;
-    Background.instance.setSize(size);
 
-    if (OnboardingController.instance.showOnboarding()) {
-      widget.state = ApplicationState.onboarding;
-    } else {
-      widget.state = ApplicationState.main;
-    }
-
-    switch (widget.state) {
-      case ApplicationState.onboarding:
+    switch (OnboardingController.instance.showOnboarding()) {
+      case true:
         Background.instance.animateTo(0.0);
         Background.instance.focus(true);
         overlay = OnboardingScreen();
         break;
-      case ApplicationState.main:
+      case false:
         Background.instance.animateTo(0.5);
         Background.instance.focus(false);
         overlay = Container(
