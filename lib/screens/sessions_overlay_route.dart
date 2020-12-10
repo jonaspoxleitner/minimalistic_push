@@ -69,7 +69,7 @@ class SessionsOverlayRoute extends OverlayRoute {
                         decoration: BoxDecoration(
                           color: Theme.of(context).primaryColor,
                           borderRadius: BorderRadius.all(
-                            Radius.circular(16.0),
+                            Radius.circular(32.0),
                           ),
                         ),
                         child: ListView(
