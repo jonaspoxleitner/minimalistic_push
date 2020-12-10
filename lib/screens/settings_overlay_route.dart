@@ -12,12 +12,15 @@ class SettingsOverlayRoute extends OverlayRoute {
 
   @override
   Iterable<OverlayEntry> createOverlayEntries() {
+    Background.instance.setReadingMode(true);
+    Background.instance.setStateIfMounted();
+
     return [
       new OverlayEntry(builder: (context) {
         return Scaffold(
           backgroundColor: Colors.transparent,
           body: Container(
-            alignment: Alignment.topCenter,
+            constraints: BoxConstraints.expand(),
             child: SafeArea(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -33,6 +36,7 @@ class SettingsOverlayRoute extends OverlayRoute {
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
                           IconButton(
+                            padding: const EdgeInsets.all(16.0),
                             splashColor: Colors.transparent,
                             highlightColor: Colors.transparent,
                             icon: Icon(
@@ -41,6 +45,10 @@ class SettingsOverlayRoute extends OverlayRoute {
                             ),
                             onPressed: () {
                               this.underlyingState.setVisibility(true);
+
+                              Background.instance.setReadingMode(false);
+                              Background.instance.setStateIfMounted();
+
                               Navigator.of(context).pop();
                             },
                           )
@@ -48,38 +56,48 @@ class SettingsOverlayRoute extends OverlayRoute {
                       )
                     ],
                   ),
-                  CustomButton(
-                    text: 'Return to Onboarding (debug)',
-                    onTap: () {
-                      Navigator.of(context).pop();
-                      OnboardingController.instance.returnToOnboarding();
-                    },
-                  ),
-                  CustomButton(
-                    text: 'Clear database (debug)',
-                    onTap: () {
-                      SessionController.instance.clear();
-                    },
-                  ),
-                  CustomButton(
-                    text: 'green theme',
-                    onTap: () {
-                      ThemeProvider.controllerOf(context)
-                          .setTheme('green_theme');
-                    },
-                  ),
-                  CustomButton(
-                    text: 'blue theme',
-                    onTap: () {
-                      ThemeProvider.controllerOf(context)
-                          .setTheme('blue_theme');
-                    },
-                  ),
-                  CustomButton(
-                    text: 'red theme',
-                    onTap: () {
-                      ThemeProvider.controllerOf(context).setTheme('red_theme');
-                    },
+                  Expanded(
+                    child: ListView(
+                      children: [
+                        CustomButton(
+                          text: 'Return to Onboarding (debug)',
+                          onTap: () {
+                            Background.instance.setReadingMode(false);
+                            Background.instance.setStateIfMounted();
+
+                            Navigator.of(context).pop();
+                            OnboardingController.instance.returnToOnboarding();
+                          },
+                        ),
+                        CustomButton(
+                          text: 'Clear database (debug)',
+                          onTap: () {
+                            SessionController.instance.clear();
+                          },
+                        ),
+                        CustomButton(
+                          text: 'green theme',
+                          onTap: () {
+                            ThemeProvider.controllerOf(context)
+                                .setTheme('green_theme');
+                          },
+                        ),
+                        CustomButton(
+                          text: 'blue theme',
+                          onTap: () {
+                            ThemeProvider.controllerOf(context)
+                                .setTheme('blue_theme');
+                          },
+                        ),
+                        CustomButton(
+                          text: 'red theme',
+                          onTap: () {
+                            ThemeProvider.controllerOf(context)
+                                .setTheme('red_theme');
+                          },
+                        ),
+                      ],
+                    ),
                   ),
                 ],
               ),

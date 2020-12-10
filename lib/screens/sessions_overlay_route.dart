@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:minimalisticpush/controllers/controllers.dart';
 import 'package:minimalisticpush/screens/main_screen.dart';
 import 'package:minimalisticpush/screens/screens.dart';
 import 'package:minimalisticpush/widgets/widgets.dart';
@@ -17,6 +16,9 @@ class SessionsOverlayRoute extends OverlayRoute {
 
   @override
   Iterable<OverlayEntry> createOverlayEntries() {
+    Background.instance.setReadingMode(true);
+    Background.instance.setStateIfMounted();
+
     return [
       new OverlayEntry(builder: (context) {
         return Scaffold(
@@ -38,6 +40,7 @@ class SessionsOverlayRoute extends OverlayRoute {
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
                           IconButton(
+                            padding: const EdgeInsets.all(16.0),
                             splashColor: Colors.transparent,
                             highlightColor: Colors.transparent,
                             icon: Icon(
@@ -46,6 +49,10 @@ class SessionsOverlayRoute extends OverlayRoute {
                             ),
                             onPressed: () {
                               this.underlyingState.setVisibility(true);
+
+                              Background.instance.setReadingMode(false);
+                              Background.instance.setStateIfMounted();
+
                               Navigator.of(context).pop();
                             },
                           )

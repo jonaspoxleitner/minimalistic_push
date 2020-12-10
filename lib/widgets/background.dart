@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 class Background extends StatefulWidget {
   var chartVisibility = false;
   var factor = 0.0;
+  bool readingMode = false;
   List<double> normalizedPeaks = [];
   double padding = 16.0;
 
@@ -22,13 +23,11 @@ class Background extends StatefulWidget {
   // this animates the height of the darker portion between 0 and 100 percent
   void animateTo(double factor) {
     this.factor = factor * 0.8;
-    this.setStateIfMounted();
   }
 
   // focuses the darker portion with padding
   void focus(bool focus) {
     this.padding = focus ? 0.0 : 16.0;
-    this.setStateIfMounted();
   }
 
   // normalized sessions get set and the background gets updated
@@ -40,7 +39,10 @@ class Background extends StatefulWidget {
   // set a new visibility for the chart
   void setChartVisibility(bool visibility) {
     this.chartVisibility = visibility;
-    //this.setStateIfMounted();
+  }
+
+  void setReadingMode(bool readingMode) {
+    this.readingMode = readingMode;
   }
 
   // debug
@@ -66,40 +68,57 @@ class _BackgroundState extends State<Background> {
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
 
-    return Container(
-      constraints: BoxConstraints.expand(),
-      color: Theme.of(context).accentColor,
-      child: AnimatedPadding(
-        padding: EdgeInsets.all(widget.padding),
-        duration: Duration(milliseconds: 500),
-        curve: Curves.easeInOutQuart,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            Visibility(
-              visible: widget.chartVisibility,
-              child: CustomPaint(
-                size: Size(size.width, size.height * 0.2),
-                painter: CurvePainter(
-                    peaks: widget.normalizedPeaks, context: context),
-              ),
+    if (widget.readingMode) {
+      return Container(
+        constraints: BoxConstraints.expand(),
+        color: Theme.of(context).accentColor,
+        padding: const EdgeInsets.all(16.0),
+        child: Container(
+          constraints: BoxConstraints.expand(),
+          decoration: BoxDecoration(
+            color: Theme.of(context).primaryColor,
+            borderRadius: BorderRadius.all(
+              Radius.circular(2.0 * widget.padding),
             ),
-            AnimatedContainer(
-              duration: Duration(milliseconds: 400),
-              curve: Curves.easeInOutQuart,
-              height: size.height * widget.factor,
-              decoration: BoxDecoration(
-                color: Theme.of(context).primaryColor,
-                borderRadius: BorderRadius.only(
-                  bottomLeft: Radius.circular(2.0 * widget.padding),
-                  bottomRight: Radius.circular(2.0 * widget.padding),
+          ),
+        ),
+      );
+    } else {
+      return Container(
+        constraints: BoxConstraints.expand(),
+        color: Theme.of(context).accentColor,
+        child: AnimatedPadding(
+          padding: EdgeInsets.all(widget.padding),
+          duration: Duration(milliseconds: 500),
+          curve: Curves.easeInOutQuart,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              Visibility(
+                visible: widget.chartVisibility,
+                child: CustomPaint(
+                  size: Size(size.width, size.height * 0.2),
+                  painter: CurvePainter(
+                      peaks: widget.normalizedPeaks, context: context),
                 ),
               ),
-            ),
-          ],
+              AnimatedContainer(
+                duration: Duration(milliseconds: 400),
+                curve: Curves.easeInOutQuart,
+                height: size.height * widget.factor,
+                decoration: BoxDecoration(
+                  color: Theme.of(context).primaryColor,
+                  borderRadius: BorderRadius.only(
+                    bottomLeft: Radius.circular(2.0 * widget.padding),
+                    bottomRight: Radius.circular(2.0 * widget.padding),
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
-      ),
-    );
+      );
+    }
   }
 }
 

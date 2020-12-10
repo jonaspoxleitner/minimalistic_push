@@ -13,14 +13,19 @@ class MainScreenState extends State<MainScreen> {
   List<Widget> sessionWidgets = [];
   var sessions;
   var visibility = true;
+  var trainingMode = false;
 
-  int _counter = 0;
+  int _counter = -1;
 
-  void _incrementCounter() {
-    Background.instance.focus(true);
-    super.setState(() {
+  void _buttonTap() {
+    if (_counter == -1) {
+      Background.instance.focus(true);
+      this.trainingMode = true;
+      _counter = 0;
+    } else {
       _counter++;
-    });
+    }
+    super.setState(() {});
   }
 
   void setVisibility(bool visibility) {
@@ -31,117 +36,169 @@ class MainScreenState extends State<MainScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return new Visibility(
-      visible: visibility,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Stack(
-            alignment: Alignment.center,
-            children: [
-              LocationText(
-                text: 'Training Mode',
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  IconButton(
-                    icon: Icon(
-                      Icons.toc,
-                      color: Colors.white,
-                    ),
-                    onPressed: () {
-                      // show sessions
-                      var sessions = SessionController.instance.getSessions();
-                      sessionWidgets = [];
+    if (!trainingMode) {
+      return new Visibility(
+        visible: visibility,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Stack(
+              alignment: Alignment.center,
+              children: [
+                LocationText(
+                  text: 'Training Mode',
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    IconButton(
+                      padding: const EdgeInsets.all(16.0),
+                      icon: Icon(
+                        Icons.toc,
+                        color: Colors.white,
+                      ),
+                      onPressed: () {
+                        // show sessions
+                        var sessions = SessionController.instance.getSessions();
+                        sessionWidgets = [];
 
-                      for (Session session in sessions) {
-                        sessionWidgets.add(
-                          SessionWidget(session: session),
-                        );
-                      }
+                        for (Session session in sessions) {
+                          sessionWidgets.add(
+                            SessionWidget(session: session),
+                          );
+                        }
 
-                      super.setState(() {
-                        visibility = false;
-                        Navigator.push(
-                          context,
-                          SessionsOverlayRoute(
-                            underlyingState: this,
-                            sessionWidgets: sessionWidgets,
-                          ),
-                        );
-                      });
-                    },
-                  ),
-                  IconButton(
-                    icon: Icon(
-                      Icons.settings,
-                      color: Colors.white,
+                        super.setState(() {
+                          visibility = false;
+                          Navigator.push(
+                            context,
+                            SessionsOverlayRoute(
+                              underlyingState: this,
+                              sessionWidgets: sessionWidgets,
+                            ),
+                          );
+                        });
+                      },
                     ),
-                    onPressed: () {
-                      // show settings
-                      super.setState(() {
-                        visibility = false;
-                        Navigator.push(
-                          context,
-                          SettingsOverlayRoute(
-                            underlyingState: this,
-                          ),
-                        );
-                      });
-                    },
-                  ),
-                ],
-              )
-            ],
-          ),
-          Spacer(),
-          Expanded(
-            child: Padding(
-              padding: EdgeInsets.all(16.0),
+                    IconButton(
+                      padding: const EdgeInsets.all(16.0),
+                      icon: Icon(
+                        Icons.settings,
+                        color: Colors.white,
+                      ),
+                      onPressed: () {
+                        // show settings
+                        super.setState(() {
+                          visibility = false;
+                          Navigator.push(
+                            context,
+                            SettingsOverlayRoute(
+                              underlyingState: this,
+                            ),
+                          );
+                        });
+                      },
+                    ),
+                  ],
+                )
+              ],
+            ),
+            Expanded(
               child: GestureDetector(
-                onTap: _incrementCounter,
-                child: Container(
-                  alignment: Alignment.center,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    shape: BoxShape.circle,
+                behavior: HitTestBehavior.translucent,
+                onTap: () {
+                  _buttonTap();
+                },
+                child: Center(
+                  child: Container(
+                    constraints: BoxConstraints.tightForFinite(),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.all(
+                        const Radius.circular(24.0),
+                      ),
+                      border: Border.all(
+                        color: Colors.white,
+                        width: 4.0,
+                        style: BorderStyle.solid,
+                      ),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(24.0),
+                      child: Text(
+                        'Start',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 64.0,
+                        ),
+                      ),
+                    ),
                   ),
-                  child: Text(_counter.toString()),
                 ),
               ),
             ),
-          ),
-          Spacer(),
-          CustomButton(
-            text: 'Add session to database',
-            onTap: () {
-              if (_counter >= 1) {
-                SessionController.instance
-                    .insertSession(Session(count: _counter));
-                Background.instance.focus(false);
-                _counter = 0;
-                this.setState(() {});
-              } else {
-                this._showDialog();
-              }
-            },
-          ),
-          CustomButton(
-            text: 'Clear counter',
-            onTap: () {
-              Background.instance.focus(false);
-              _counter = 0;
-              this.setState(() {});
-            },
-          ),
-        ],
-      ),
-    );
+          ],
+        ),
+      );
+    } else {
+      return new Visibility(
+        visible: visibility,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                IconButton(
+                  padding: const EdgeInsets.all(16.0),
+                  icon: Icon(
+                    _counter == 0 ? Icons.close : Icons.done_all,
+                    color: Colors.white,
+                  ),
+                  onPressed: () {
+                    // get out of training mode
+                    if (_counter <= 0) {
+                      super.setState(() {
+                        this.trainingMode = false;
+                        _counter = -1;
+                        Background.instance.focus(false);
+                      });
+                    } else {
+                      this._showCancelDialog(_counter);
+                    }
+                  },
+                ),
+              ],
+            ),
+            Expanded(
+              child: GestureDetector(
+                behavior: HitTestBehavior.translucent,
+                onTap: () {
+                  _buttonTap();
+                },
+                child: Center(
+                  child: Padding(
+                    padding: EdgeInsets.all(16.0),
+                    child: Text(
+                      _counter.toString(),
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 64.0,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
+    }
   }
 
-  Future<void> _showDialog() async {
+  Future<void> _showCancelDialog(int count) async {
     return showDialog<void>(
       context: context,
       builder: (BuildContext context) {
@@ -150,8 +207,10 @@ class MainScreenState extends State<MainScreen> {
           content: SingleChildScrollView(
             child: ListBody(
               children: <Widget>[
-                Text('It seems like your counter is still at 0.'),
-                Text('Please finish you session.'),
+                Text('It seems like your counter is already at $count.'),
+                Text(
+                    'If you want to continue, press \'CONTINUE\' else press \'SAVE\'.'),
+                Text('You can also end the session without saving.'),
               ],
             ),
           ),
@@ -160,12 +219,48 @@ class MainScreenState extends State<MainScreen> {
               style:
                   TextButton.styleFrom(primary: Theme.of(context).primaryColor),
               child: Text(
-                'Okay.',
+                'CONTINUE',
                 style: TextStyle(
                   color: Theme.of(context).primaryColor,
                 ),
               ),
               onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              style:
+                  TextButton.styleFrom(primary: Theme.of(context).primaryColor),
+              child: Text(
+                'SAVE',
+                style: TextStyle(
+                  color: Theme.of(context).primaryColor,
+                ),
+              ),
+              onPressed: () {
+                SessionController.instance
+                    .insertSession(Session(count: _counter));
+                this.trainingMode = false;
+                Background.instance.focus(false);
+                _counter = -1;
+                this.setState(() {});
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              style:
+                  TextButton.styleFrom(primary: Theme.of(context).primaryColor),
+              child: Text(
+                'NO SAVING',
+                style: TextStyle(
+                  color: Theme.of(context).primaryColor,
+                ),
+              ),
+              onPressed: () {
+                this.trainingMode = false;
+                Background.instance.focus(false);
+                _counter = -1;
+                this.setState(() {});
                 Navigator.of(context).pop();
               },
             ),
