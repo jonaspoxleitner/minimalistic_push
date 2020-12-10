@@ -31,8 +31,6 @@ class MainScreenState extends State<MainScreen> {
 
   @override
   Widget build(BuildContext context) {
-    Background.instance.setChartVisibility(true);
-
     return new Visibility(
       visible: visibility,
       child: Column(

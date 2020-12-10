@@ -52,7 +52,6 @@ class SettingsOverlayRoute extends OverlayRoute {
                     text: 'Return to Onboarding (debug)',
                     onTap: () {
                       Navigator.of(context).pop();
-                      Background.instance.setChartVisibility(false);
                       OnboardingController.instance.returnToOnboarding();
                     },
                   ),

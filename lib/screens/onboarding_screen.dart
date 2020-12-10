@@ -18,6 +18,7 @@ class OnboardingScreen extends StatelessWidget {
       width: size.width,
       child: PageView.builder(
         onPageChanged: (value) {
+          Background.instance.setChartVisibility(value == 1);
           Background.instance.animateTo(value / 2);
         },
         controller: pageController,
@@ -25,8 +26,6 @@ class OnboardingScreen extends StatelessWidget {
         itemBuilder: (context, index) {
           switch (index) {
             case 0:
-              Background.instance.setChartVisibility(false);
-
               return SafeArea(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -76,8 +75,6 @@ class OnboardingScreen extends StatelessWidget {
               );
               break;
             case 1:
-              Background.instance.setChartVisibility(true);
-
               return SafeArea(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -119,8 +116,6 @@ class OnboardingScreen extends StatelessWidget {
               );
               break;
             case 2:
-              Background.instance.setChartVisibility(false);
-
               return SafeArea(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -152,6 +147,7 @@ class OnboardingScreen extends StatelessWidget {
                       child: CustomButton(
                         text: 'Start Application!',
                         onTap: () {
+                          Background.instance.setChartVisibility(true);
                           OnboardingController.instance.acceptOnboarding();
                         },
                       ),

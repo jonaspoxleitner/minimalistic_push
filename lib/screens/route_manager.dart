@@ -39,11 +39,13 @@ class RouteManagerState extends State<RouteManager> {
 
     switch (OnboardingController.instance.showOnboarding()) {
       case true:
+        Background.instance.setChartVisibility(false);
         Background.instance.animateTo(0.0);
         Background.instance.focus(true);
         overlay = OnboardingScreen();
         break;
       case false:
+        Background.instance.setChartVisibility(true);
         Background.instance.animateTo(0.5);
         Background.instance.focus(false);
         overlay = Container(
