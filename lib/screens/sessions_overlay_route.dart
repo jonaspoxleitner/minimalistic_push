@@ -61,8 +61,21 @@ class SessionsOverlayRoute extends OverlayRoute {
                     ],
                   ),
                   Expanded(
-                    child: ListView(
-                      children: sessionWidgets,
+                    child: Padding(
+                      padding: const EdgeInsets.only(
+                          left: 16.0, right: 16.0, bottom: 16.0),
+                      child: Container(
+                        padding: const EdgeInsets.all(8.0),
+                        decoration: BoxDecoration(
+                          color: Theme.of(context).primaryColor,
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(16.0),
+                          ),
+                        ),
+                        child: ListView(
+                          children: sessionWidgets,
+                        ),
+                      ),
                     ),
                   ),
                 ],

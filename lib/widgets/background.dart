@@ -73,14 +73,19 @@ class _BackgroundState extends State<Background> {
         constraints: BoxConstraints.expand(),
         color: Theme.of(context).accentColor,
         padding: const EdgeInsets.all(16.0),
-        child: Container(
-          constraints: BoxConstraints.expand(),
-          decoration: BoxDecoration(
-            color: Theme.of(context).primaryColor,
-            borderRadius: BorderRadius.all(
-              Radius.circular(2.0 * widget.padding),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            Container(
+              height: size.height / 2,
+              decoration: BoxDecoration(
+                color: Theme.of(context).primaryColor,
+                borderRadius: BorderRadius.all(
+                  Radius.circular(2.0 * widget.padding),
+                ),
+              ),
             ),
-          ),
+          ],
         ),
       );
     } else {
