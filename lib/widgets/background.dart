@@ -4,7 +4,7 @@ class Background extends StatefulWidget {
   var chartVisibility = false;
   var factor = 0.0;
   List<double> normalizedPeaks = [];
-  var padding = EdgeInsets.all(16.0);
+  double padding = 16.0;
 
   static final _BackgroundState _backgroundState = _BackgroundState();
 
@@ -27,7 +27,7 @@ class Background extends StatefulWidget {
 
   // focuses the darker portion with padding
   void focus(bool focus) {
-    this.padding = focus ? EdgeInsets.all(0.0) : EdgeInsets.all(16.0);
+    this.padding = focus ? 0.0 : 16.0;
     this.setStateIfMounted();
   }
 
@@ -70,7 +70,7 @@ class _BackgroundState extends State<Background> {
       constraints: BoxConstraints.expand(),
       color: Theme.of(context).accentColor,
       child: AnimatedPadding(
-        padding: widget.padding,
+        padding: EdgeInsets.all(widget.padding),
         duration: Duration(milliseconds: 500),
         curve: Curves.easeInOutQuart,
         child: Column(
@@ -91,8 +91,8 @@ class _BackgroundState extends State<Background> {
               decoration: BoxDecoration(
                 color: Theme.of(context).primaryColor,
                 borderRadius: BorderRadius.only(
-                  bottomLeft: Radius.circular(32.0),
-                  bottomRight: Radius.circular(32.0),
+                  bottomLeft: Radius.circular(2.0 * widget.padding),
+                  bottomRight: Radius.circular(2.0 * widget.padding),
                 ),
               ),
             ),
