@@ -8,16 +8,14 @@ import '../styles/styles.dart';
 class OnboardingScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    var size = MediaQuery.of(context).size;
-
     PageController pageController = PageController(initialPage: 0);
 
     return Container(
       alignment: Alignment.center,
-      height: size.height,
-      width: size.width,
+      constraints: BoxConstraints.expand(),
       child: PageView.builder(
         onPageChanged: (value) {
+          // should show fake improvement on the second page
           Background.instance.setChartVisibility(value == 1);
           Background.instance.animateTo(value / 2);
         },
