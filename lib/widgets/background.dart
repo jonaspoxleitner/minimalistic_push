@@ -25,11 +25,6 @@ class Background extends StatefulWidget {
     this.factor = factor * 0.8;
   }
 
-  // focuses the darker portion with padding
-  void focus(bool focus) {
-    this.padding = focus ? 0.0 : 16.0;
-  }
-
   // normalized sessions get set and the background gets updated
   void setSessions(List<double> normalized) {
     this.normalizedPeaks = normalized;
@@ -39,10 +34,6 @@ class Background extends StatefulWidget {
   // set a new visibility for the chart
   void setChartVisibility(bool visibility) {
     this.chartVisibility = visibility;
-  }
-
-  void setReadingMode(bool readingMode) {
-    this.readingMode = readingMode;
   }
 
   // debug
@@ -68,62 +59,35 @@ class _BackgroundState extends State<Background> {
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
 
-    if (widget.readingMode) {
-      return Container(
-        constraints: BoxConstraints.expand(),
-        color: Theme.of(context).accentColor,
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            Container(
-              height: size.height / 2,
-              decoration: BoxDecoration(
-                color: Theme.of(context).primaryColor,
-                borderRadius: BorderRadius.all(
-                  Radius.circular(2.0 * widget.padding),
-                ),
+    return Container(
+      constraints: BoxConstraints.expand(),
+      color: Theme.of(context).accentColor,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          Visibility(
+            visible: widget.chartVisibility,
+            child: CustomPaint(
+              size: Size(size.width, size.height * 0.2),
+              painter:
+                  CurvePainter(peaks: widget.normalizedPeaks, context: context),
+            ),
+          ),
+          AnimatedContainer(
+            duration: Duration(milliseconds: 400),
+            curve: Curves.easeInOutQuart,
+            height: size.height * widget.factor,
+            decoration: BoxDecoration(
+              color: Theme.of(context).primaryColor,
+              borderRadius: BorderRadius.only(
+                bottomLeft: Radius.circular(2.0 * widget.padding),
+                bottomRight: Radius.circular(2.0 * widget.padding),
               ),
             ),
-          ],
-        ),
-      );
-    } else {
-      return Container(
-        constraints: BoxConstraints.expand(),
-        color: Theme.of(context).accentColor,
-        child: AnimatedPadding(
-          padding: EdgeInsets.all(widget.padding),
-          duration: Duration(milliseconds: 500),
-          curve: Curves.easeInOutQuart,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              Visibility(
-                visible: widget.chartVisibility,
-                child: CustomPaint(
-                  size: Size(size.width, size.height * 0.2),
-                  painter: CurvePainter(
-                      peaks: widget.normalizedPeaks, context: context),
-                ),
-              ),
-              AnimatedContainer(
-                duration: Duration(milliseconds: 400),
-                curve: Curves.easeInOutQuart,
-                height: size.height * widget.factor,
-                decoration: BoxDecoration(
-                  color: Theme.of(context).primaryColor,
-                  borderRadius: BorderRadius.only(
-                    bottomLeft: Radius.circular(2.0 * widget.padding),
-                    bottomRight: Radius.circular(2.0 * widget.padding),
-                  ),
-                ),
-              ),
-            ],
           ),
-        ),
-      );
-    }
+        ],
+      ),
+    );
   }
 }
 

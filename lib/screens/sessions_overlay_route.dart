@@ -16,7 +16,7 @@ class SessionsOverlayRoute extends OverlayRoute {
 
   @override
   Iterable<OverlayEntry> createOverlayEntries() {
-    Background.instance.setReadingMode(true);
+    Background.instance.animateTo(1.0);
     Background.instance.setStateIfMounted();
 
     return [
@@ -34,7 +34,7 @@ class SessionsOverlayRoute extends OverlayRoute {
                     alignment: Alignment.center,
                     children: [
                       LocationText(
-                        text: 'Settings/Debug',
+                        text: 'Sessions',
                       ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.end,
@@ -50,7 +50,7 @@ class SessionsOverlayRoute extends OverlayRoute {
                             onPressed: () {
                               this.underlyingState.setVisibility(true);
 
-                              Background.instance.setReadingMode(false);
+                              Background.instance.animateTo(0.5);
                               Background.instance.setStateIfMounted();
 
                               Navigator.of(context).pop();

@@ -13,7 +13,7 @@ class SettingsOverlayRoute extends OverlayRoute {
 
   @override
   Iterable<OverlayEntry> createOverlayEntries() {
-    Background.instance.setReadingMode(true);
+    Background.instance.animateTo(1.0);
     Background.instance.setStateIfMounted();
 
     return [
@@ -47,7 +47,7 @@ class SettingsOverlayRoute extends OverlayRoute {
                             onPressed: () {
                               this.underlyingState.setVisibility(true);
 
-                              Background.instance.setReadingMode(false);
+                              Background.instance.animateTo(0.5);
                               Background.instance.setStateIfMounted();
 
                               Navigator.of(context).pop();
@@ -74,7 +74,6 @@ class SettingsOverlayRoute extends OverlayRoute {
                             CustomButton(
                               text: 'Return to Onboarding (debug)',
                               onTap: () {
-                                Background.instance.setReadingMode(false);
                                 Background.instance.setStateIfMounted();
 
                                 Navigator.of(context).pop();

@@ -16,7 +16,6 @@ class OnboardingScreen extends StatelessWidget {
       child: PageView.builder(
         onPageChanged: (value) {
           // should show fake improvement on the second page
-          Background.instance.setChartVisibility(value == 1);
           Background.instance.animateTo(value / 2);
           Background.instance.setStateIfMounted();
         },

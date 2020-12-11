@@ -19,7 +19,6 @@ class MainScreenState extends State<MainScreen> {
 
   void _buttonTap() {
     if (_counter == -1) {
-      Background.instance.focus(true);
       Background.instance.setStateIfMounted();
       this.trainingMode = true;
       _counter = 0;
@@ -163,7 +162,6 @@ class MainScreenState extends State<MainScreen> {
                       super.setState(() {
                         this.trainingMode = false;
                         _counter = -1;
-                        Background.instance.focus(false);
                         Background.instance.setStateIfMounted();
                       });
                     } else {
@@ -243,7 +241,6 @@ class MainScreenState extends State<MainScreen> {
                 SessionController.instance
                     .insertSession(Session(count: _counter));
                 this.trainingMode = false;
-                Background.instance.focus(false);
                 Background.instance.setStateIfMounted();
                 _counter = -1;
                 this.setState(() {});
@@ -261,7 +258,6 @@ class MainScreenState extends State<MainScreen> {
               ),
               onPressed: () {
                 this.trainingMode = false;
-                Background.instance.focus(false);
                 Background.instance.setStateIfMounted();
                 _counter = -1;
                 this.setState(() {});
