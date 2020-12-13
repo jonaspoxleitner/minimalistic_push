@@ -58,59 +58,45 @@ class SettingsOverlayRoute extends OverlayRoute {
                     ],
                   ),
                   Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.only(
-                          left: 16.0, right: 16.0, bottom: 16.0),
-                      child: Container(
-                        padding: const EdgeInsets.all(8.0),
-                        decoration: BoxDecoration(
-                          color: Theme.of(context).primaryColor,
-                          borderRadius: BorderRadius.all(
-                            Radius.circular(32.0),
-                          ),
-                        ),
-                        child: ListView(
-                          children: [
-                            CustomButton(
-                              text: 'Return to Onboarding (debug)',
-                              onTap: () {
-                                Background.instance.setStateIfMounted();
+                    child: ListView(
+                      children: [
+                        CustomButton(
+                          text: 'Return to Onboarding (debug)',
+                          onTap: () {
+                            Background.instance.setStateIfMounted();
 
-                                Navigator.of(context).pop();
-                                OnboardingController.instance
-                                    .returnToOnboarding();
-                              },
-                            ),
-                            CustomButton(
-                              text: 'Clear database (debug)',
-                              onTap: () {
-                                SessionController.instance.clear();
-                              },
-                            ),
-                            CustomButton(
-                              text: 'green theme',
-                              onTap: () {
-                                ThemeProvider.controllerOf(context)
-                                    .setTheme('green_theme');
-                              },
-                            ),
-                            CustomButton(
-                              text: 'blue theme',
-                              onTap: () {
-                                ThemeProvider.controllerOf(context)
-                                    .setTheme('blue_theme');
-                              },
-                            ),
-                            CustomButton(
-                              text: 'red theme',
-                              onTap: () {
-                                ThemeProvider.controllerOf(context)
-                                    .setTheme('red_theme');
-                              },
-                            ),
-                          ],
+                            Navigator.of(context).pop();
+                            OnboardingController.instance.returnToOnboarding();
+                          },
                         ),
-                      ),
+                        CustomButton(
+                          text: 'Clear database (debug)',
+                          onTap: () {
+                            SessionController.instance.clear();
+                          },
+                        ),
+                        CustomButton(
+                          text: 'green theme',
+                          onTap: () {
+                            ThemeProvider.controllerOf(context)
+                                .setTheme('green_theme');
+                          },
+                        ),
+                        CustomButton(
+                          text: 'blue theme',
+                          onTap: () {
+                            ThemeProvider.controllerOf(context)
+                                .setTheme('blue_theme');
+                          },
+                        ),
+                        CustomButton(
+                          text: 'red theme',
+                          onTap: () {
+                            ThemeProvider.controllerOf(context)
+                                .setTheme('red_theme');
+                          },
+                        ),
+                      ],
                     ),
                   ),
                 ],

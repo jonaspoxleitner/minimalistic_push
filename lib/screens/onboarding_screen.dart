@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:minimalisticpush/controllers/onboarding_controller.dart';
+import 'package:minimalisticpush/controllers/session_controller.dart';
 
 import '../screens/screens.dart';
 import '../widgets/widgets.dart';
@@ -15,9 +16,19 @@ class OnboardingScreen extends StatelessWidget {
       constraints: BoxConstraints.expand(),
       child: PageView.builder(
         onPageChanged: (value) {
-          // should show fake improvement on the second page
-          Background.instance.animateTo(value / 2);
-          Background.instance.setStateIfMounted();
+          Background.instance.setSessions([0.2, 0.4, 0.6, 0.8, 1.0]);
+
+          switch (value) {
+            case 0:
+              Background.instance.animateTo(0.0);
+              break;
+            case 1:
+              Background.instance.animateTo(0.5);
+              break;
+            case 2:
+              Background.instance.animateTo(1.0);
+              break;
+          }
         },
         controller: pageController,
         itemCount: 3,
@@ -145,7 +156,7 @@ class OnboardingScreen extends StatelessWidget {
                       child: CustomButton(
                         text: 'Start Application!',
                         onTap: () {
-                          Background.instance.setChartVisibility(true);
+                          SessionController.instance.setNormalizedSessions();
                           OnboardingController.instance.acceptOnboarding();
                         },
                       ),
