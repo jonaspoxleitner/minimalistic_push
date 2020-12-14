@@ -17,25 +17,45 @@ class NamedOverlayRoute extends OverlayRoute {
     @required this.overlayName,
   });
 
+  // sets the underlying state to invisible and animates the background to 1.0
+  @override
+  TickerFuture didPush() {
+    this.underlyingState.setVisibility(false);
+    Background.instance.animateTo(1.0);
+    Background.instance.setStateIfMounted();
+    return super.didPush();
+  }
+
+  // sets the underlying state to visible and animates the background to 0.5
+  @override
+  bool didPop(result) {
+    this.underlyingState.setVisibility(true);
+    Background.instance.animateTo(0.5);
+    Background.instance.setStateIfMounted();
+    return super.didPop(result);
+  }
+
   @override
   Iterable<OverlayEntry> createOverlayEntries() {
     Background.instance.animateTo(1.0);
     Background.instance.setStateIfMounted();
 
     return [
-      new OverlayEntry(builder: (context) {
-        switch (overlayName) {
-          case 'sessions':
-            return SessionsScreen(underlyingState: underlyingState);
-            break;
-          case 'settings':
-            return SettingsScreen(underlyingState: underlyingState);
-            break;
-          default:
-            return ErrorScreen();
-            break;
-        }
-      })
+      new OverlayEntry(
+        builder: (context) {
+          switch (overlayName) {
+            case 'sessions':
+              return SessionsScreen();
+              break;
+            case 'settings':
+              return SettingsScreen();
+              break;
+            default:
+              return ErrorScreen();
+              break;
+          }
+        },
+      )
     ];
   }
 }
@@ -43,10 +63,7 @@ class NamedOverlayRoute extends OverlayRoute {
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({
     Key key,
-    @required this.underlyingState,
   }) : super(key: key);
-
-  final MainScreenState underlyingState;
 
   @override
   Widget build(BuildContext context) {
@@ -77,11 +94,6 @@ class SettingsScreen extends StatelessWidget {
                           color: Colors.white,
                         ),
                         onPressed: () {
-                          this.underlyingState.setVisibility(true);
-
-                          Background.instance.animateTo(0.5);
-                          Background.instance.setStateIfMounted();
-
                           Navigator.of(context).pop();
                         },
                       )
@@ -100,8 +112,6 @@ class SettingsScreen extends StatelessWidget {
                         CustomButton(
                           text: 'Return to Onboarding (debug)',
                           onTap: () {
-                            Background.instance.setStateIfMounted();
-
                             Navigator.of(context).pop();
                             OnboardingController.instance.returnToOnboarding();
                           },
@@ -117,29 +127,7 @@ class SettingsScreen extends StatelessWidget {
                     SettingsBlock(
                       title: 'Themes',
                       description: 'Choose a theme.',
-                      children: [
-                        CustomButton(
-                          text: 'green theme',
-                          onTap: () {
-                            ThemeProvider.controllerOf(context)
-                                .setTheme('green_theme');
-                          },
-                        ),
-                        CustomButton(
-                          text: 'blue theme',
-                          onTap: () {
-                            ThemeProvider.controllerOf(context)
-                                .setTheme('blue_theme');
-                          },
-                        ),
-                        CustomButton(
-                          text: 'red theme',
-                          onTap: () {
-                            ThemeProvider.controllerOf(context)
-                                .setTheme('red_theme');
-                          },
-                        ),
-                      ],
+                      children: AppThemes.getThemeButtons(context),
                     ),
                     CustomButton(
                       text: 'About Minimalistic Push',
@@ -172,7 +160,7 @@ class SettingsScreen extends StatelessWidget {
 class SettingsBlock extends StatelessWidget {
   final String title;
   final String description;
-  List<Widget> children;
+  final List<Widget> children;
 
   SettingsBlock({
     Key key,
@@ -183,8 +171,11 @@ class SettingsBlock extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    List<Widget> children = [];
+    children.addAll(this.children);
+
     if (description != null) {
-      this.children.insertAll(0, [
+      children.insertAll(0, [
         Padding(
           padding: const EdgeInsets.all(8.0),
           child: Text(
@@ -197,7 +188,7 @@ class SettingsBlock extends StatelessWidget {
     }
 
     if (title != null) {
-      this.children.insertAll(0, [
+      children.insertAll(0, [
         Padding(
           padding: const EdgeInsets.all(8.0),
           child: Text(
@@ -220,7 +211,7 @@ class SettingsBlock extends StatelessWidget {
           color: Colors.black26.withOpacity(0.1),
         ),
         child: Column(
-          children: this.children,
+          children: children,
         ),
       ),
     );
@@ -230,10 +221,7 @@ class SettingsBlock extends StatelessWidget {
 class SessionsScreen extends StatefulWidget {
   const SessionsScreen({
     Key key,
-    @required this.underlyingState,
   }) : super(key: key);
-
-  final MainScreenState underlyingState;
 
   @override
   _SessionsScreenState createState() => _SessionsScreenState();
@@ -269,11 +257,6 @@ class _SessionsScreenState extends State<SessionsScreen> {
                           color: Colors.white,
                         ),
                         onPressed: () {
-                          this.widget.underlyingState.setVisibility(true);
-
-                          Background.instance.animateTo(0.5);
-                          Background.instance.setStateIfMounted();
-
                           Navigator.of(context).pop();
                         },
                       )
@@ -283,43 +266,44 @@ class _SessionsScreenState extends State<SessionsScreen> {
               ),
               Expanded(
                 child: FutureBuilder<List<Map<String, dynamic>>>(
-                    future: SessionController.instance.loadSessions(),
-                    builder: (context, snapshot) {
-                      if (snapshot.hasData) {
-                        print('has data');
-                        var sessions = SessionController.instance.getSessions();
+                  future: SessionController.instance.loadSessions(),
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      var sessions = SessionController.instance.getSessions();
 
-                        if (sessions.length == 0) {
-                          return Center(
-                            child: Text(
-                              'You should record a session.',
-                              style: TextStyles.body,
+                      if (sessions.length == 0) {
+                        return Center(
+                          child: Text(
+                            'You should record a session.',
+                            style: TextStyles.body,
+                          ),
+                        );
+                      } else {
+                        List<Widget> sessionWidgets = [];
+
+                        var counter = 1;
+                        for (Session session in sessions) {
+                          sessionWidgets.add(
+                            SessionWidget(
+                              session: session,
+                              parentState: this,
+                              idToShow: counter,
                             ),
                           );
-                        } else {
-                          List<Widget> sessionWidgets = [];
-
-                          for (Session session in sessions) {
-                            sessionWidgets.add(
-                              SessionWidget(
-                                session: session,
-                                parentState: this,
-                              ),
-                            );
-                          }
-
-                          return ListView(
-                            children: sessionWidgets,
-                          );
+                          counter++;
                         }
-                      } else if (snapshot.hasError) {
-                        print('error');
-                        return ErrorScreen();
-                      } else {
-                        print('loading');
-                        return LoadingScreen();
+
+                        return ListView(
+                          children: sessionWidgets,
+                        );
                       }
-                    }),
+                    } else if (snapshot.hasError) {
+                      return ErrorScreen();
+                    } else {
+                      return LoadingScreen();
+                    }
+                  },
+                ),
               ),
             ],
           ),

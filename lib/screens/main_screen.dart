@@ -58,16 +58,13 @@ class MainScreenState extends State<MainScreen> {
                       ),
                       onPressed: () {
                         // show sessions
-                        super.setState(() {
-                          visibility = false;
-                          Navigator.push(
-                            context,
-                            NamedOverlayRoute(
-                              underlyingState: this,
-                              overlayName: 'sessions',
-                            ),
-                          );
-                        });
+                        Navigator.push(
+                          context,
+                          NamedOverlayRoute(
+                            underlyingState: this,
+                            overlayName: 'sessions',
+                          ),
+                        );
                       },
                     ),
                     IconButton(
@@ -78,16 +75,13 @@ class MainScreenState extends State<MainScreen> {
                       ),
                       onPressed: () {
                         // show settings
-                        super.setState(() {
-                          visibility = false;
-                          Navigator.push(
-                            context,
-                            NamedOverlayRoute(
-                              underlyingState: this,
-                              overlayName: 'settings',
-                            ),
-                          );
-                        });
+                        Navigator.push(
+                          context,
+                          NamedOverlayRoute(
+                            underlyingState: this,
+                            overlayName: 'settings',
+                          ),
+                        );
                       },
                     ),
                   ],

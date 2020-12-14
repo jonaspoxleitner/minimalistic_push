@@ -19,7 +19,7 @@ class MyApp extends StatelessWidget {
     return ThemeProvider(
       saveThemesOnChange: true,
       loadThemeOnInit: true,
-      defaultThemeId: 'green_theme',
+      defaultThemeId: 'outdoor',
       themes: AppThemes.list,
       child: ThemeConsumer(
         child: Builder(

@@ -9,10 +9,12 @@ class SessionWidget extends StatelessWidget {
     Key key,
     @required this.session,
     @required this.parentState,
+    @required this.idToShow,
   }) : super(key: key);
 
   final Session session;
   final State parentState;
+  final int idToShow;
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +35,7 @@ class SessionWidget extends StatelessWidget {
                 color: Colors.white,
                 shape: BoxShape.circle,
               ),
-              child: Text(session.id.toString(),
+              child: Text(idToShow.toString(),
                   style: TextStyle(
                     color: Theme.of(context).primaryColor,
                     fontWeight: FontWeight.bold,

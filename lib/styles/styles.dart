@@ -1,3 +1,4 @@
+import 'package:minimalisticpush/widgets/custom_button.dart';
 import 'package:theme_provider/theme_provider.dart';
 
 import 'package:flutter/material.dart';
@@ -5,33 +6,68 @@ import 'package:flutter/material.dart';
 class AppThemes {
   static List<AppTheme> list = [
     AppTheme(
-      id: "green_theme",
+      id: "outdoor",
       data: ThemeData(
         primaryColor: Color(0xFF263D42),
         accentColor: Color(0xFF3F5E5A),
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      description: 'green theme',
+      description: 'Outdoor',
     ),
     AppTheme(
-      id: "blue_theme",
+      id: "deep_ocean",
       data: ThemeData(
-        primaryColor: Colors.blue,
-        accentColor: Colors.lightBlue,
+        primaryColor: Color(0xFF2A4158),
+        accentColor: Color(0xFF597387),
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      description: 'blue theme',
+      description: 'Deep Ocean',
     ),
     AppTheme(
-      id: "red_theme",
+      id: "wine",
       data: ThemeData(
-        primaryColor: Color(0xFF070707),
-        accentColor: Color(0xFFD1345B),
+        primaryColor: Color(0xFF7B506F),
+        accentColor: Color(0xFF385F71),
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      description: 'red theme',
+      description: 'Wine',
+    ),
+    AppTheme(
+      id: "vulcano",
+      data: ThemeData(
+        primaryColor: Color(0xFF880044),
+        accentColor: Color(0xFFAA1155),
+        visualDensity: VisualDensity.adaptivePlatformDensity,
+      ),
+      description: 'Vulcano',
+    ),
+    AppTheme(
+      id: "space",
+      data: ThemeData(
+        primaryColor: Color(0xFF2D3142),
+        accentColor: Color(0xFF4F5D75),
+        visualDensity: VisualDensity.adaptivePlatformDensity,
+      ),
+      description: 'Space',
     ),
   ];
+
+  static List<Widget> getThemeButtons(BuildContext context) {
+    List<Widget> themeButtons = [];
+
+    for (AppTheme theme in list) {
+      themeButtons.add(
+        CustomButton(
+          text: theme.description,
+          onTap: () {
+            ThemeProvider.controllerOf(context).setTheme(theme.id);
+          },
+        ),
+      );
+    }
+
+    return themeButtons;
+  }
 }
 
 class TextStyles {
