@@ -10,8 +10,6 @@ class MainScreen extends StatefulWidget {
 }
 
 class MainScreenState extends State<MainScreen> {
-  List<Widget> sessionWidgets = [];
-  var sessions;
   var visibility = true;
   var trainingMode = false;
 
@@ -60,22 +58,13 @@ class MainScreenState extends State<MainScreen> {
                       ),
                       onPressed: () {
                         // show sessions
-                        var sessions = SessionController.instance.getSessions();
-                        sessionWidgets = [];
-
-                        for (Session session in sessions) {
-                          sessionWidgets.add(
-                            SessionWidget(session: session),
-                          );
-                        }
-
                         super.setState(() {
                           visibility = false;
                           Navigator.push(
                             context,
-                            SessionsOverlayRoute(
+                            NamedOverlayRoute(
                               underlyingState: this,
-                              sessionWidgets: sessionWidgets,
+                              overlayName: 'sessions',
                             ),
                           );
                         });
@@ -93,8 +82,9 @@ class MainScreenState extends State<MainScreen> {
                           visibility = false;
                           Navigator.push(
                             context,
-                            SettingsOverlayRoute(
+                            NamedOverlayRoute(
                               underlyingState: this,
+                              overlayName: 'settings',
                             ),
                           );
                         });

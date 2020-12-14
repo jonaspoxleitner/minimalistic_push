@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:minimalisticpush/screens/route_manager.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 

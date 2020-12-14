@@ -55,17 +55,21 @@ class SessionController {
   }
 
   // loads all sessions from the database ordered by the id
-  Future<List<Session>> loadSessions() async {
-    await database.query('sessions', orderBy: 'id').then((value) {
+  Future<List<Map<String, dynamic>>> loadSessions() async {
+    var response = database.query('sessions', orderBy: 'id');
+
+    response.then((value) {
       this.sessionList = List.generate(value.length, (i) {
         return Session(
           id: value[i]['id'],
           count: value[i]['count'],
         );
       });
+
+      return response;
     });
 
-    return this.sessionList;
+    return response;
   }
 
   // returns the sessions in a list
@@ -81,6 +85,8 @@ class SessionController {
       where: "id = ?",
       whereArgs: [id],
     );
+
+    await this.loadSessions().then((value) => this.setNormalizedSessions());
   }
 
   // debug
@@ -123,8 +129,12 @@ class SessionController {
     }
 
     // normalize list
-    for (int peak in peaks) {
-      normalizedPeaks.add((peak - min) / (max - min));
+    if (max == 0) {
+      normalizedPeaks = [0.0, 0.0, 0.0, 0.0, 0.0];
+    } else {
+      for (int peak in peaks) {
+        normalizedPeaks.add((peak - min) / (max - min));
+      }
     }
 
     Background.instance.setSessions(normalizedPeaks);
