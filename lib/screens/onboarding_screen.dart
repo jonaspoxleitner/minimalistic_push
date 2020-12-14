@@ -97,7 +97,7 @@ class OnboardingScreen extends StatelessWidget {
                       children: [
                         InstructionWidget(
                             number: 1,
-                            text: "Record you sessions in the training mode."),
+                            text: "Record your sessions in the training mode."),
                         InstructionWidget(
                             number: 2,
                             text:
