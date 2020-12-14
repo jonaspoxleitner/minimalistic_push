@@ -92,40 +92,70 @@ class SettingsScreen extends StatelessWidget {
               Expanded(
                 child: ListView(
                   children: [
-                    CustomButton(
-                      text: 'Return to Onboarding (debug)',
-                      onTap: () {
-                        Background.instance.setStateIfMounted();
+                    SettingsBlock(
+                      title: 'Debug Settings',
+                      description:
+                          'These Settings are only for debug purposes and will likely be removed from the final Application.',
+                      children: [
+                        CustomButton(
+                          text: 'Return to Onboarding (debug)',
+                          onTap: () {
+                            Background.instance.setStateIfMounted();
 
-                        Navigator.of(context).pop();
-                        OnboardingController.instance.returnToOnboarding();
-                      },
+                            Navigator.of(context).pop();
+                            OnboardingController.instance.returnToOnboarding();
+                          },
+                        ),
+                        CustomButton(
+                          text: 'Clear database (debug)',
+                          onTap: () {
+                            SessionController.instance.clear();
+                          },
+                        ),
+                      ],
+                    ),
+                    SettingsBlock(
+                      title: 'Themes',
+                      description: 'Choose a theme.',
+                      children: [
+                        CustomButton(
+                          text: 'green theme',
+                          onTap: () {
+                            ThemeProvider.controllerOf(context)
+                                .setTheme('green_theme');
+                          },
+                        ),
+                        CustomButton(
+                          text: 'blue theme',
+                          onTap: () {
+                            ThemeProvider.controllerOf(context)
+                                .setTheme('blue_theme');
+                          },
+                        ),
+                        CustomButton(
+                          text: 'red theme',
+                          onTap: () {
+                            ThemeProvider.controllerOf(context)
+                                .setTheme('red_theme');
+                          },
+                        ),
+                      ],
                     ),
                     CustomButton(
-                      text: 'Clear database (debug)',
+                      text: 'About Minimalistic Push',
                       onTap: () {
-                        SessionController.instance.clear();
-                      },
-                    ),
-                    CustomButton(
-                      text: 'green theme',
-                      onTap: () {
-                        ThemeProvider.controllerOf(context)
-                            .setTheme('green_theme');
-                      },
-                    ),
-                    CustomButton(
-                      text: 'blue theme',
-                      onTap: () {
-                        ThemeProvider.controllerOf(context)
-                            .setTheme('blue_theme');
-                      },
-                    ),
-                    CustomButton(
-                      text: 'red theme',
-                      onTap: () {
-                        ThemeProvider.controllerOf(context)
-                            .setTheme('red_theme');
+                        showLicensePage(
+                          context: context,
+                          applicationName: 'Minimalistic Push',
+                          applicationIcon: Container(
+                            width: 150.0,
+                            height: 150.0,
+                            padding: const EdgeInsets.all(16.0),
+                            child: Image.asset(
+                              'assets/icons/app_icon.png',
+                            ),
+                          ),
+                        );
                       },
                     ),
                   ],
@@ -133,6 +163,64 @@ class SettingsScreen extends StatelessWidget {
               ),
             ],
           ),
+        ),
+      ),
+    );
+  }
+}
+
+class SettingsBlock extends StatelessWidget {
+  final String title;
+  final String description;
+  List<Widget> children;
+
+  SettingsBlock({
+    Key key,
+    this.title,
+    this.description,
+    @required this.children,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    if (description != null) {
+      this.children.insertAll(0, [
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Text(
+            description,
+            textAlign: TextAlign.center,
+            style: TextStyles.body,
+          ),
+        ),
+      ]);
+    }
+
+    if (title != null) {
+      this.children.insertAll(0, [
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Text(
+            title,
+            textAlign: TextAlign.center,
+            style: TextStyles.subHeading,
+          ),
+        ),
+      ]);
+    }
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+      child: Container(
+        padding: const EdgeInsets.all(8.0),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.all(
+            Radius.circular(16.0),
+          ),
+          color: Colors.black26.withOpacity(0.1),
+        ),
+        child: Column(
+          children: this.children,
         ),
       ),
     );
