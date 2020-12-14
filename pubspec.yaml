@@ -27,7 +27,6 @@ dependencies:
   path:
   shared_preferences:
   theme_provider:
-  curved_animation_controller:
 
 
   # The following adds the Cupertino Icons font to your application.

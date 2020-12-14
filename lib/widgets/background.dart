@@ -1,4 +1,3 @@
-import 'package:curved_animation_controller/curved_animation_controller.dart';
 import 'package:flutter/material.dart';
 
 class Background extends StatefulWidget {
@@ -45,12 +44,15 @@ class Background extends StatefulWidget {
 }
 
 class _BackgroundState extends State<Background> with TickerProviderStateMixin {
-  CurvedAnimationController animationController;
+  AnimationController animationController;
 
   void animate() {
     if (this.mounted) {
       //print('animateTo: ' + widget.factor.toString());
-      animationController.animateTo(widget.factor);
+      animationController.animateTo(
+        widget.factor,
+        curve: Curves.easeInOutQuart,
+      );
     }
   }
 
@@ -58,10 +60,9 @@ class _BackgroundState extends State<Background> with TickerProviderStateMixin {
   void initState() {
     super.initState();
 
-    animationController = CurvedAnimationController(
-      curve: Curves.easeInOutQuad,
+    animationController = AnimationController(
       vsync: this,
-      duration: Duration(seconds: 1),
+      duration: Duration(milliseconds: 1000),
     );
 
     animationController.addListener(() {
@@ -70,7 +71,10 @@ class _BackgroundState extends State<Background> with TickerProviderStateMixin {
       //animationController.value.toString());
     });
 
-    animationController.animateTo(widget.factor);
+    animationController.animateTo(
+      widget.factor,
+      curve: Curves.easeInOutQuart,
+    );
   }
 
   @override
