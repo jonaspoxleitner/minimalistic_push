@@ -43,7 +43,7 @@ class RouteManagerState extends State<RouteManager> {
         overlay = OnboardingScreen();
         break;
       case false:
-        Background.instance.animateTo(0.5);
+        Background.instance.animateTo(0.6);
         overlay = Container(
           height: size.height,
           width: size.width,

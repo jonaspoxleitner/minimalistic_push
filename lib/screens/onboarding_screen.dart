@@ -23,7 +23,7 @@ class OnboardingScreen extends StatelessWidget {
               Background.instance.animateTo(0.0);
               break;
             case 1:
-              Background.instance.animateTo(0.5);
+              Background.instance.animateTo(0.6);
               break;
             case 2:
               Background.instance.animateTo(1.0);

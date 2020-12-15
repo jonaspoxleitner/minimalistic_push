@@ -6,7 +6,6 @@ import 'package:minimalisticpush/screens/main_screen.dart';
 import 'package:minimalisticpush/screens/screens.dart';
 import 'package:minimalisticpush/styles/styles.dart';
 import 'package:minimalisticpush/widgets/widgets.dart';
-import 'package:theme_provider/theme_provider.dart';
 
 class NamedOverlayRoute extends OverlayRoute {
   MainScreenState underlyingState;
@@ -30,7 +29,7 @@ class NamedOverlayRoute extends OverlayRoute {
   @override
   bool didPop(result) {
     this.underlyingState.setVisibility(true);
-    Background.instance.animateTo(0.5);
+    Background.instance.animateTo(0.6);
     Background.instance.setStateIfMounted();
     return super.didPop(result);
   }
