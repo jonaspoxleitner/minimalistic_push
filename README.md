@@ -38,6 +38,7 @@ Please feel free to mail me your ideas and wishes for future versions of 'Minima
 ## Platforms
 This Flutter app was only tested for iOS and is currently in a private Testflight. I plan to optimize and upload a version to the Google Play Store, when the majority of features are complete. I will post links to both of the stores here, when the app is public.
 * [iOS Testflight](https://testflight.apple.com/join/HUrddYDp)
+* [Android Beta](https://play.google.com/store/apps/details?id=com.jonaspoxleitner.minimalistic_push)
 
 ## Contributions
 Because the main features and the design of the app are not finished, there won't be any collaborations for now. This will possibly change in the future.
