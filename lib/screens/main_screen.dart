@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:minimalisticpush/controllers/session_controller.dart';
+import 'package:minimalisticpush/localizations.dart';
 import 'package:minimalisticpush/models/session.dart';
 import 'package:minimalisticpush/screens/screens.dart';
 import 'package:minimalisticpush/widgets/widgets.dart';
@@ -13,16 +14,21 @@ class MainScreenState extends State<MainScreen> {
   var visibility = true;
   var trainingMode = false;
 
-  int _counter = -1;
+  int _counter = 0;
+  List<double> sessionList = [];
 
   void _buttonTap() {
-    if (_counter == -1) {
+    if (_counter == 0) {
+      //this.sessionList = [0.0, 0.0, 0.0, ]
       Background.instance.setStateIfMounted();
       this.trainingMode = true;
-      _counter = 0;
+      _counter = 1;
     } else {
       _counter++;
     }
+
+    //Background.instance.setSessions(this.sessionList);
+
     super.setState(() {});
   }
 
@@ -45,7 +51,8 @@ class MainScreenState extends State<MainScreen> {
               alignment: Alignment.center,
               children: [
                 LocationText(
-                  text: 'Training Mode',
+                  text: MyLocalizations.of(context)
+                      .getLocale('training')['title'],
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -110,7 +117,9 @@ class MainScreenState extends State<MainScreen> {
                     child: Padding(
                       padding: const EdgeInsets.all(24.0),
                       child: Text(
-                        'Start',
+                        MyLocalizations.of(context)
+                            .getLocale('training')['start'],
+                        // 'Start',
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: 64.0,
@@ -136,8 +145,8 @@ class MainScreenState extends State<MainScreen> {
               children: [
                 IconButton(
                   padding: const EdgeInsets.all(16.0),
-                  icon: Icon(
-                    _counter == 0 ? Icons.close : Icons.done_all,
+                  icon: const Icon(
+                    Icons.done_all,
                     color: Colors.white,
                   ),
                   onPressed: () {
@@ -145,7 +154,7 @@ class MainScreenState extends State<MainScreen> {
                     if (_counter <= 0) {
                       super.setState(() {
                         this.trainingMode = false;
-                        _counter = -1;
+                        _counter = 0;
                         Background.instance.setStateIfMounted();
                       });
                     } else {
@@ -187,14 +196,21 @@ class MainScreenState extends State<MainScreen> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Already done?'),
+          title: Text(
+            MyLocalizations.of(context).getLocale('training')['alert']['title'],
+          ),
           content: SingleChildScrollView(
             child: ListBody(
               children: <Widget>[
-                Text('It seems like your counter is already at $count.'),
                 Text(
-                    'If you want to continue, press \'CONTINUE\' else press \'SAVE\'.'),
-                Text('You can also end the session without saving.'),
+                  MyLocalizations.of(context).getLocale('training')['alert']
+                          ['contents'][0] +
+                      count.toString() +
+                      MyLocalizations.of(context).getLocale('training')['alert']
+                          ['contents'][1],
+                ),
+                Text(MyLocalizations.of(context).getLocale('training')['alert']
+                    ['contents'][2]),
               ],
             ),
           ),
@@ -203,7 +219,8 @@ class MainScreenState extends State<MainScreen> {
               style:
                   TextButton.styleFrom(primary: Theme.of(context).primaryColor),
               child: Text(
-                'CONTINUE',
+                MyLocalizations.of(context).getLocale('training')['alert']
+                    ['continue'],
                 style: TextStyle(
                   color: Theme.of(context).primaryColor,
                 ),
@@ -216,7 +233,8 @@ class MainScreenState extends State<MainScreen> {
               style:
                   TextButton.styleFrom(primary: Theme.of(context).primaryColor),
               child: Text(
-                'SAVE',
+                MyLocalizations.of(context).getLocale('training')['alert']
+                    ['end'],
                 style: TextStyle(
                   color: Theme.of(context).primaryColor,
                 ),
@@ -226,24 +244,7 @@ class MainScreenState extends State<MainScreen> {
                     .insertSession(Session(count: _counter));
                 this.trainingMode = false;
                 Background.instance.setStateIfMounted();
-                _counter = -1;
-                this.setState(() {});
-                Navigator.of(context).pop();
-              },
-            ),
-            TextButton(
-              style:
-                  TextButton.styleFrom(primary: Theme.of(context).primaryColor),
-              child: Text(
-                'NO SAVING',
-                style: TextStyle(
-                  color: Theme.of(context).primaryColor,
-                ),
-              ),
-              onPressed: () {
-                this.trainingMode = false;
-                Background.instance.setStateIfMounted();
-                _counter = -1;
+                _counter = 0;
                 this.setState(() {});
                 Navigator.of(context).pop();
               },

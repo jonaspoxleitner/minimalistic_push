@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:minimalisticpush/controllers/onboarding_controller.dart';
 import 'package:minimalisticpush/controllers/session_controller.dart';
+import 'package:minimalisticpush/localizations.dart';
 
 import '../screens/screens.dart';
 import '../widgets/widgets.dart';
@@ -41,27 +42,30 @@ class OnboardingScreen extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     LocationText(
-                      text: 'Page 1',
+                      text: MyLocalizations.of(context)
+                          .getLocale('onboarding')['locations'][index],
                     ),
                     Spacer(),
                     Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Text(
-                        'Welcome to',
+                        MyLocalizations.of(context)
+                            .getLocale('onboarding')['welcome'][0],
                         style: TextStyles.subHeading,
                       ),
                     ),
                     Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Text(
-                        'Minimalistic Push',
+                        MyLocalizations.of(context).getLocale('title'),
                         style: TextStyles.heading,
                       ),
                     ),
                     Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Text(
-                        'The simplest push-up tracker.',
+                        MyLocalizations.of(context)
+                            .getLocale('onboarding')['welcome'][1],
                         style: TextStyles.subHeading,
                       ),
                     ),
@@ -69,7 +73,8 @@ class OnboardingScreen extends StatelessWidget {
                     Padding(
                       padding: const EdgeInsets.all(16.0),
                       child: CustomButton(
-                        text: 'to page 2',
+                        text: MyLocalizations.of(context)
+                            .getLocale('onboarding')['titles'][index],
                         onTap: () {
                           pageController.animateToPage(
                             1,
@@ -90,27 +95,35 @@ class OnboardingScreen extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     LocationText(
-                      text: 'Page 2',
+                      text: MyLocalizations.of(context)
+                          .getLocale('onboarding')['locations'][index],
                     ),
                     Spacer(),
                     Column(
                       children: [
                         InstructionWidget(
-                            number: 1,
-                            text: "Record your sessions in the training mode."),
+                          number: 1,
+                          text: MyLocalizations.of(context)
+                              .getLocale('onboarding')['instructions'][0],
+                        ),
                         InstructionWidget(
-                            number: 2,
-                            text:
-                                "Edit and delete sessions in the sessions overview."),
+                          number: 2,
+                          text: MyLocalizations.of(context)
+                              .getLocale('onboarding')['instructions'][1],
+                        ),
                         InstructionWidget(
-                            number: 3, text: "Watch your improvement."),
+                          number: 3,
+                          text: MyLocalizations.of(context)
+                              .getLocale('onboarding')['instructions'][2],
+                        ),
                       ],
                     ),
                     Spacer(),
                     Padding(
                       padding: const EdgeInsets.all(16.0),
                       child: CustomButton(
-                        text: 'to page 3',
+                        text: MyLocalizations.of(context)
+                            .getLocale('onboarding')['titles'][index],
                         onTap: () {
                           pageController.animateToPage(
                             2,
@@ -131,22 +144,26 @@ class OnboardingScreen extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     LocationText(
-                      text: 'Page 3',
+                      text: MyLocalizations.of(context)
+                          .getLocale('onboarding')['locations'][index],
                     ),
                     Spacer(),
                     Column(
                       children: [
                         BenefitWidget(
                           iconData: Icons.bar_chart,
-                          text: "Track your improvements over time.",
+                          text: MyLocalizations.of(context)
+                              .getLocale('onboarding')['benefits'][0],
                         ),
                         BenefitWidget(
                           iconData: Icons.cloud_off,
-                          text: "Keep your data on your device.",
+                          text: MyLocalizations.of(context)
+                              .getLocale('onboarding')['benefits'][1],
                         ),
                         BenefitWidget(
                           iconData: Icons.code,
-                          text: "Support open-source development.",
+                          text: MyLocalizations.of(context)
+                              .getLocale('onboarding')['benefits'][2],
                         ),
                       ],
                     ),
@@ -154,7 +171,8 @@ class OnboardingScreen extends StatelessWidget {
                     Padding(
                       padding: const EdgeInsets.all(16.0),
                       child: CustomButton(
-                        text: 'Start Application!',
+                        text: MyLocalizations.of(context)
+                            .getLocale('onboarding')['titles'][index],
                         onTap: () {
                           SessionController.instance.setNormalizedSessions();
                           OnboardingController.instance.acceptOnboarding();

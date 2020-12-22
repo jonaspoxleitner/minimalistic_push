@@ -26,7 +26,7 @@ class AppThemes {
     AppTheme(
       id: "wine",
       data: ThemeData(
-        primaryColor: Color(0xFF7B506F),
+        primaryColor: Color(0xFF5C3C4B),
         accentColor: Color(0xFF385F71),
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),

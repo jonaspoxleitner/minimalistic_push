@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:minimalisticpush/controllers/onboarding_controller.dart';
 import 'package:minimalisticpush/controllers/session_controller.dart';
+import 'package:minimalisticpush/localizations.dart';
 
 import 'package:theme_provider/theme_provider.dart';
 
@@ -24,6 +26,15 @@ class MyApp extends StatelessWidget {
       child: ThemeConsumer(
         child: Builder(
           builder: (themeContext) => MaterialApp(
+            localizationsDelegates: [
+              const MyLocalizationsDelegate(),
+              GlobalMaterialLocalizations.delegate,
+              GlobalWidgetsLocalizations.delegate,
+            ],
+            supportedLocales: [
+              const Locale('en', ''),
+              const Locale('de', ''),
+            ],
             title: 'Minimalistic Push',
             debugShowCheckedModeBanner: false,
             theme: ThemeProvider.themeOf(themeContext).data,

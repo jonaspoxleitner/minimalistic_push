@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:minimalisticpush/controllers/onboarding_controller.dart';
 import 'package:minimalisticpush/controllers/session_controller.dart';
+import 'package:minimalisticpush/localizations.dart';
 import 'package:minimalisticpush/models/session.dart';
 import 'package:minimalisticpush/screens/main_screen.dart';
 import 'package:minimalisticpush/screens/screens.dart';
 import 'package:minimalisticpush/styles/styles.dart';
 import 'package:minimalisticpush/widgets/widgets.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class NamedOverlayRoute extends OverlayRoute {
   MainScreenState underlyingState;
@@ -79,7 +81,8 @@ class SettingsScreen extends StatelessWidget {
                 alignment: Alignment.center,
                 children: [
                   LocationText(
-                    text: 'Settings/Debug',
+                    text: MyLocalizations.of(context)
+                        .getLocale('settings')['title'],
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.end,
@@ -103,45 +106,78 @@ class SettingsScreen extends StatelessWidget {
               Expanded(
                 child: ListView(
                   children: [
+                    // SettingsBlock(
+                    //   title: 'Debug Settings',
+                    //   description:
+                    //       'These Settings are only for debug purposes and will likely be removed from the final Application.',
+                    //   children: [
+                    //     CustomButton(
+                    //       text: 'Return to Onboarding (debug)',
+                    //       onTap: () {
+                    //         Navigator.of(context).pop();
+                    //         OnboardingController.instance.returnToOnboarding();
+                    //       },
+                    //     ),
+                    //     CustomButton(
+                    //       text: 'Clear database (debug)',
+                    //       onTap: () {
+                    //         SessionController.instance.clear();
+                    //       },
+                    //     ),
+                    //   ],
+                    // ),
                     SettingsBlock(
-                      title: 'Debug Settings',
-                      description:
-                          'These Settings are only for debug purposes and will likely be removed from the final Application.',
-                      children: [
-                        CustomButton(
-                          text: 'Return to Onboarding (debug)',
-                          onTap: () {
-                            Navigator.of(context).pop();
-                            OnboardingController.instance.returnToOnboarding();
-                          },
-                        ),
-                        CustomButton(
-                          text: 'Clear database (debug)',
-                          onTap: () {
-                            SessionController.instance.clear();
-                          },
-                        ),
-                      ],
-                    ),
-                    SettingsBlock(
-                      title: 'Themes',
-                      description: 'Choose a theme.',
+                      title: MyLocalizations.of(context)
+                          .getLocale('settings')['themes']['title'],
+                      description: MyLocalizations.of(context)
+                          .getLocale('settings')['themes']['description'],
                       children: AppThemes.getThemeButtons(context),
                     ),
                     CustomButton(
-                      text: 'About Minimalistic Push',
+                      text: MyLocalizations.of(context)
+                              .getLocale('settings')['about'] +
+                          ' ' +
+                          MyLocalizations.of(context).getLocale('title'),
                       onTap: () {
                         showLicensePage(
                           context: context,
-                          applicationName: 'Minimalistic Push',
-                          applicationIcon: Container(
-                            width: 150.0,
-                            height: 150.0,
-                            padding: const EdgeInsets.all(16.0),
-                            child: Image.asset(
-                              'assets/icons/app_icon.png',
-                            ),
+                          applicationName:
+                              MyLocalizations.of(context).getLocale('title'),
+                          applicationIcon: Column(
+                            children: [
+                              Container(
+                                width: 150.0,
+                                height: 150.0,
+                                padding: const EdgeInsets.all(16.0),
+                                child: Image.asset(
+                                  'assets/icons/app_icon.png',
+                                ),
+                              ),
+                              Text(
+                                MyLocalizations.of(context)
+                                    .getLocale('settings')['thanks'],
+                                textAlign: TextAlign.center,
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(top: 8.0),
+                                child: GestureDetector(
+                                  onTap: () => launch(
+                                    'https://github.com/iIDRAGONFIREIi/minimalistic_push',
+                                    forceSafariVC: false,
+                                  ),
+                                  child: Text(
+                                    MyLocalizations.of(context)
+                                        .getLocale('settings')['github button'],
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      decoration: TextDecoration.underline,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
+                          applicationLegalese: '2020 Jonas Poxleitner',
                         );
                       },
                     ),
@@ -242,7 +278,8 @@ class _SessionsScreenState extends State<SessionsScreen> {
                 alignment: Alignment.center,
                 children: [
                   LocationText(
-                    text: 'Sessions',
+                    text: MyLocalizations.of(context)
+                        .getLocale('sessions')['title'],
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.end,
@@ -273,7 +310,8 @@ class _SessionsScreenState extends State<SessionsScreen> {
                       if (sessions.length == 0) {
                         return Center(
                           child: Text(
-                            'You should record a session.',
+                            MyLocalizations.of(context)
+                                .getLocale('sessions')['empty'],
                             style: TextStyles.body,
                           ),
                         );

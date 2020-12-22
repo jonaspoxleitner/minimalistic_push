@@ -130,7 +130,11 @@ class SessionController {
 
     // normalize list
     if (max == 0) {
-      normalizedPeaks = [0.0, 0.0, 0.0, 0.0, 0.0];
+      // this should show something cool
+      normalizedPeaks = [0.5, 0.5, 0.5, 0.5, 0.5];
+    } else if (min == max) {
+      // steady pace
+      normalizedPeaks = [1.0, 1.0, 1.0, 1.0, 1.0];
     } else {
       for (int peak in peaks) {
         normalizedPeaks.add((peak - min) / (max - min));

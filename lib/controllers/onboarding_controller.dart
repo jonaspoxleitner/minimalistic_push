@@ -2,7 +2,7 @@ import 'package:minimalisticpush/screens/route_manager.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class OnboardingController {
-  int newestOnboardingVersion = 2; // change to force new onboarding
+  int newestOnboardingVersion = 4; // change to force new onboarding
   SharedPreferences prefs;
 
   static OnboardingController _instance;

@@ -29,6 +29,7 @@ class Background extends StatefulWidget {
   // normalized sessions get set and the background gets updated
   void setSessions(List<double> normalized) {
     this.normalizedPeaks = normalized;
+    print(this.normalizedPeaks.toString());
     this.setStateIfMounted();
   }
 
@@ -48,7 +49,6 @@ class _BackgroundState extends State<Background> with TickerProviderStateMixin {
 
   void animate() {
     if (this.mounted) {
-      //print('animateTo: ' + widget.factor.toString());
       animationController.animateTo(
         widget.factor,
         curve: Curves.easeInOutQuart,
@@ -67,8 +67,6 @@ class _BackgroundState extends State<Background> with TickerProviderStateMixin {
 
     animationController.addListener(() {
       this.setState(() {});
-      //print('curvedAnimationController.value: ' +
-      //animationController.value.toString());
     });
 
     animationController.animateTo(
@@ -88,17 +86,18 @@ class _BackgroundState extends State<Background> with TickerProviderStateMixin {
     Size size = MediaQuery.of(context).size;
 
     return Container(
-        constraints: BoxConstraints.expand(),
-        color: Theme.of(context).accentColor,
-        alignment: Alignment.bottomCenter,
-        child: CustomPaint(
-          size: Size(size.width, size.height),
-          painter: CurvePainter(
-            peaks: widget.normalizedPeaks,
-            context: context,
-            factor: animationController.value,
-          ),
-        ));
+      constraints: BoxConstraints.expand(),
+      color: Theme.of(context).accentColor,
+      alignment: Alignment.bottomCenter,
+      child: CustomPaint(
+        size: Size(size.width, size.height),
+        painter: CurvePainter(
+          peaks: widget.normalizedPeaks,
+          context: context,
+          factor: animationController.value,
+        ),
+      ),
+    );
   }
 }
 
