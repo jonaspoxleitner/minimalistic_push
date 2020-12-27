@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:minimalisticpush/controllers/onboarding_controller.dart';
 import 'package:minimalisticpush/controllers/session_controller.dart';
 import 'package:minimalisticpush/localizations.dart';
-
-import '../screens/screens.dart';
-import '../widgets/widgets.dart';
-import '../styles/styles.dart';
+import 'package:minimalisticpush/screens/error_screen.dart';
+import 'package:minimalisticpush/styles/styles.dart';
+import 'package:minimalisticpush/widgets/background.dart';
+import 'package:minimalisticpush/widgets/custom_button.dart';
+import 'package:minimalisticpush/widgets/icon_description_list.dart';
+import 'package:minimalisticpush/widgets/location_text.dart';
 
 class OnboardingScreen extends StatelessWidget {
   @override
@@ -99,21 +101,21 @@ class OnboardingScreen extends StatelessWidget {
                           .getLocale('onboarding')['locations'][index],
                     ),
                     Spacer(),
-                    Column(
-                      children: [
-                        InstructionWidget(
+                    IconDescriptionList(
+                      elements: [
+                        ListElement(
                           number: 1,
-                          text: MyLocalizations.of(context)
+                          description: MyLocalizations.of(context)
                               .getLocale('onboarding')['instructions'][0],
                         ),
-                        InstructionWidget(
+                        ListElement(
                           number: 2,
-                          text: MyLocalizations.of(context)
+                          description: MyLocalizations.of(context)
                               .getLocale('onboarding')['instructions'][1],
                         ),
-                        InstructionWidget(
+                        ListElement(
                           number: 3,
-                          text: MyLocalizations.of(context)
+                          description: MyLocalizations.of(context)
                               .getLocale('onboarding')['instructions'][2],
                         ),
                       ],
@@ -148,21 +150,21 @@ class OnboardingScreen extends StatelessWidget {
                           .getLocale('onboarding')['locations'][index],
                     ),
                     Spacer(),
-                    Column(
-                      children: [
-                        BenefitWidget(
+                    IconDescriptionList(
+                      elements: [
+                        ListElement(
                           iconData: Icons.bar_chart,
-                          text: MyLocalizations.of(context)
+                          description: MyLocalizations.of(context)
                               .getLocale('onboarding')['benefits'][0],
                         ),
-                        BenefitWidget(
+                        ListElement(
                           iconData: Icons.cloud_off,
-                          text: MyLocalizations.of(context)
+                          description: MyLocalizations.of(context)
                               .getLocale('onboarding')['benefits'][1],
                         ),
-                        BenefitWidget(
+                        ListElement(
                           iconData: Icons.code,
-                          text: MyLocalizations.of(context)
+                          description: MyLocalizations.of(context)
                               .getLocale('onboarding')['benefits'][2],
                         ),
                       ],

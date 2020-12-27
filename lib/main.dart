@@ -3,12 +3,10 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:minimalisticpush/controllers/onboarding_controller.dart';
 import 'package:minimalisticpush/controllers/session_controller.dart';
 import 'package:minimalisticpush/localizations.dart';
-
-import 'package:theme_provider/theme_provider.dart';
-
-import 'screens/screens.dart';
-
+import 'package:minimalisticpush/screens/loading_screen.dart';
+import 'package:minimalisticpush/screens/route_manager.dart';
 import 'package:minimalisticpush/styles/styles.dart';
+import 'package:theme_provider/theme_provider.dart';
 
 void main() {
   runApp(MyApp());

@@ -68,7 +68,11 @@ class MyLocalizations {
         'thanks':
             'Thank you so much for using my app \'Minimalistic Push\'. Feel free to check out the GitHub repository.',
         'github button': 'View the source-code on GitHub.',
-      }
+      },
+      'share': {
+        'subject': 'That\'s my Curve!',
+        'text': 'Hey, check out my curve in #minimalisticpush!',
+      },
     },
     'de': {
       'title': 'Minimalistic Push',
@@ -127,7 +131,11 @@ class MyLocalizations {
         'thanks':
             'Vielen Dank, dass du meine App \'Minimalistic Push\' verwendest. Gerne kannst du dir das GitHub Repository dieser App ansehen.',
         'github button': 'Den Quellcode auf GitHub ansehen.',
-      }
+      },
+      'share': {
+        'subject': 'Das ist meine Kurve!',
+        'text': 'Hey, sieh Dir meine Kurve in #minimalisticpush an!',
+      },
     },
   };
 

@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:minimalisticpush/controllers/session_controller.dart';
 import 'package:minimalisticpush/localizations.dart';
 import 'package:minimalisticpush/models/session.dart';
-import 'package:minimalisticpush/screens/screens.dart';
-import 'package:minimalisticpush/widgets/widgets.dart';
+import 'package:minimalisticpush/screens/named_overlay_route.dart';
+import 'package:minimalisticpush/widgets/background.dart';
+import 'package:minimalisticpush/widgets/location_text.dart';
 
 class MainScreen extends StatefulWidget {
   @override
@@ -60,7 +61,7 @@ class MainScreenState extends State<MainScreen> {
                     IconButton(
                       padding: const EdgeInsets.all(16.0),
                       icon: Icon(
-                        Icons.toc,
+                        Icons.list,
                         color: Colors.white,
                       ),
                       onPressed: () {

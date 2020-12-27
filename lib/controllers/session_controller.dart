@@ -98,9 +98,13 @@ class SessionController {
 
   // sets 5 normlized sessions into the background
   void setNormalizedSessions() {
-    List<double> normalizedPeaks = [];
-    var length = 5;
+    List<double> normalizedPeaks = this.getNormalizedSessions(5);
+    Background.instance.setSessions(normalizedPeaks);
+  }
 
+  // returns normalized sessions with a variable length
+  List<double> getNormalizedSessions(int length) {
+    List<double> normalizedPeaks = [];
     List<int> peaks = [];
 
     for (Session session in this.sessionList) {
@@ -131,16 +135,20 @@ class SessionController {
     // normalize list
     if (max == 0) {
       // this should show something cool
-      normalizedPeaks = [0.5, 0.5, 0.5, 0.5, 0.5];
+      for (int peak in peaks) {
+        normalizedPeaks.add(0.5);
+      }
     } else if (min == max) {
       // steady pace
-      normalizedPeaks = [1.0, 1.0, 1.0, 1.0, 1.0];
+      for (int peak in peaks) {
+        normalizedPeaks.add(0.7);
+      }
     } else {
       for (int peak in peaks) {
         normalizedPeaks.add((peak - min) / (max - min));
       }
     }
 
-    Background.instance.setSessions(normalizedPeaks);
+    return normalizedPeaks;
   }
 }

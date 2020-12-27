@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:minimalisticpush/controllers/onboarding_controller.dart';
-
-import 'screens.dart';
-
-import '../widgets/widgets.dart';
+import 'package:minimalisticpush/screens/error_screen.dart';
+import 'package:minimalisticpush/screens/main_screen.dart';
+import 'package:minimalisticpush/screens/onboarding_screen.dart';
+import 'package:minimalisticpush/widgets/background.dart';
 
 // ignore: must_be_immutable
 class RouteManager extends StatefulWidget {
