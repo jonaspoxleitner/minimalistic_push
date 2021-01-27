@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:minimalisticpush/widgets/background.dart';
 import 'package:path/path.dart';
@@ -39,10 +40,12 @@ class SessionController {
 
   // inserts a new session into the database
   void insertSession(Session session) async {
-    if (this.sessionList.isEmpty) {
-      session.id = 1;
-    } else {
-      session.id = this.sessionList.last.id + 1;
+    if (session.id == null) {
+      if (this.sessionList.isEmpty) {
+        session.id = 1;
+      } else {
+        session.id = this.sessionList.last.id + 1;
+      }
     }
 
     await database.insert(
@@ -150,5 +153,38 @@ class SessionController {
     }
 
     return normalizedPeaks;
+  }
+
+  // import data from string
+  // returns true if everything went fine
+  bool importDataFromString(String json) {
+    try {
+      Map<String, dynamic> data = jsonDecode(json);
+
+      if (!data.containsKey('sessions') || data['sessions'].length == 0) {
+        return false;
+      }
+
+      this.clear();
+
+      for (Map m in data['sessions']) {
+        this.insertSession(Session(id: m['id'], count: m['count']));
+      }
+
+      return true;
+    } catch (e) {
+      // calling function will handle error because it belongs to UI
+      return false;
+    }
+  }
+
+  String exportDataToString() {
+    Map data = {'sessions': []};
+
+    for (Session s in this.sessionList) {
+      data['sessions'].add(s.toMap());
+    }
+
+    return jsonEncode(data);
   }
 }

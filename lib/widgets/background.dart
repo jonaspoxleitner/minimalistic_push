@@ -29,7 +29,7 @@ class Background extends StatefulWidget {
   // normalized sessions get set and the background gets updated
   void setSessions(List<double> normalized) {
     this.normalizedPeaks = normalized;
-    print(this.normalizedPeaks.toString());
+    //print(this.normalizedPeaks.toString());
     this.setStateIfMounted();
   }
 

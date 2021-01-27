@@ -1,18 +1,15 @@
-import 'dart:io';
-import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:flutter/services.dart';
-import 'package:minimalisticpush/controllers/onboarding_controller.dart'; // for debug
+
+import 'package:minimalisticpush/controllers/preferences_controller.dart';
 import 'package:minimalisticpush/controllers/session_controller.dart'; // for debug
 import 'package:minimalisticpush/localizations.dart';
 import 'package:minimalisticpush/styles/styles.dart';
 import 'package:minimalisticpush/widgets/custom_button.dart';
 import 'package:minimalisticpush/widgets/location_text.dart';
-import 'package:minimalisticpush/widgets/share_image.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:share/share.dart';
+
 import 'package:url_launcher/url_launcher.dart';
+import 'package:clipboard/clipboard.dart';
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({
@@ -40,18 +37,6 @@ class SettingsScreen extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      // IconButton(
-                      //   padding: const EdgeInsets.all(16.0),
-                      //   splashColor: Colors.transparent,
-                      //   highlightColor: Colors.transparent,
-                      //   icon: Icon(
-                      //     Icons.import_export,
-                      //     color: Colors.white,
-                      //   ),
-                      //   onPressed: () {
-                      //     // import and export functionality
-                      //   },
-                      // ),
                       Spacer(),
                       IconButton(
                         padding: const EdgeInsets.all(16.0),
@@ -99,6 +84,166 @@ class SettingsScreen extends StatelessWidget {
                           .getLocale('settings')['themes']['description'],
                       children: AppThemes.getThemeButtons(context),
                     ),
+                    SettingsBlock(
+                      title: MyLocalizations.of(context)
+                          .getLocale('settings')['hardcore']['title'],
+                      description: MyLocalizations.of(context)
+                          .getLocale('settings')['hardcore']['description'],
+                      children: [HardcoreToggle()],
+                    ),
+                    SettingsBlock(
+                      title: MyLocalizations.of(context)
+                          .getLocale('settings')['backup']['title'],
+                      description: MyLocalizations.of(context)
+                          .getLocale('settings')['backup']['description'],
+                      children: [
+                        CustomButton(
+                          text: MyLocalizations.of(context)
+                                  .getLocale('settings')['backup']['import']
+                              ['title'],
+                          onTap: () => _showAlertDialog(
+                              context,
+                              MyLocalizations.of(context)
+                                      .getLocale('settings')['backup']['import']
+                                  ['title'],
+                              MyLocalizations.of(context)
+                                      .getLocale('settings')['backup']['import']
+                                  ['description'],
+                              [
+                                TextButton(
+                                  style: TextButton.styleFrom(
+                                      primary: Theme.of(context).primaryColor),
+                                  child: Text(
+                                    MyLocalizations.of(context)
+                                            .getLocale('settings')['backup']
+                                        ['cancel'],
+                                    style: TextStyle(
+                                      color: Theme.of(context).primaryColor,
+                                    ),
+                                  ),
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                ),
+                                TextButton(
+                                  style: TextButton.styleFrom(
+                                      primary: Theme.of(context).primaryColor),
+                                  child: Text(
+                                    MyLocalizations.of(context)
+                                                .getLocale('settings')['backup']
+                                            ['import']['title'] +
+                                        '.',
+                                    style: TextStyle(
+                                      color: Theme.of(context).primaryColor,
+                                    ),
+                                  ),
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                    FlutterClipboard.paste().then((value) {
+                                      if (SessionController.instance
+                                          .importDataFromString(value)) {
+                                        _showAlertDialog(
+                                          context,
+                                          MyLocalizations.of(context).getLocale(
+                                                  'settings')['backup']
+                                              ['import']['title'],
+                                          MyLocalizations.of(context).getLocale(
+                                                  'settings')['backup']
+                                              ['import']['success'],
+                                          [
+                                            TextButton(
+                                              style: TextButton.styleFrom(
+                                                  primary: Theme.of(context)
+                                                      .primaryColor),
+                                              child: Text(
+                                                MyLocalizations.of(context)
+                                                        .getLocale('settings')[
+                                                    'backup']['okay'],
+                                                style: TextStyle(
+                                                  color: Theme.of(context)
+                                                      .primaryColor,
+                                                ),
+                                              ),
+                                              onPressed: () {
+                                                Navigator.of(context).pop();
+                                              },
+                                            ),
+                                          ],
+                                        );
+                                      } else {
+                                        _showAlertDialog(
+                                          context,
+                                          MyLocalizations.of(context).getLocale(
+                                                  'settings')['backup']
+                                              ['import']['title'],
+                                          MyLocalizations.of(context).getLocale(
+                                                  'settings')['backup']
+                                              ['import']['fail'],
+                                          [
+                                            TextButton(
+                                              style: TextButton.styleFrom(
+                                                  primary: Theme.of(context)
+                                                      .primaryColor),
+                                              child: Text(
+                                                MyLocalizations.of(context)
+                                                        .getLocale('settings')[
+                                                    'backup']['okay'],
+                                                style: TextStyle(
+                                                  color: Theme.of(context)
+                                                      .primaryColor,
+                                                ),
+                                              ),
+                                              onPressed: () {
+                                                Navigator.of(context).pop();
+                                              },
+                                            ),
+                                          ],
+                                        );
+                                      }
+                                    });
+                                  },
+                                ),
+                              ]),
+                        ),
+                        CustomButton(
+                          text: MyLocalizations.of(context)
+                                  .getLocale('settings')['backup']['export']
+                              ['title'],
+                          onTap: () {
+                            var data =
+                                SessionController.instance.exportDataToString();
+                            FlutterClipboard.copy(data).then((value) =>
+                                _showAlertDialog(
+                                  context,
+                                  MyLocalizations.of(context)
+                                          .getLocale('settings')['backup']
+                                      ['export']['title'],
+                                  MyLocalizations.of(context)
+                                          .getLocale('settings')['backup']
+                                      ['export']['success'],
+                                  [
+                                    TextButton(
+                                      style: TextButton.styleFrom(
+                                          primary:
+                                              Theme.of(context).primaryColor),
+                                      child: Text(
+                                        MyLocalizations.of(context)
+                                                .getLocale('settings')['backup']
+                                            ['okay'],
+                                        style: TextStyle(
+                                          color: Theme.of(context).primaryColor,
+                                        ),
+                                      ),
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                      },
+                                    ),
+                                  ],
+                                ));
+                          },
+                        )
+                      ],
+                    ),
                     CustomButton(
                       text: MyLocalizations.of(context)
                               .getLocale('settings')['about'] +
@@ -143,7 +288,7 @@ class SettingsScreen extends StatelessWidget {
                               ),
                             ],
                           ),
-                          applicationLegalese: '2020 Jonas Poxleitner',
+                          applicationLegalese: '2021 Jonas Poxleitner',
                         );
                       },
                     ),
@@ -156,8 +301,65 @@ class SettingsScreen extends StatelessWidget {
       ),
     );
   }
+
+  Future<void> _showAlertDialog(BuildContext context, String title,
+      String description, List<TextButton> options) async {
+    return showDialog<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(title),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Text(
+                  description,
+                ),
+              ],
+            ),
+          ),
+          actions: options,
+        );
+      },
+    );
+  }
 }
 
+class HardcoreToggle extends StatefulWidget {
+  @override
+  _HardcoreToggleState createState() => _HardcoreToggleState();
+}
+
+class _HardcoreToggleState extends State<HardcoreToggle> {
+  var hardcore;
+
+  void _buttonPress() {
+    this.setState(() {
+      this.hardcore = !this.hardcore;
+      PreferencesController.instance.setHardcore(this.hardcore);
+    });
+  }
+
+  @override
+  void initState() {
+    hardcore = PreferencesController.instance.getHardcore();
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: _buttonPress,
+      child: Icon(
+        this.hardcore ? Icons.check_box : Icons.check_box_outline_blank,
+        size: 30.0,
+        color: Colors.white,
+      ),
+    );
+  }
+}
+
+// this widget represents a block in the settings
 class SettingsBlock extends StatelessWidget {
   final String title;
   final String description;

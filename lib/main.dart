@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:minimalisticpush/controllers/onboarding_controller.dart';
+
+import 'package:minimalisticpush/controllers/preferences_controller.dart';
 import 'package:minimalisticpush/controllers/session_controller.dart';
 import 'package:minimalisticpush/localizations.dart';
 import 'package:minimalisticpush/screens/loading_screen.dart';
 import 'package:minimalisticpush/screens/route_manager.dart';
 import 'package:minimalisticpush/styles/styles.dart';
+
 import 'package:theme_provider/theme_provider.dart';
 
 void main() {
@@ -42,7 +44,7 @@ class MyApp extends StatelessWidget {
                 if (snapshot.hasData) {
                   return FutureBuilder<Object>(
                     future:
-                        OnboardingController.instance.setSharedPreferences(),
+                        PreferencesController.instance.setSharedPreferences(),
                     builder: (context, snapshot) {
                       if (snapshot.hasData) {
                         // the route manager handles the push and pop of the onboarding

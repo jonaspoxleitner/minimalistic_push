@@ -181,8 +181,7 @@ class _SessionsScreenState extends State<SessionsScreen> {
     pipelineOwner.flushCompositingBits();
     pipelineOwner.flushPaint();
 
-    final UI.Image image =
-        await repaintBoundary.toImage(pixelRatio: size.width / size.width);
+    final UI.Image image = await repaintBoundary.toImage();
     final ByteData byteData =
         await image.toByteData(format: UI.ImageByteFormat.png);
 

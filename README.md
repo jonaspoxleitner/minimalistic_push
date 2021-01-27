@@ -9,7 +9,7 @@ Minimalistic Push is one of the simplest push-up trackers out there. You can tra
   - [Background](#background)
   - [Functionality](#functionality)
   - [Design](#design)
-  - [Features (final version)](#features-final-version)
+  - [Features](#features)
   - [Features (upcoming versions)](#features-upcoming-versions)
   - [Platforms](#platforms)
   - [Contributions](#contributions)
@@ -24,21 +24,21 @@ The main purpose of the app is to do your push-ups and track your progress with 
 ## Design
 The design is planned to be both simple and beatiful. One of the key design elements is the variable background. Is should inform the user about the training progress and also show the progress from session to session in a subtile way.
 
-## Features (final version)
+## Features
 * onboarding experience
-* track sessions with your nose
+* track sessions with your nose (hardcore)
+* track sessions with the proximity sensor
 * insert session into the database
 * list you previous sessions
-* edit previous sessions
+* share your progress
+* export and import sessions
 * change themes in the settings
 
 ## Features (upcoming versions)
 Please feel free to mail me your ideas and wishes for future versions of 'Minimalistic Push'.
 
 ## Platforms
-This Flutter app was only tested for iOS and is currently in a private Testflight. I plan to optimize and upload a version to the Google Play Store, when the majority of features are complete. I will post links to both of the stores here, when the app is public.
-* [iOS Public Testflight](https://testflight.apple.com/join/HUrddYDp)
-* [Android Early Access](https://play.google.com/store/apps/details?id=com.jonaspoxleitner.minimalistic_push)
+This Flutter app is already released for both iOS and Android. There is also a beta version available for iOS TestFlight. Feel free to get all the links from [my website](https://jonaspoxleitner.com).
 
 ## Contributions
 Because the main features and the design of the app are not finished, there won't be any collaborations for now. This will possibly change in the future.

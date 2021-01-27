@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:minimalisticpush/controllers/onboarding_controller.dart';
+
+import 'package:minimalisticpush/controllers/preferences_controller.dart';
 import 'package:minimalisticpush/screens/error_screen.dart';
 import 'package:minimalisticpush/screens/main_screen.dart';
 import 'package:minimalisticpush/screens/onboarding_screen.dart';
@@ -37,7 +38,7 @@ class RouteManagerState extends State<RouteManager> {
     Widget overlay;
     var size = MediaQuery.of(context).size;
 
-    switch (OnboardingController.instance.showOnboarding()) {
+    switch (PreferencesController.instance.showOnboarding()) {
       case true:
         Background.instance.animateTo(0.0);
         overlay = OnboardingScreen();

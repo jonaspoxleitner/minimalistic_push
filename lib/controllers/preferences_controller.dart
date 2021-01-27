@@ -1,19 +1,19 @@
 import 'package:minimalisticpush/screens/route_manager.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class OnboardingController {
+class PreferencesController {
   int newestOnboardingVersion = 4; // change to force new onboarding
   SharedPreferences prefs;
 
-  static OnboardingController _instance;
+  static PreferencesController _instance;
   static get instance {
     if (_instance == null) {
-      _instance = OnboardingController._internal();
+      _instance = PreferencesController._internal();
     }
     return _instance;
   }
 
-  OnboardingController._internal();
+  PreferencesController._internal();
 
   // sets the shared preferences
   Future<SharedPreferences> setSharedPreferences() async {
@@ -24,7 +24,7 @@ class OnboardingController {
   // returns the already accepted version of the onboarding
   // if no onboarding was accepted it returns 0
   int getOnboardingVersion() {
-    return prefs.getInt('onboarding') ?? 0;
+    return this.prefs.getInt('onboarding') ?? 0;
   }
 
   // sets a version into the shared preferences
@@ -49,5 +49,15 @@ class OnboardingController {
   // returns if the user has accepted the newest onboarding version
   bool showOnboarding() {
     return this.newestOnboardingVersion > this.getOnboardingVersion();
+  }
+
+  // returns the value of hardcore, if no value is set, false will return
+  bool getHardcore() {
+    return this.prefs.getBool('hardcore') ?? false;
+  }
+
+  // sets a new value to hardcore
+  void setHardcore(bool hardcore) {
+    this.prefs.setBool('hardcore', hardcore);
   }
 }

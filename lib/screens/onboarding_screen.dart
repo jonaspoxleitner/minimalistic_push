@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:minimalisticpush/controllers/onboarding_controller.dart';
+
+import 'package:minimalisticpush/controllers/preferences_controller.dart';
 import 'package:minimalisticpush/controllers/session_controller.dart';
 import 'package:minimalisticpush/localizations.dart';
 import 'package:minimalisticpush/screens/error_screen.dart';
@@ -177,7 +178,7 @@ class OnboardingScreen extends StatelessWidget {
                             .getLocale('onboarding')['titles'][index],
                         onTap: () {
                           SessionController.instance.setNormalizedSessions();
-                          OnboardingController.instance.acceptOnboarding();
+                          PreferencesController.instance.acceptOnboarding();
                         },
                       ),
                     )

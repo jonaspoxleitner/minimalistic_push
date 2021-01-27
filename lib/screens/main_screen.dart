@@ -1,10 +1,17 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+
+import 'package:minimalisticpush/controllers/preferences_controller.dart';
 import 'package:minimalisticpush/controllers/session_controller.dart';
 import 'package:minimalisticpush/localizations.dart';
 import 'package:minimalisticpush/models/session.dart';
 import 'package:minimalisticpush/screens/named_overlay_route.dart';
+import 'package:minimalisticpush/styles/styles.dart';
 import 'package:minimalisticpush/widgets/background.dart';
 import 'package:minimalisticpush/widgets/location_text.dart';
+
+import 'package:all_sensors/all_sensors.dart';
 
 class MainScreen extends StatefulWidget {
   @override
@@ -14,29 +21,76 @@ class MainScreen extends StatefulWidget {
 class MainScreenState extends State<MainScreen> {
   var visibility = true;
   var trainingMode = false;
+  var hardcore = false;
 
-  int _counter = 0;
+  var _proximity = false;
+  StreamSubscription<dynamic> _streamSubscription;
+
+  int _counter = -1;
   List<double> sessionList = [];
 
   void _buttonTap() {
-    if (_counter == 0) {
-      //this.sessionList = [0.0, 0.0, 0.0, ]
-      Background.instance.setStateIfMounted();
-      this.trainingMode = true;
-      _counter = 1;
-    } else {
-      _counter++;
-    }
+    _counter == -1 ? this.setTrainingMode(true) : _counter++;
 
-    //Background.instance.setSessions(this.sessionList);
-
+    // TODO: do not set state when _counter == -1 is true
     super.setState(() {});
   }
 
-  void setVisibility(bool visibility) {
+  // initializes the training mode
+  // if hardcore is true, only the button press increases the counter
+  // if hardcore is false, the program also listens for the proximity sensor
+  void setTrainingMode(bool mode) {
+    Background.instance.setStateIfMounted();
+
     super.setState(() {
+      if (hardcore) {
+        this.trainingMode = mode;
+        mode ? _counter = 0 : _counter = -1;
+      } else {
+        this.trainingMode = mode;
+        if (mode) {
+          _counter = 0;
+          _streamSubscription = proximityEvents.listen((ProximityEvent event) {
+            setState(() {
+              var p = event.getValue();
+              if (_proximity && !p) {
+                this._buttonTap();
+              }
+              _proximity = p;
+            });
+          });
+        } else {
+          _counter = -1;
+          _streamSubscription.cancel();
+        }
+      }
+    });
+  }
+
+  // this function sets the visibility of the whole widget
+  // this function will be replaced with two functions: animateOut and animateIn
+  void setVisibility(bool visibility) {
+    this.setState(() {
       this.visibility = visibility;
     });
+  }
+
+  @override
+  void setState(fn) {
+    this.hardcore = PreferencesController.instance.getHardcore();
+    super.setState(fn);
+  }
+
+  @override
+  void initState() {
+    this.hardcore = PreferencesController.instance.getHardcore();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _streamSubscription.cancel();
+    super.dispose();
   }
 
   @override
@@ -120,7 +174,6 @@ class MainScreenState extends State<MainScreen> {
                       child: Text(
                         MyLocalizations.of(context)
                             .getLocale('training')['start'],
-                        // 'Start',
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: 64.0,
@@ -131,6 +184,10 @@ class MainScreenState extends State<MainScreen> {
                 ),
               ),
             ),
+            Text(
+                MyLocalizations.of(context).getLocale('training')['hardcore']
+                    [this.hardcore],
+                style: TextStyles.body),
           ],
         ),
       );
@@ -155,7 +212,7 @@ class MainScreenState extends State<MainScreen> {
                     if (_counter <= 0) {
                       super.setState(() {
                         this.trainingMode = false;
-                        _counter = 0;
+                        _counter = -1;
                         Background.instance.setStateIfMounted();
                       });
                     } else {
@@ -243,10 +300,7 @@ class MainScreenState extends State<MainScreen> {
               onPressed: () {
                 SessionController.instance
                     .insertSession(Session(count: _counter));
-                this.trainingMode = false;
-                Background.instance.setStateIfMounted();
-                _counter = 0;
-                this.setState(() {});
+                this.setTrainingMode(false);
                 Navigator.of(context).pop();
               },
             ),

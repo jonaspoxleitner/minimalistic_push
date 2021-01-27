@@ -3,7 +3,7 @@ description: A minimalistic push-up application.
 
 publish_to: 'none' # do not remove
 
-version: 1.1+18
+version: 1.2+26
 
 environment:
   sdk: ">=2.7.0 <3.0.0"
@@ -20,6 +20,8 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   path_provider:
+  all_sensors:
+  clipboard:
 
   cupertino_icons: ^0.1.3 # check if needed
 
