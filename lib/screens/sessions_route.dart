@@ -1,16 +1,21 @@
+import 'dart:async';
 import 'dart:io';
 import 'dart:ui' as UI;
+
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
+
 import 'package:minimalisticpush/controllers/session_controller.dart';
 import 'package:minimalisticpush/localizations.dart';
 import 'package:minimalisticpush/models/session.dart';
 import 'package:minimalisticpush/screens/error_screen.dart';
 import 'package:minimalisticpush/screens/loading_screen.dart';
 import 'package:minimalisticpush/styles/styles.dart';
-import 'package:minimalisticpush/widgets/location_text.dart';
+import 'package:minimalisticpush/widgets/background.dart';
+import 'package:minimalisticpush/widgets/navigation_bar.dart';
 import 'package:minimalisticpush/widgets/share_image.dart';
+
 import 'package:path_provider/path_provider.dart';
 import 'package:share/share.dart';
 
@@ -23,53 +28,73 @@ class SessionsScreen extends StatefulWidget {
   _SessionsScreenState createState() => _SessionsScreenState();
 }
 
-class _SessionsScreenState extends State<SessionsScreen> {
+class _SessionsScreenState extends State<SessionsScreen>
+    with SingleTickerProviderStateMixin {
+  AnimationController _animationController;
+
+  // this function is called to close the overlay and start the animation
+  void _close() async {
+    _animationController
+        .animateTo(0.0, curve: Curves.easeInOutQuart)
+        .then((value) => Navigator.of(context).pop());
+    // animation of the underlying will get rid of this timer
+    Timer(Duration(milliseconds: 200), () {
+      Background.instance.factorNotifier.value = 0.6;
+    });
+  }
+
+  @override
+  void initState() {
+    _animationController = AnimationController(
+      duration: Duration(milliseconds: 500),
+      vsync: this,
+    );
+
+    _animationController.animateTo(
+      1.0,
+      curve: Curves.easeInOutQuart,
+    );
+
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.transparent,
-      body: Container(
-        alignment: Alignment.topCenter,
+      body: AnimatedBuilder(
+        animation: _animationController,
+        builder: (context, child) {
+          var height = MediaQuery.of(context).size.height;
+          var offset = height - _animationController.value * height;
+          return Transform.translate(
+            offset: Offset(0.0, offset),
+            child: child,
+          );
+        },
         child: SafeArea(
+          bottom: false,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.end,
+            mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              Stack(
-                alignment: Alignment.center,
-                children: [
-                  LocationText(
-                    text: MyLocalizations.of(context)
-                        .getLocale('sessions')['title'],
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      IconButton(
-                        padding: const EdgeInsets.all(16.0),
-                        splashColor: Colors.transparent,
-                        highlightColor: Colors.transparent,
-                        icon: Icon(
-                          Icons.reply,
-                          color: Colors.white,
-                        ),
-                        onPressed: () => _callShareImage(context),
-                      ),
-                      IconButton(
-                        padding: const EdgeInsets.all(16.0),
-                        splashColor: Colors.transparent,
-                        highlightColor: Colors.transparent,
-                        icon: Icon(
-                          Icons.close,
-                          color: Colors.white,
-                        ),
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                        },
-                      )
-                    ],
-                  )
-                ],
+              NavigationBar(
+                text:
+                    MyLocalizations.of(context).getLocale('sessions')['title'],
+                leftOption: NavigationOption(
+                  icon: Icons.reply,
+                  onPressed: () => _callShareImage(context),
+                ),
+                rightOption: NavigationOption(
+                  icon: Icons.close,
+                  onPressed: () => _close(),
+                ),
               ),
               Expanded(
                 child: FutureBuilder<List<Map<String, dynamic>>>(
@@ -247,6 +272,7 @@ class SessionWidget extends StatelessWidget {
               color: Colors.white,
             ),
             onPressed: () {
+              // TODO: fix this issue when a stream of change notifier is implemented for sessions
               this.parentState.setState(() {
                 SessionController.instance.deleteSession(this.session.id);
               });

@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
 
 class Background extends StatefulWidget {
-  var chartVisibility = false;
-  var factor = 0.0;
-  bool readingMode = false;
-  List<double> normalizedPeaks = [];
-  double padding = 16.0;
+  final bool chartVisibility = false;
+  final ValueNotifier<double> factorNotifier = ValueNotifier(0.0);
+  final List<double> normalizedPeaks = [];
 
   static final _BackgroundState _backgroundState = _BackgroundState();
 
   static Background _instance;
+
   static get instance {
     if (_instance == null) {
       _instance = Background._internal();
@@ -20,21 +19,17 @@ class Background extends StatefulWidget {
 
   Background._internal();
 
-  // this animates the height of the darker portion between 0 and 100 percent
-  void animateTo(double factor) {
-    this.factor = factor;
-    _backgroundState.animate();
-  }
-
   // normalized sessions get set and the background gets updated
   void setSessions(List<double> normalized) {
-    this.normalizedPeaks = normalized;
+    this.normalizedPeaks.clear();
+    this.normalizedPeaks.addAll(normalized);
     //print(this.normalizedPeaks.toString());
     this.setStateIfMounted();
   }
 
   // only sets state if the background is mounted
   void setStateIfMounted() {
+    // TODO: fix this issue when a stream or change notifier is implemented for sessions
     if (_backgroundState.mounted) {
       _backgroundState.setState(() {});
     }
@@ -45,39 +40,39 @@ class Background extends StatefulWidget {
 }
 
 class _BackgroundState extends State<Background> with TickerProviderStateMixin {
-  AnimationController animationController;
+  AnimationController _animationController;
 
   void animate() {
-    if (this.mounted) {
-      animationController.animateTo(
-        widget.factor,
-        curve: Curves.easeInOutQuart,
-      );
-    }
+    if (this.mounted) {}
   }
 
   @override
   void initState() {
-    super.initState();
-
-    animationController = AnimationController(
-      vsync: this,
+    _animationController = AnimationController(
       duration: Duration(milliseconds: 1000),
+      vsync: this,
     );
 
-    animationController.addListener(() {
-      this.setState(() {});
-    });
+    _animationController.addListener(() => super.setState(() {}));
 
-    animationController.animateTo(
-      widget.factor,
+    _animationController.animateTo(
+      widget.factorNotifier.value,
       curve: Curves.easeInOutQuart,
     );
+
+    widget.factorNotifier.addListener(() => super.setState(() {
+          _animationController.animateTo(
+            widget.factorNotifier.value,
+            curve: Curves.easeInOutQuart,
+          );
+        }));
+
+    super.initState();
   }
 
   @override
   void dispose() {
-    animationController.dispose();
+    _animationController.dispose();
     super.dispose();
   }
 
@@ -90,12 +85,12 @@ class _BackgroundState extends State<Background> with TickerProviderStateMixin {
       color: Theme.of(context).accentColor,
       alignment: Alignment.bottomCenter,
       child: CustomPaint(
-        size: Size(size.width, size.height),
         painter: CurvePainter(
           peaks: widget.normalizedPeaks,
           context: context,
-          factor: animationController.value,
+          factor: _animationController.value,
         ),
+        size: Size(size.width, size.height),
       ),
     );
   }
@@ -105,9 +100,6 @@ class CurvePainter extends CustomPainter {
   Paint _paint = Paint()
     ..style = PaintingStyle.fill
     ..strokeWidth = 0.0;
-  List<double> peaks;
-  BuildContext context;
-  double factor;
 
   var spaceOnTop;
 
@@ -116,6 +108,10 @@ class CurvePainter extends CustomPainter {
     @required this.context,
     @required this.factor,
   });
+
+  final List<double> peaks;
+  final BuildContext context;
+  final double factor;
 
   @override
   void paint(Canvas canvas, Size size) {

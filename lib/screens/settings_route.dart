@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
@@ -5,54 +7,86 @@ import 'package:minimalisticpush/controllers/preferences_controller.dart';
 import 'package:minimalisticpush/controllers/session_controller.dart'; // for debug
 import 'package:minimalisticpush/localizations.dart';
 import 'package:minimalisticpush/styles/styles.dart';
+import 'package:minimalisticpush/widgets/background.dart';
 import 'package:minimalisticpush/widgets/custom_button.dart';
-import 'package:minimalisticpush/widgets/location_text.dart';
+import 'package:minimalisticpush/widgets/navigation_bar.dart';
 
 import 'package:url_launcher/url_launcher.dart';
 import 'package:clipboard/clipboard.dart';
 
-class SettingsScreen extends StatelessWidget {
+class SettingsScreen extends StatefulWidget {
   const SettingsScreen({
     Key key,
   }) : super(key: key);
 
   @override
+  _SettingsScreenState createState() => _SettingsScreenState();
+}
+
+class _SettingsScreenState extends State<SettingsScreen>
+    with SingleTickerProviderStateMixin {
+  AnimationController _animationController;
+
+  // this function is called to close the overlay and start the animation
+  void _close() async {
+    _animationController
+        .animateTo(0.0, curve: Curves.easeInOutQuart)
+        .then((value) => Navigator.of(context).pop());
+    // animation of the underlying will get rid of this timer
+    Timer(
+      Duration(milliseconds: 200),
+      () => Background.instance.factorNotifier.value = 0.6,
+    );
+  }
+
+  @override
+  void initState() {
+    _animationController = AnimationController(
+      duration: Duration(milliseconds: 500),
+      vsync: this,
+    );
+
+    _animationController.animateTo(
+      1.0,
+      curve: Curves.easeInOutQuart,
+    );
+
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.transparent,
-      body: Container(
-        constraints: BoxConstraints.expand(),
+      body: AnimatedBuilder(
+        animation: _animationController,
+        builder: (context, child) {
+          var height = MediaQuery.of(context).size.height;
+          var offset = height - _animationController.value * height;
+          return Transform.translate(
+            offset: Offset(0.0, offset),
+            child: child,
+          );
+        },
         child: SafeArea(
+          bottom: false,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              Stack(
-                alignment: Alignment.center,
-                children: [
-                  LocationText(
-                    text: MyLocalizations.of(context)
-                        .getLocale('settings')['title'],
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Spacer(),
-                      IconButton(
-                        padding: const EdgeInsets.all(16.0),
-                        splashColor: Colors.transparent,
-                        highlightColor: Colors.transparent,
-                        icon: Icon(
-                          Icons.close,
-                          color: Colors.white,
-                        ),
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                        },
-                      )
-                    ],
-                  )
-                ],
+              NavigationBar(
+                text:
+                    MyLocalizations.of(context).getLocale('settings')['title'],
+                rightOption: NavigationOption(
+                  icon: Icons.close,
+                  onPressed: () => _close(),
+                ),
               ),
               Expanded(
                 child: ListView(
@@ -66,7 +100,7 @@ class SettingsScreen extends StatelessWidget {
                     //       text: 'Return to Onboarding (debug)',
                     //       onTap: () {
                     //         Navigator.of(context).pop();
-                    //         OnboardingController.instance.returnToOnboarding();
+                    //         PreferencesController.instance.returnToOnboarding();
                     //       },
                     //     ),
                     //     CustomButton(
@@ -234,9 +268,8 @@ class SettingsScreen extends StatelessWidget {
                                           color: Theme.of(context).primaryColor,
                                         ),
                                       ),
-                                      onPressed: () {
-                                        Navigator.of(context).pop();
-                                      },
+                                      onPressed: () =>
+                                          Navigator.of(context).pop(),
                                     ),
                                   ],
                                 ));

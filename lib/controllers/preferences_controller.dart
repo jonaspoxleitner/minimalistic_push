@@ -36,14 +36,14 @@ class PreferencesController {
   // sets the onboarding version to 0 and forces the RouteManager to reload
   void returnToOnboarding() {
     this.setOnboardingVersion(0);
-    RouteManager.instance.reloadRouteManagerState();
+    RouteManager.instance.onboarding.value = true;
   }
 
   // is called when the user completes the onboarding experience
   // sets the newest version into the shared preferences and reloads
   void acceptOnboarding() {
     this.setOnboardingVersion(this.newestOnboardingVersion);
-    RouteManager.instance.reloadRouteManagerState();
+    RouteManager.instance.onboarding.value = false;
   }
 
   // returns if the user has accepted the newest onboarding version

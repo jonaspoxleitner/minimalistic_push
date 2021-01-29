@@ -24,13 +24,13 @@ class OnboardingScreen extends StatelessWidget {
 
           switch (value) {
             case 0:
-              Background.instance.animateTo(0.0);
+              Background.instance.factorNotifier.value = 0.0;
               break;
             case 1:
-              Background.instance.animateTo(0.6);
+              Background.instance.factorNotifier.value = 0.6;
               break;
             case 2:
-              Background.instance.animateTo(1.0);
+              Background.instance.factorNotifier.value = 1.0;
               break;
           }
         },

@@ -9,9 +9,10 @@ import 'package:minimalisticpush/widgets/background.dart';
 
 // ignore: must_be_immutable
 class RouteManager extends StatefulWidget {
-  RouteManagerState routeManagerState;
+  ValueNotifier<bool> onboarding;
 
   static RouteManager _instance;
+
   static get instance {
     if (_instance == null) {
       _instance = RouteManager._internal();
@@ -20,31 +21,33 @@ class RouteManager extends StatefulWidget {
     return _instance;
   }
 
-  RouteManager._internal() {
-    this.routeManagerState = RouteManagerState();
-  }
-
-  void reloadRouteManagerState() {
-    this.routeManagerState.setState(() {});
-  }
+  RouteManager._internal();
 
   @override
-  RouteManagerState createState() => routeManagerState;
+  RouteManagerState createState() => RouteManagerState();
 }
 
 class RouteManagerState extends State<RouteManager> {
+  @override
+  void initState() {
+    widget.onboarding =
+        ValueNotifier(PreferencesController.instance.showOnboarding());
+    widget.onboarding.addListener(() => super.setState(() {}));
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     Widget overlay;
     var size = MediaQuery.of(context).size;
 
-    switch (PreferencesController.instance.showOnboarding()) {
+    switch (widget.onboarding.value) {
       case true:
-        Background.instance.animateTo(0.0);
+        Background.instance.factorNotifier.value = 0.0;
         overlay = OnboardingScreen();
         break;
       case false:
-        Background.instance.animateTo(0.6);
+        Background.instance.factorNotifier.value = 0.6;
         overlay = Container(
           height: size.height,
           width: size.width,

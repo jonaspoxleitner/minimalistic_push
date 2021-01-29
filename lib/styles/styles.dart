@@ -1,7 +1,8 @@
-import 'package:minimalisticpush/widgets/custom_button.dart';
-import 'package:theme_provider/theme_provider.dart';
-
 import 'package:flutter/material.dart';
+
+import 'package:minimalisticpush/widgets/theme_button.dart';
+
+import 'package:theme_provider/theme_provider.dart';
 
 class AppThemes {
   static List<AppTheme> list = [
@@ -54,14 +55,13 @@ class AppThemes {
 
   static List<Widget> getThemeButtons(BuildContext context) {
     List<Widget> themeButtons = [];
+    String current = ThemeProvider.controllerOf(context).currentThemeId;
 
     for (AppTheme theme in list) {
       themeButtons.add(
-        CustomButton(
-          text: theme.description,
-          onTap: () {
-            ThemeProvider.controllerOf(context).setTheme(theme.id);
-          },
+        ThemeButton(
+          appTheme: theme,
+          isCurrent: theme.id == current,
         ),
       );
     }
