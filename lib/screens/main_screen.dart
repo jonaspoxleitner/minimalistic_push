@@ -41,10 +41,17 @@ class MainScreenState extends State<MainScreen>
       curve: Curves.easeInOutQuart,
     );
 
-    this.opacityNotifier.addListener(() => _animationController.animateTo(
-          this.opacityNotifier.value,
-          curve: Curves.easeInOutQuart,
-        ));
+    // this listener gets executed, when this widget comes into focus again
+    this.opacityNotifier.addListener(() {
+      _animationController.animateTo(
+        this.opacityNotifier.value,
+        curve: Curves.easeInOutQuart,
+      );
+
+      super.setState(() {
+        this.hardcore = PreferencesController.instance.getHardcore();
+      });
+    });
 
     super.initState();
   }
@@ -190,15 +197,13 @@ class _TrainingWidgetState extends State<TrainingWidget> {
 
   @override
   void initState() {
-    if (widget.hardcore) {
+    if (!widget.hardcore) {
       _streamSubscription = proximityEvents.listen((ProximityEvent event) {
-        super.setState(() {
-          var p = event.getValue();
-          if (_proximity && !p) {
-            this._buttonTap();
-          }
-          _proximity = p;
-        });
+        var p = event.getValue();
+        if (_proximity && !p) {
+          this._buttonTap();
+        }
+        _proximity = p;
       });
     }
     super.initState();

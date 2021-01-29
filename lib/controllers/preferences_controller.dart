@@ -28,8 +28,8 @@ class PreferencesController {
   }
 
   // sets a version into the shared preferences
-  void setOnboardingVersion(int version) {
-    this.prefs.setInt('onboarding', version);
+  void setOnboardingVersion(int version) async {
+    await this.prefs.setInt('onboarding', version);
   }
 
   // debug
@@ -57,7 +57,7 @@ class PreferencesController {
   }
 
   // sets a new value to hardcore
-  void setHardcore(bool hardcore) {
-    this.prefs.setBool('hardcore', hardcore);
+  void setHardcore(bool hardcore) async {
+    await this.prefs.setBool('hardcore', hardcore);
   }
 }
