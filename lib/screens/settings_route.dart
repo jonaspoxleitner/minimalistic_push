@@ -7,7 +7,6 @@ import 'package:minimalisticpush/controllers/preferences_controller.dart';
 import 'package:minimalisticpush/controllers/session_controller.dart'; // for debug
 import 'package:minimalisticpush/localizations.dart';
 import 'package:minimalisticpush/styles/styles.dart';
-import 'package:minimalisticpush/widgets/background.dart';
 import 'package:minimalisticpush/widgets/custom_button.dart';
 import 'package:minimalisticpush/widgets/navigation_bar.dart';
 
@@ -32,11 +31,6 @@ class _SettingsScreenState extends State<SettingsScreen>
     _animationController
         .animateTo(0.0, curve: Curves.easeInOutQuart)
         .then((value) => Navigator.of(context).pop());
-    // animation of the underlying will get rid of this timer
-    Timer(
-      Duration(milliseconds: 200),
-      () => Background.instance.factorNotifier.value = 0.6,
-    );
   }
 
   @override
@@ -91,26 +85,7 @@ class _SettingsScreenState extends State<SettingsScreen>
               Expanded(
                 child: ListView(
                   children: [
-                    // SettingsBlock(
-                    //   title: 'Debug Settings',
-                    //   description:
-                    //       'These Settings are only for debug purposes and will likely be removed from the final Application.',
-                    //   children: [
-                    //     CustomButton(
-                    //       text: 'Return to Onboarding (debug)',
-                    //       onTap: () {
-                    //         Navigator.of(context).pop();
-                    //         PreferencesController.instance.returnToOnboarding();
-                    //       },
-                    //     ),
-                    //     CustomButton(
-                    //       text: 'Clear database (debug)',
-                    //       onTap: () {
-                    //         SessionController.instance.clear();
-                    //       },
-                    //     ),
-                    //   ],
-                    // ),
+                    //DebugBlock(),
                     SettingsBlock(
                       title: MyLocalizations.of(context)
                           .getLocale('settings')['themes']['title'],
@@ -354,6 +329,36 @@ class _SettingsScreenState extends State<SettingsScreen>
           actions: options,
         );
       },
+    );
+  }
+}
+
+class DebugBlock extends StatelessWidget {
+  const DebugBlock({
+    Key key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return SettingsBlock(
+      title: 'Debug Settings',
+      description:
+          'These Settings are only for debug purposes and will likely be removed from the final Application.',
+      children: [
+        CustomButton(
+          text: 'Return to Onboarding (debug)',
+          onTap: () {
+            Navigator.of(context).pop();
+            PreferencesController.instance.returnToOnboarding();
+          },
+        ),
+        CustomButton(
+          text: 'Clear database (debug)',
+          onTap: () {
+            SessionController.instance.clear();
+          },
+        ),
+      ],
     );
   }
 }

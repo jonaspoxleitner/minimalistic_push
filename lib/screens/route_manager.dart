@@ -60,25 +60,22 @@ class RouteManagerState extends State<RouteManager> {
 
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: const SystemUiOverlayStyle(
-        // For Android.
-        // Use [light] for white status bar and [dark] for black status bar.
         statusBarIconBrightness: Brightness.light,
-        // For iOS.
-        // Use [dark] for white status bar and [light] for black status bar.
         statusBarBrightness: Brightness.dark,
       ),
       child: Scaffold(
         body: Container(
-            height: size.height,
-            width: size.width,
-            child: Stack(
-              children: [
-                Background.instance,
-                SafeArea(
-                  child: overlay,
-                ),
-              ],
-            )),
+          height: size.height,
+          width: size.width,
+          child: Stack(
+            children: [
+              Background.instance,
+              SafeArea(
+                child: overlay,
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

@@ -11,11 +11,10 @@ import 'package:minimalisticpush/styles/styles.dart';
 import 'package:theme_provider/theme_provider.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(MinimalisticPush());
 }
 
-// ignore: must_be_immutable
-class MyApp extends StatelessWidget {
+class MinimalisticPush extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ThemeProvider(

@@ -47,9 +47,9 @@ class MyLocalizations {
           'contents': [
             'It seems like your counter is already at ',
             '.',
-            'Do you want to end your session?',
+            'Do you really want to end your session without saving?',
           ],
-          'continue': 'Let me finish this.',
+          'continue': 'I want to continue.',
           'end': 'I\'m done.',
         },
         'hardcore': {
@@ -139,9 +139,9 @@ class MyLocalizations {
           'contents': [
             'Es sieht so aus, als wäre dein Zähler schon bei ',
             '.',
-            'Willst du diese Session schon beenden?',
+            'Willst du diese Session wirklich ohne zu speichern beenden?',
           ],
-          'continue': 'Lass mich noch etwas.',
+          'continue': 'Ich will weitermachen.',
           'end': 'Bin fertig.',
         },
         'hardcore': {

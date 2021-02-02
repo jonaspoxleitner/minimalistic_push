@@ -25,10 +25,10 @@ class SessionsScreen extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _SessionsScreenState createState() => _SessionsScreenState();
+  SessionsScreenState createState() => SessionsScreenState();
 }
 
-class _SessionsScreenState extends State<SessionsScreen>
+class SessionsScreenState extends State<SessionsScreen>
     with SingleTickerProviderStateMixin {
   AnimationController _animationController;
 
@@ -41,6 +41,11 @@ class _SessionsScreenState extends State<SessionsScreen>
     Timer(Duration(milliseconds: 200), () {
       Background.instance.factorNotifier.value = 0.6;
     });
+  }
+
+  // update if something was deleted from the list
+  void update() {
+    super.setState(() {});
   }
 
   @override
@@ -220,7 +225,7 @@ class _SessionsScreenState extends State<SessionsScreen>
 
 class SessionWidget extends StatelessWidget {
   final Session session;
-  final State parentState;
+  final SessionsScreenState parentState;
   final int idToShow;
 
   const SessionWidget({
@@ -272,10 +277,8 @@ class SessionWidget extends StatelessWidget {
               color: Colors.white,
             ),
             onPressed: () {
-              // TODO: fix this issue when a stream of change notifier is implemented for sessions
-              this.parentState.setState(() {
-                SessionController.instance.deleteSession(this.session.id);
-              });
+              SessionController.instance.deleteSession(this.session.id);
+              this.parentState.update();
             },
           )
         ],

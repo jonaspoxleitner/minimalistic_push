@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:minimalisticpush/widgets/background.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -10,6 +9,8 @@ import '../models/session.dart';
 class SessionController {
   Database database;
   List<Session> sessionList;
+  StreamController<List<double>> controller;
+  Stream stream;
 
   static SessionController _instance;
   static get instance {
@@ -19,7 +20,10 @@ class SessionController {
     return _instance;
   }
 
-  SessionController._internal();
+  SessionController._internal() {
+    controller = StreamController<List<double>>();
+    stream = controller.stream;
+  }
 
   // sets the database or creates it on first start of the app
   Future<Database> setDatabase() async {
@@ -33,7 +37,7 @@ class SessionController {
       version: 2,
     );
 
-    await this.loadSessions().then((value) => this.setNormalizedSessions());
+    await this.loadSessions();
 
     return this.database;
   }
@@ -81,6 +85,11 @@ class SessionController {
     return this.sessionList;
   }
 
+  // returns a stream of the normalized sessions
+  Stream<List<double>> getStream() {
+    return this.controller.stream;
+  }
+
   // delete a session from the database by id
   Future<void> deleteSession(int id) async {
     await database.delete(
@@ -100,10 +109,8 @@ class SessionController {
   }
 
   // sets 5 normlized sessions into the background
-  void setNormalizedSessions() {
-    List<double> normalizedPeaks = this.getNormalizedSessions(5);
-    Background.instance.setSessions(normalizedPeaks);
-  }
+  void setNormalizedSessions() =>
+      this.controller.add(this.getNormalizedSessions(5));
 
   // returns normalized sessions with a variable length
   List<double> getNormalizedSessions(int length) {
@@ -155,6 +162,10 @@ class SessionController {
     return normalizedPeaks;
   }
 
+  // publishes fake normalized sessions to the stream
+  void publishOnboardingSessions() =>
+      this.controller.add([0.2, 0.4, 0.6, 0.8, 1.0]);
+
   // import data from string
   // returns true if everything went fine
   bool importDataFromString(String json) {
@@ -178,6 +189,7 @@ class SessionController {
     }
   }
 
+  // export data to string
   String exportDataToString() {
     Map data = {'sessions': []};
 

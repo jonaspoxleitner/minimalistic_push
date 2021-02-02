@@ -8,7 +8,6 @@ import 'package:minimalisticpush/localizations.dart';
 import 'package:minimalisticpush/models/session.dart';
 import 'package:minimalisticpush/screens/named_overlay_route.dart';
 import 'package:minimalisticpush/styles/styles.dart';
-import 'package:minimalisticpush/widgets/background.dart';
 import 'package:minimalisticpush/widgets/navigation_bar.dart';
 
 import 'package:all_sensors/all_sensors.dart';
@@ -60,6 +59,12 @@ class MainScreenState extends State<MainScreen>
   void setState(fn) {
     this.hardcore = PreferencesController.instance.getHardcore();
     super.setState(fn);
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
   }
 
   @override
@@ -184,7 +189,7 @@ class TrainingWidget extends StatefulWidget {
 }
 
 class _TrainingWidgetState extends State<TrainingWidget> {
-  int counter = 0;
+  int counter = 1;
 
   var _proximity = false;
   StreamSubscription<dynamic> _streamSubscription;
@@ -211,7 +216,9 @@ class _TrainingWidgetState extends State<TrainingWidget> {
 
   @override
   void dispose() {
-    _streamSubscription.cancel();
+    if (!widget.hardcore) {
+      _streamSubscription.cancel();
+    }
     super.dispose();
   }
 
@@ -222,8 +229,16 @@ class _TrainingWidgetState extends State<TrainingWidget> {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Row(
-          mainAxisAlignment: MainAxisAlignment.end,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
+            IconButton(
+              padding: const EdgeInsets.all(16.0),
+              icon: const Icon(
+                Icons.close,
+                color: Colors.white,
+              ),
+              onPressed: () => _showCancelDialog(this.counter),
+            ),
             IconButton(
               padding: const EdgeInsets.all(16.0),
               icon: const Icon(
@@ -231,12 +246,9 @@ class _TrainingWidgetState extends State<TrainingWidget> {
                 color: Colors.white,
               ),
               onPressed: () {
-                if (counter <= 0) {
-                  Background.instance.setStateIfMounted();
-                  widget.trainingMode.value = false;
-                } else {
-                  this._showCancelDialog(counter);
-                }
+                SessionController.instance
+                    .insertSession(Session(count: counter));
+                widget.trainingMode.value = false;
               },
             ),
           ],
@@ -313,8 +325,6 @@ class _TrainingWidgetState extends State<TrainingWidget> {
                 ),
               ),
               onPressed: () {
-                SessionController.instance
-                    .insertSession(Session(count: counter));
                 widget.trainingMode.value = false;
                 Navigator.of(context).pop();
               },
