@@ -1,32 +1,27 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:path/path.dart';
-import 'package:sqflite/sqflite.dart';
+import 'package:sprinkle/Manager.dart';
+import 'package:sprinkle/sprinkle.dart';
 
 import '../models/session.dart';
 
-class SessionController {
+import 'package:path/path.dart';
+import 'package:sqflite/sqflite.dart';
+
+class SessionManager extends Manager {
   Database database;
-  List<Session> sessionList;
-  StreamController<List<double>> controller;
-  Stream stream;
 
-  static SessionController _instance;
-  static get instance {
-    if (_instance == null) {
-      _instance = SessionController._internal();
-    }
-    return _instance;
-  }
+  final sessions = <Session>[].reactive;
+  final normalized = <double>[0.0, 0.0, 0.0, 0.0, 0.0].reactive;
 
-  SessionController._internal() {
-    controller = StreamController<List<double>>();
-    stream = controller.stream;
+  SessionManager() {
+    this.setDatabase();
+    print('database set');
   }
 
   // sets the database or creates it on first start of the app
-  Future<Database> setDatabase() async {
+  void setDatabase() async {
     this.database = await openDatabase(
       join(await getDatabasesPath(), 'sessions_database.database'),
       onCreate: (database, version) {
@@ -38,17 +33,16 @@ class SessionController {
     );
 
     await this.loadSessions();
-
-    return this.database;
+    this.setNormalizedSessions();
   }
 
   // inserts a new session into the database
   void insertSession(Session session) async {
     if (session.id == null) {
-      if (this.sessionList.isEmpty) {
+      if (sessions.value.isEmpty) {
         session.id = 1;
       } else {
-        session.id = this.sessionList.last.id + 1;
+        session.id = sessions.value.last.id + 1;
       }
     }
 
@@ -58,7 +52,9 @@ class SessionController {
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
 
-    await this.loadSessions().then((value) => this.setNormalizedSessions());
+    await this.loadSessions().then((value) {
+      this.setNormalizedSessions();
+    });
   }
 
   // loads all sessions from the database ordered by the id
@@ -66,7 +62,7 @@ class SessionController {
     var response = database.query('sessions', orderBy: 'id');
 
     response.then((value) {
-      this.sessionList = List.generate(value.length, (i) {
+      sessions.value = List.generate(value.length, (i) {
         return Session(
           id: value[i]['id'],
           count: value[i]['count'],
@@ -82,12 +78,7 @@ class SessionController {
   // returns the sessions in a list
   // does not call this.loadSessions() for performace reasons
   List<Session> getSessions() {
-    return this.sessionList;
-  }
-
-  // returns a stream of the normalized sessions
-  Stream<List<double>> getStream() {
-    return this.controller.stream;
+    return sessions.value;
   }
 
   // delete a session from the database by id
@@ -98,7 +89,9 @@ class SessionController {
       whereArgs: [id],
     );
 
-    await this.loadSessions().then((value) => this.setNormalizedSessions());
+    await this.loadSessions().then((value) {
+      this.setNormalizedSessions();
+    });
   }
 
   // debug
@@ -109,15 +102,16 @@ class SessionController {
   }
 
   // sets 5 normlized sessions into the background
-  void setNormalizedSessions() =>
-      this.controller.add(this.getNormalizedSessions(5));
+  void setNormalizedSessions() {
+    normalized.value = this.getNormalizedSessions(5);
+  }
 
   // returns normalized sessions with a variable length
   List<double> getNormalizedSessions(int length) {
     List<double> normalizedPeaks = [];
     List<int> peaks = [];
 
-    for (Session session in this.sessionList) {
+    for (Session session in sessions.value) {
       peaks.add(session.count);
     }
 
@@ -162,9 +156,10 @@ class SessionController {
     return normalizedPeaks;
   }
 
-  // publishes fake normalized sessions to the stream
-  void publishOnboardingSessions() =>
-      this.controller.add([0.2, 0.4, 0.6, 0.8, 1.0]);
+  // // publishes fake normalized sessions to the stream
+  void publishOnboardingSessions() {
+    normalized.value = [0.2, 0.4, 0.6, 0.8, 1.0];
+  }
 
   // import data from string
   // returns true if everything went fine
@@ -193,10 +188,13 @@ class SessionController {
   String exportDataToString() {
     Map data = {'sessions': []};
 
-    for (Session s in this.sessionList) {
+    for (Session s in sessions.value) {
       data['sessions'].add(s.toMap());
     }
 
     return jsonEncode(data);
   }
+
+  @override
+  void dispose() {}
 }

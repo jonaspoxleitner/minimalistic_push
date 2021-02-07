@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 
-import 'package:minimalisticpush/controllers/session_controller.dart';
+import 'package:minimalisticpush/managers/session_manager.dart';
+import 'package:minimalisticpush/models/peaks.dart';
+
+import 'package:sprinkle/Observer.dart';
+import 'package:sprinkle/sprinkle.dart';
 
 class Background extends StatefulWidget {
   final bool chartVisibility = false;
@@ -22,24 +26,11 @@ class Background extends StatefulWidget {
   _BackgroundState createState() => _BackgroundState();
 }
 
-// TODO: optimize, so that only one controller for the peaks is necessary
 class _BackgroundState extends State<Background> with TickerProviderStateMixin {
   AnimationController _animationController;
-  AnimationController _curveController;
-  List<AnimationController> _peakControllers = [];
-  final int _curveDuration = 500;
-  Stream<List<double>> stream;
-  final List<double> normalizedPeaks = [0.0, 0.0, 0.0, 0.0, 0.0];
 
   @override
   void initState() {
-    stream = SessionController.instance.getStream();
-    stream.listen((value) {
-      this.update(value);
-    });
-
-    SessionController.instance.setNormalizedSessions();
-
     _animationController = AnimationController(
       duration: Duration(milliseconds: 1000),
       vsync: this,
@@ -50,27 +41,6 @@ class _BackgroundState extends State<Background> with TickerProviderStateMixin {
       curve: Curves.easeInOutQuart,
     );
 
-    for (int i = 0; i < 5; i++) {
-      _peakControllers.add(AnimationController(
-        duration: Duration(milliseconds: _curveDuration),
-        vsync: this,
-      ));
-
-      _peakControllers[i].animateTo(
-        this.normalizedPeaks[i],
-        curve: Curves.easeInOut,
-      );
-    }
-
-    _curveController = AnimationController(
-      duration: Duration(milliseconds: _curveDuration),
-      vsync: this,
-    );
-    _curveController.animateTo(
-      1.0,
-      curve: Curves.easeInOut,
-    );
-
     widget.factorNotifier.addListener(() => _animationController.animateTo(
           widget.factorNotifier.value,
           curve: Curves.easeInOutQuart,
@@ -79,68 +49,77 @@ class _BackgroundState extends State<Background> with TickerProviderStateMixin {
     super.initState();
   }
 
-  void update(List<double> peaks) async {
-    if (peaks != null && peaks.length != 0) {
-      this.normalizedPeaks.clear();
-      this.normalizedPeaks.addAll(peaks);
-      this.setState(() {});
-    }
-  }
-
-  @override
-  void setState(fn) {
-    for (int i = 0; i < 5; i++) {
-      _peakControllers[i].animateTo(
-        this.normalizedPeaks[i],
-        curve: Curves.easeInOutQuart,
-      );
-    }
-
-    _curveController.reset();
-    _curveController.animateTo(
-      1.0,
-      curve: Curves.easeInOutQuart,
-    );
-
-    super.setState(fn);
-  }
-
   @override
   void dispose() {
     _animationController.dispose();
-
-    for (AnimationController a in _peakControllers) {
-      a.dispose();
-    }
-
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
+    var sessionManager = context.use<SessionManager>();
 
     return Container(
       constraints: BoxConstraints.expand(),
       color: Theme.of(context).accentColor,
       alignment: Alignment.bottomCenter,
       child: AnimatedBuilder(
-          animation: _animationController,
-          builder: (context, child) {
-            return AnimatedBuilder(
-                animation: _curveController,
-                builder: (context, child) {
-                  return CustomPaint(
-                    painter: CurvePainter(
-                      peaks: _peakControllers,
-                      context: context,
-                      factor: _animationController.value,
-                    ),
-                    size: Size(size.width, size.height),
-                  );
-                });
-          }),
+        animation: _animationController,
+        builder: (context, child) {
+          return Observer<List<double>>(
+            stream: sessionManager.normalized,
+            builder: (context, value) {
+              return new AnimatedPeaks(
+                peaks: Peaks(list: value),
+                animationController: _animationController,
+                duration: Duration(milliseconds: 1000),
+                curve: Curves.easeInOutQuart,
+              );
+            },
+          );
+        },
+      ),
     );
+  }
+}
+
+class AnimatedPeaks extends ImplicitlyAnimatedWidget {
+  final Peaks peaks;
+  final AnimationController animationController;
+
+  AnimatedPeaks({
+    Key key,
+    @required this.peaks,
+    @required this.animationController,
+    @required Duration duration,
+    Curve curve = Curves.linear,
+  }) : super(duration: duration, curve: curve, key: key);
+
+  @override
+  ImplicitlyAnimatedWidgetState<ImplicitlyAnimatedWidget> createState() =>
+      _AnimatedPeaksState();
+}
+
+class _AnimatedPeaksState extends AnimatedWidgetBaseState<AnimatedPeaks> {
+  PeaksTween _peaksTween;
+
+  @override
+  Widget build(BuildContext context) {
+    var size = MediaQuery.of(context).size;
+    return CustomPaint(
+      painter: CurvePainter(
+        peaks: _peaksTween.evaluate(animation),
+        context: context,
+        factor: widget.animationController.value,
+      ),
+      size: Size(size.width, size.height),
+    );
+  }
+
+  @override
+  void forEachTween(TweenVisitor visitor) {
+    _peaksTween = visitor(_peaksTween, widget.peaks,
+        (dynamic value) => new PeaksTween(begin: value));
   }
 }
 
@@ -157,7 +136,7 @@ class CurvePainter extends CustomPainter {
     @required this.factor,
   });
 
-  final List<AnimationController> peaks;
+  final Peaks peaks;
   final BuildContext context;
   final double factor;
 
@@ -168,7 +147,7 @@ class CurvePainter extends CustomPainter {
     var height = size.height * 0.2;
     spaceOnTop = size.height - size.height * (factor);
 
-    var steps = this.peaks.length * 2 - 2;
+    var steps = this.peaks.list.length * 2 - 2;
     var stepWidth = size.width / steps;
 
     if (spaceOnTop >= size.height * 0.8) {
@@ -179,21 +158,21 @@ class CurvePainter extends CustomPainter {
 
     Path path = Path();
     path.moveTo(0.0, size.height);
-    path.lineTo(0.0, getHeight(height, peaks.first.value));
+    path.lineTo(0.0, getHeight(height, peaks.list.first));
 
     var offset = 0;
-    for (int i = 0; i < peaks.length - 1; i++) {
+    for (int i = 0; i < peaks.list.length - 1; i++) {
       path.cubicTo(
           stepWidth * (offset + i + 1),
-          getHeight(height, peaks[i].value),
+          getHeight(height, peaks.list[i]),
           stepWidth * (offset + i + 1),
-          getHeight(height, peaks[i + 1].value),
+          getHeight(height, peaks.list[i + 1]),
           stepWidth * (offset + i + 2),
-          getHeight(height, peaks[i + 1].value));
+          getHeight(height, peaks.list[i + 1]));
       offset++;
     }
 
-    path.lineTo(size.width, getHeight(height, peaks.last.value));
+    path.lineTo(size.width, getHeight(height, peaks.list.last));
     path.lineTo(size.width, size.height);
 
     path.close();

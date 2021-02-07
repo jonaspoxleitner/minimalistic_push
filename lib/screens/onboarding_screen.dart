@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
 
 import 'package:minimalisticpush/controllers/preferences_controller.dart';
-import 'package:minimalisticpush/controllers/session_controller.dart';
 import 'package:minimalisticpush/localizations.dart';
+import 'package:minimalisticpush/managers/session_manager.dart';
 import 'package:minimalisticpush/screens/error_screen.dart';
 import 'package:minimalisticpush/styles/styles.dart';
 import 'package:minimalisticpush/widgets/background.dart';
 import 'package:minimalisticpush/widgets/custom_button.dart';
 import 'package:minimalisticpush/widgets/icon_description_list.dart';
 import 'package:minimalisticpush/widgets/location_text.dart';
+
+import 'package:sprinkle/sprinkle.dart';
 
 class OnboardingScreen extends StatefulWidget {
   @override
@@ -20,7 +22,6 @@ class _OnboardingScreenState extends State<OnboardingScreen>
   AnimationController _animationController;
   @override
   void initState() {
-    SessionController.instance.publishOnboardingSessions();
     _animationController = AnimationController(
       duration: Duration(milliseconds: 500),
       vsync: this,
@@ -37,6 +38,8 @@ class _OnboardingScreenState extends State<OnboardingScreen>
   @override
   Widget build(BuildContext context) {
     PageController pageController = PageController(initialPage: 0);
+    var sessionManager = context.use<SessionManager>();
+    sessionManager.publishOnboardingSessions();
 
     return AnimatedBuilder(
       animation: _animationController,
@@ -211,8 +214,7 @@ class _OnboardingScreenState extends State<OnboardingScreen>
                             _animationController
                                 .animateTo(1.0, curve: Curves.easeInOutQuart)
                                 .then((value) {
-                              SessionController.instance
-                                  .setNormalizedSessions();
+                              sessionManager.setNormalizedSessions();
                               PreferencesController.instance.acceptOnboarding();
                             });
                           },

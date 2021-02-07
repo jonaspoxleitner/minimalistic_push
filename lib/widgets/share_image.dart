@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:minimalisticpush/controllers/session_controller.dart';
+
+import 'package:minimalisticpush/managers/session_manager.dart';
+
+import 'package:sprinkle/sprinkle.dart';
 
 class ShareImage extends StatelessWidget {
   final Color primaryColor;
@@ -14,7 +17,8 @@ class ShareImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    List<double> peaks = SessionController.instance.getNormalizedSessions(5);
+    var sessionManager = context.use<SessionManager>();
+    List<double> peaks = sessionManager.getNormalizedSessions(5);
 
     return Container(
       width: this.size.width,

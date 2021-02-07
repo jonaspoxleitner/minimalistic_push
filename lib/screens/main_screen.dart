@@ -3,14 +3,15 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 import 'package:minimalisticpush/controllers/preferences_controller.dart';
-import 'package:minimalisticpush/controllers/session_controller.dart';
 import 'package:minimalisticpush/localizations.dart';
+import 'package:minimalisticpush/managers/session_manager.dart';
 import 'package:minimalisticpush/models/session.dart';
 import 'package:minimalisticpush/screens/named_overlay_route.dart';
 import 'package:minimalisticpush/styles/styles.dart';
 import 'package:minimalisticpush/widgets/navigation_bar.dart';
 
 import 'package:all_sensors/all_sensors.dart';
+import 'package:sprinkle/sprinkle.dart';
 
 class MainScreen extends StatefulWidget {
   @override
@@ -157,10 +158,13 @@ class MainScreenState extends State<MainScreen>
                   child: child,
                 );
               },
-              child: Text(
-                  MyLocalizations.of(context).getLocale('training')['hardcore']
-                      [this.hardcore],
-                  style: TextStyles.body),
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(
+                    MyLocalizations.of(context)
+                        .getLocale('training')['hardcore'][this.hardcore],
+                    style: TextStyles.body),
+              ),
             ),
           ],
         ),
@@ -224,6 +228,8 @@ class _TrainingWidgetState extends State<TrainingWidget> {
 
   @override
   Widget build(BuildContext context) {
+    var sessionManager = context.use<SessionManager>();
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisAlignment: MainAxisAlignment.center,
@@ -246,8 +252,7 @@ class _TrainingWidgetState extends State<TrainingWidget> {
                 color: Colors.white,
               ),
               onPressed: () {
-                SessionController.instance
-                    .insertSession(Session(count: counter));
+                sessionManager.insertSession(Session(count: counter));
                 widget.trainingMode.value = false;
               },
             ),

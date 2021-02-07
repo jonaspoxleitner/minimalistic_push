@@ -1,17 +1,22 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 
 import 'package:minimalisticpush/controllers/preferences_controller.dart';
-import 'package:minimalisticpush/controllers/session_controller.dart';
 import 'package:minimalisticpush/localizations.dart';
+import 'package:minimalisticpush/managers/session_manager.dart';
 import 'package:minimalisticpush/screens/loading_screen.dart';
 import 'package:minimalisticpush/screens/route_manager.dart';
 import 'package:minimalisticpush/styles/styles.dart';
 
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:sprinkle/Supervisor.dart';
+import 'package:sprinkle/sprinkle.dart';
 import 'package:theme_provider/theme_provider.dart';
 
 void main() {
-  runApp(MinimalisticPush());
+  final supervisor =
+      Supervisor().register<SessionManager>(() => SessionManager());
+
+  runApp(Sprinkle(supervisor: supervisor, child: MinimalisticPush()));
 }
 
 class MinimalisticPush extends StatelessWidget {
@@ -38,23 +43,11 @@ class MinimalisticPush extends StatelessWidget {
             debugShowCheckedModeBanner: false,
             theme: ThemeProvider.themeOf(themeContext).data,
             home: FutureBuilder<Object>(
-              future: SessionController.instance.setDatabase(),
+              future: PreferencesController.instance.setSharedPreferences(),
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
-                  return FutureBuilder<Object>(
-                    future:
-                        PreferencesController.instance.setSharedPreferences(),
-                    builder: (context, snapshot) {
-                      if (snapshot.hasData) {
-                        // the route manager handles the push and pop of the onboarding
-                        return RouteManager.instance;
-                      } else if (snapshot.hasError) {
-                        return Text("${snapshot.error}");
-                      } else {
-                        return LoadingScreen();
-                      }
-                    },
-                  );
+                  // the route manager handles the push and pop of the onboarding
+                  return RouteManager.instance;
                 } else if (snapshot.hasError) {
                   return Text("${snapshot.error}");
                 } else {
