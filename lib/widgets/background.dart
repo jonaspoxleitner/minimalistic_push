@@ -32,10 +32,10 @@ class _BackgroundState extends State<Background> with TickerProviderStateMixin {
   @override
   void initState() {
     _animationController = AnimationController(
-      duration: Duration(milliseconds: 1000),
+      duration: Duration(milliseconds: 1200),
       vsync: this,
     );
-    _animationController.addListener(() => super.setState(() {}));
+
     _animationController.animateTo(
       widget.factorNotifier.value,
       curve: Curves.easeInOutQuart,
@@ -158,21 +158,21 @@ class CurvePainter extends CustomPainter {
 
     Path path = Path();
     path.moveTo(0.0, size.height);
-    path.lineTo(0.0, getHeight(height, peaks.list.first));
+    path.lineTo(0.0, _getHeight(height, peaks.list.first));
 
     var offset = 0;
     for (int i = 0; i < peaks.list.length - 1; i++) {
       path.cubicTo(
           stepWidth * (offset + i + 1),
-          getHeight(height, peaks.list[i]),
+          _getHeight(height, peaks.list[i]),
           stepWidth * (offset + i + 1),
-          getHeight(height, peaks.list[i + 1]),
+          _getHeight(height, peaks.list[i + 1]),
           stepWidth * (offset + i + 2),
-          getHeight(height, peaks.list[i + 1]));
+          _getHeight(height, peaks.list[i + 1]));
       offset++;
     }
 
-    path.lineTo(size.width, getHeight(height, peaks.list.last));
+    path.lineTo(size.width, _getHeight(height, peaks.list.last));
     path.lineTo(size.width, size.height);
 
     path.close();
@@ -182,7 +182,7 @@ class CurvePainter extends CustomPainter {
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) => true;
 
-  double getHeight(double height, var factor) {
+  double _getHeight(double height, var factor) {
     return (height - height * factor) + spaceOnTop;
   }
 }

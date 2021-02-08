@@ -8,8 +8,8 @@ import 'package:minimalisticpush/styles/styles.dart';
 import 'package:sprinkle/Observer.dart';
 import 'package:sprinkle/sprinkle.dart';
 
-class SessionsScreen extends StatelessWidget {
-  const SessionsScreen({
+class SessionsContent extends StatelessWidget {
+  const SessionsContent({
     Key key,
   }) : super(key: key);
 
@@ -63,7 +63,7 @@ class SessionWidget extends StatelessWidget {
                 color: Colors.white,
                 shape: BoxShape.circle,
               ),
-              child: Text(idToShow.toString(),
+              child: Text(this.idToShow.toString(),
                   style: TextStyle(
                     color: Theme.of(context).primaryColor,
                     fontWeight: FontWeight.bold,
@@ -73,7 +73,7 @@ class SessionWidget extends StatelessWidget {
           ),
           Expanded(
             child: Text(
-              session.count.toString(),
+              this.session.count.toString(),
               softWrap: true,
               style: TextStyles.body,
             ),
@@ -86,9 +86,7 @@ class SessionWidget extends StatelessWidget {
               Icons.remove_circle_outline,
               color: Colors.white,
             ),
-            onPressed: () {
-              sessionManager.deleteSession(this.session.id);
-            },
+            onPressed: () => sessionManager.deleteSession(this.session.id),
           )
         ],
       ),

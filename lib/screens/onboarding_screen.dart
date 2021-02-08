@@ -26,6 +26,7 @@ class _OnboardingScreenState extends State<OnboardingScreen>
       duration: Duration(milliseconds: 500),
       vsync: this,
     );
+
     super.initState();
   }
 
@@ -39,7 +40,6 @@ class _OnboardingScreenState extends State<OnboardingScreen>
   Widget build(BuildContext context) {
     PageController pageController = PageController(initialPage: 0);
     var sessionManager = context.use<SessionManager>();
-    sessionManager.publishOnboardingSessions();
 
     return AnimatedBuilder(
       animation: _animationController,
@@ -56,6 +56,8 @@ class _OnboardingScreenState extends State<OnboardingScreen>
         constraints: BoxConstraints.expand(),
         child: PageView.builder(
           onPageChanged: (value) {
+            sessionManager.publishOnboardingSessions();
+
             switch (value) {
               case 0:
                 Background.instance.factorNotifier.value = 0.0;
@@ -211,12 +213,13 @@ class _OnboardingScreenState extends State<OnboardingScreen>
                           text: MyLocalizations.of(context)
                               .getLocale('onboarding')['titles'][index],
                           onTap: () {
-                            _animationController
-                                .animateTo(1.0, curve: Curves.easeInOutQuart)
-                                .then((value) {
-                              sessionManager.setNormalizedSessions();
-                              PreferencesController.instance.acceptOnboarding();
-                            });
+                            _animationController.animateTo(
+                              1.0,
+                              curve: Curves.easeInOutQuart,
+                            );
+
+                            sessionManager.setNormalizedSessions();
+                            PreferencesController.instance.acceptOnboarding();
                           },
                         ),
                       )

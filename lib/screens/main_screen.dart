@@ -21,7 +21,7 @@ class MainScreen extends StatefulWidget {
 class MainScreenState extends State<MainScreen>
     with SingleTickerProviderStateMixin {
   AnimationController _animationController;
-  final ValueNotifier<double> opacityNotifier = ValueNotifier(1.0);
+  final ValueNotifier<double> animationNotifier = ValueNotifier(0.0);
   final ValueNotifier<bool> trainingModeNotifier = ValueNotifier(false);
   var hardcore = false;
 
@@ -42,9 +42,9 @@ class MainScreenState extends State<MainScreen>
     );
 
     // this listener gets executed, when this widget comes into focus again
-    this.opacityNotifier.addListener(() {
+    this.animationNotifier.addListener(() {
       _animationController.animateTo(
-        this.opacityNotifier.value,
+        1.0 - this.animationNotifier.value,
         curve: Curves.easeInOutQuart,
       );
 
@@ -99,8 +99,8 @@ class MainScreenState extends State<MainScreen>
                   onPressed: () => Navigator.push(
                     context,
                     NamedOverlayRoute(
-                      opacityNotifier: this.opacityNotifier,
                       overlayName: 'sessions',
+                      animationNotifier: this.animationNotifier,
                     ),
                   ),
                 ),
@@ -109,8 +109,8 @@ class MainScreenState extends State<MainScreen>
                   onPressed: () => Navigator.push(
                     context,
                     NamedOverlayRoute(
-                      opacityNotifier: this.opacityNotifier,
                       overlayName: 'settings',
+                      animationNotifier: this.animationNotifier,
                     ),
                   ),
                 ),

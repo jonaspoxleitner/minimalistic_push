@@ -1,10 +1,10 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:minimalisticpush/models/session.dart';
+
 import 'package:sprinkle/Manager.dart';
 import 'package:sprinkle/sprinkle.dart';
-
-import '../models/session.dart';
 
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
@@ -17,7 +17,6 @@ class SessionManager extends Manager {
 
   SessionManager() {
     this.setDatabase();
-    print('database set');
   }
 
   // sets the database or creates it on first start of the app
@@ -196,5 +195,8 @@ class SessionManager extends Manager {
   }
 
   @override
-  void dispose() {}
+  void dispose() {
+    sessions.close();
+    normalized.close();
+  }
 }

@@ -13,16 +13,11 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:clipboard/clipboard.dart';
 import 'package:sprinkle/sprinkle.dart';
 
-class SettingsScreen extends StatefulWidget {
-  const SettingsScreen({
+class SettingsContent extends StatelessWidget {
+  const SettingsContent({
     Key key,
   }) : super(key: key);
 
-  @override
-  _SettingsScreenState createState() => _SettingsScreenState();
-}
-
-class _SettingsScreenState extends State<SettingsScreen> {
   @override
   Widget build(BuildContext context) {
     var sessionManager = context.use<SessionManager>();

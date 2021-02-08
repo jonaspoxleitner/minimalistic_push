@@ -1,6 +1,8 @@
-import 'package:flutter/material.dart';
-import 'package:minimalisticpush/localizations.dart';
+import 'dart:async';
 
+import 'package:flutter/material.dart';
+
+import 'package:minimalisticpush/localizations.dart';
 import 'package:minimalisticpush/screens/error_screen.dart';
 import 'package:minimalisticpush/screens/sessions_content.dart';
 import 'package:minimalisticpush/screens/settings_content.dart';
@@ -9,25 +11,26 @@ import 'package:minimalisticpush/widgets/background.dart';
 import 'package:minimalisticpush/widgets/navigation_bar.dart';
 
 class NamedOverlayRoute extends OverlayRoute {
-  final ValueNotifier<double> opacityNotifier;
+  final ValueNotifier<double> animationNotifier;
   final String overlayName;
-  CustomOverlayEntry current;
 
   NamedOverlayRoute({
-    @required this.opacityNotifier,
     @required this.overlayName,
+    @required this.animationNotifier,
   });
 
-  void _close() {
-    this.opacityNotifier.value = 1.0;
-    Background.instance.factorNotifier.value = 0.6;
-    current.close();
+  // closes the overlay by notifying the animations
+  void _close() async {
+    this.animationNotifier.value = 0.0;
+    Timer(Duration(milliseconds: 250), () {
+      Background.instance.factorNotifier.value = 0.6;
+    });
   }
 
   // sets the underlying state to invisible and animates the background to 1.0
   @override
   TickerFuture didPush() {
-    this.opacityNotifier.value = 0.0;
+    this.animationNotifier.value = 1.0;
     Background.instance.factorNotifier.value = 1.0;
     return super.didPush();
   }
@@ -45,6 +48,8 @@ class NamedOverlayRoute extends OverlayRoute {
     return [
       new OverlayEntry(
         builder: (context) {
+          CustomOverlayEntry current;
+
           switch (overlayName) {
             case 'sessions':
               current = CustomOverlayEntry(
@@ -60,7 +65,8 @@ class NamedOverlayRoute extends OverlayRoute {
                     onPressed: () => _close(),
                   ),
                 ),
-                child: SessionsScreen(),
+                child: SessionsContent(),
+                animationNotifier: animationNotifier,
               );
               break;
             case 'settings':
@@ -73,7 +79,8 @@ class NamedOverlayRoute extends OverlayRoute {
                     onPressed: () => _close(),
                   ),
                 ),
-                child: SettingsScreen(),
+                child: SettingsContent(),
+                animationNotifier: animationNotifier,
               );
               break;
             default:
@@ -82,6 +89,7 @@ class NamedOverlayRoute extends OverlayRoute {
                   text: 'Error',
                 ),
                 child: ErrorScreen(),
+                animationNotifier: animationNotifier,
               );
               break;
           }
@@ -93,55 +101,56 @@ class NamedOverlayRoute extends OverlayRoute {
   }
 }
 
-// TODO: remove state and animationcontroller with ValueNotifier
 class CustomOverlayEntry extends StatefulWidget {
-  _CustomOverlayEntryState state = _CustomOverlayEntryState();
-
-  CustomOverlayEntry({
-    key,
-    @required this.navigationBar,
-    @required this.child,
-  }) : super(key: key);
+  CustomOverlayEntry(
+      {key,
+      @required this.navigationBar,
+      @required this.child,
+      @required this.animationNotifier})
+      : super(key: key);
 
   final NavigationBar navigationBar;
   final Widget child;
-
-  void close() {
-    state.close();
-  }
+  final ValueNotifier<double> animationNotifier;
 
   @override
-  _CustomOverlayEntryState createState() => state;
+  _CustomOverlayEntryState createState() => _CustomOverlayEntryState();
 }
 
 class _CustomOverlayEntryState extends State<CustomOverlayEntry>
     with SingleTickerProviderStateMixin {
-  AnimationController animationController;
-  // this function is called to close the overlay and start the animation
-  void close() async {
-    animationController
-        .animateTo(0.0, curve: Curves.easeInOutQuart)
+  AnimationController _animationController;
+
+  void _close() {
+    _animationController
+        .animateTo(
+          widget.animationNotifier.value,
+          curve: Curves.easeInOutQuart,
+        )
         .then((value) => Navigator.of(context).pop());
   }
 
   @override
   void initState() {
-    animationController = AnimationController(
-      duration: Duration(milliseconds: 500),
+    _animationController = AnimationController(
+      duration: Duration(milliseconds: 750),
       vsync: this,
     );
 
-    animationController.animateTo(
-      1.0,
+    _animationController.animateTo(
+      widget.animationNotifier.value,
       curve: Curves.easeInOutQuart,
     );
+
+    widget.animationNotifier.addListener(_close);
 
     super.initState();
   }
 
   @override
   void dispose() {
-    animationController.dispose();
+    widget.animationNotifier.removeListener(_close);
+    _animationController.dispose();
     super.dispose();
   }
 
@@ -150,13 +159,16 @@ class _CustomOverlayEntryState extends State<CustomOverlayEntry>
     return Scaffold(
       backgroundColor: Colors.transparent,
       body: AnimatedBuilder(
-        animation: animationController,
+        animation: _animationController,
         builder: (context, child) {
           var height = MediaQuery.of(context).size.height;
-          var offset = height - animationController.value * height;
-          return Transform.translate(
-            offset: Offset(0.0, offset),
-            child: child,
+          var offset = height - _animationController.value * height;
+          return Opacity(
+            opacity: _animationController.value,
+            child: Transform.translate(
+              offset: Offset(0.0, offset),
+              child: child,
+            ),
           );
         },
         child: SafeArea(
@@ -176,74 +188,3 @@ class _CustomOverlayEntryState extends State<CustomOverlayEntry>
     );
   }
 }
-
-// class MyOverlayScreen extends StatefulWidget {
-//   const MyOverlayScreen({
-//     @required this.child,
-//   });
-
-//   final Widget child;
-
-//   @override
-//   _MyOverlayScreenState createState() => _MyOverlayScreenState();
-// }
-
-// class _MyOverlayScreenState extends State<MyOverlayScreen>
-//     with SingleTickerProviderStateMixin {
-//   AnimationController _animationController;
-
-//   // this function is called to close the overlay and start the animation
-//   void _close() async {
-//     _animationController
-//         .animateTo(0, curve: Curves.easeInOutQuart)
-//         .then((value) => Navigator.of(context).pop());
-//     // animation of the underlying will get rid of this timer
-//     Timer(
-//       Duration(milliseconds: 200),
-//       () => Background.instance.factorNotifier.value = 0.6,
-//     );
-//   }
-
-//   @override
-//   void initState() {
-//     _animationController = AnimationController(
-//       duration: Duration(milliseconds: 500),
-//       vsync: this,
-//     );
-
-//     _animationController.animateTo(
-//       1,
-//       curve: Curves.easeInOutQuart,
-//     );
-
-//     super.initState();
-//   }
-
-//   @override
-//   void dispose() {
-//     _animationController.dispose();
-//     super.dispose();
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       backgroundColor: Colors.transparent,
-//       body: AnimatedBuilder(
-//         animation: _animationController,
-//         child: SafeArea(
-//           bottom: false,
-//           child: widget.child,
-//         ),
-//         builder: (context, child) {
-//           var height = MediaQuery.of(context).size.height;
-//           var offset = height - _animationController.value * height;
-//           return Transform.translate(
-//             offset: Offset(0.0, offset),
-//             child: child,
-//           );
-//         },
-//       ),
-//     );
-//   }
-// }
