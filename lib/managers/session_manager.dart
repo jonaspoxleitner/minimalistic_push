@@ -9,6 +9,7 @@ import 'package:sprinkle/sprinkle.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
+// TODO: all instance fields should be final
 class SessionManager extends Manager {
   Database database;
 
@@ -31,7 +32,7 @@ class SessionManager extends Manager {
       version: 2,
     );
 
-    await this.loadSessions();
+    await this._loadSessions();
     this.setNormalizedSessions();
   }
 
@@ -51,13 +52,12 @@ class SessionManager extends Manager {
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
 
-    await this.loadSessions().then((value) {
-      this.setNormalizedSessions();
-    });
+    await this._loadSessions();
+    this.setNormalizedSessions();
   }
 
   // loads all sessions from the database ordered by the id
-  Future<List<Map<String, dynamic>>> loadSessions() async {
+  Future<List<Map<String, dynamic>>> _loadSessions() async {
     var response = database.query('sessions', orderBy: 'id');
 
     response.then((value) {
@@ -88,16 +88,16 @@ class SessionManager extends Manager {
       whereArgs: [id],
     );
 
-    await this.loadSessions().then((value) {
-      this.setNormalizedSessions();
-    });
+    await this._loadSessions();
+    this.setNormalizedSessions();
   }
 
   // debug
   // this method clears the whole session database
   void clear() async {
     await database.delete('sessions');
-    await this.loadSessions().then((value) => this.setNormalizedSessions());
+    await this._loadSessions();
+    this.setNormalizedSessions();
   }
 
   // sets 5 normlized sessions into the background

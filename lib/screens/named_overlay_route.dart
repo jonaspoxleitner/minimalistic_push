@@ -3,12 +3,15 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 import 'package:minimalisticpush/localizations.dart';
+import 'package:minimalisticpush/managers/session_manager.dart';
 import 'package:minimalisticpush/screens/error_screen.dart';
 import 'package:minimalisticpush/screens/sessions_content.dart';
 import 'package:minimalisticpush/screens/settings_content.dart';
 import 'package:minimalisticpush/utils/share_image.dart';
 import 'package:minimalisticpush/widgets/background.dart';
 import 'package:minimalisticpush/widgets/navigation_bar.dart';
+
+import 'package:sprinkle/sprinkle.dart';
 
 class NamedOverlayRoute extends OverlayRoute {
   final ValueNotifier<double> animationNotifier;
@@ -48,17 +51,21 @@ class NamedOverlayRoute extends OverlayRoute {
     return [
       new OverlayEntry(
         builder: (context) {
-          CustomOverlayEntry current;
+          _CustomOverlayEntry current;
+          var sessionManager = context.use<SessionManager>();
 
           switch (overlayName) {
             case 'sessions':
-              current = CustomOverlayEntry(
+              current = _CustomOverlayEntry(
                 navigationBar: NavigationBar(
                   text: MyLocalizations.of(context)
                       .getLocale('sessions')['title'],
                   leftOption: NavigationOption(
                     icon: Icons.reply,
-                    onPressed: () => callShareImage(context),
+                    onPressed: () => callShareImage(
+                      context,
+                      sessionManager.normalized.value,
+                    ),
                   ),
                   rightOption: NavigationOption(
                     icon: Icons.close,
@@ -70,7 +77,7 @@ class NamedOverlayRoute extends OverlayRoute {
               );
               break;
             case 'settings':
-              current = CustomOverlayEntry(
+              current = _CustomOverlayEntry(
                 navigationBar: NavigationBar(
                   text: MyLocalizations.of(context)
                       .getLocale('settings')['title'],
@@ -84,7 +91,7 @@ class NamedOverlayRoute extends OverlayRoute {
               );
               break;
             default:
-              current = CustomOverlayEntry(
+              current = _CustomOverlayEntry(
                 navigationBar: NavigationBar(
                   text: 'Error',
                 ),
@@ -101,8 +108,8 @@ class NamedOverlayRoute extends OverlayRoute {
   }
 }
 
-class CustomOverlayEntry extends StatefulWidget {
-  CustomOverlayEntry(
+class _CustomOverlayEntry extends StatefulWidget {
+  const _CustomOverlayEntry(
       {key,
       @required this.navigationBar,
       @required this.child,
@@ -117,7 +124,7 @@ class CustomOverlayEntry extends StatefulWidget {
   _CustomOverlayEntryState createState() => _CustomOverlayEntryState();
 }
 
-class _CustomOverlayEntryState extends State<CustomOverlayEntry>
+class _CustomOverlayEntryState extends State<_CustomOverlayEntry>
     with SingleTickerProviderStateMixin {
   AnimationController _animationController;
 

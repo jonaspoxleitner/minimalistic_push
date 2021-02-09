@@ -11,7 +11,7 @@ import 'package:minimalisticpush/widgets/share_image.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share/share.dart';
 
-void callShareImage(BuildContext context) async {
+void callShareImage(BuildContext context, List<double> peaks) async {
   Size imageSize = Size(900, 450);
 
   String path = await _createTempImageFileFromWidget(
@@ -19,6 +19,7 @@ void callShareImage(BuildContext context) async {
       primaryColor: Theme.of(context).primaryColor,
       accentColor: Theme.of(context).accentColor,
       size: imageSize,
+      peaks: peaks,
     ),
     size: imageSize,
   );

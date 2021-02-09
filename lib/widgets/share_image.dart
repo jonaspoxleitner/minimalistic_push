@@ -1,25 +1,20 @@
 import 'package:flutter/material.dart';
 
-import 'package:minimalisticpush/managers/session_manager.dart';
-
-import 'package:sprinkle/sprinkle.dart';
-
 class ShareImage extends StatelessWidget {
-  final Color primaryColor;
-  final Color accentColor;
-  final Size size;
-
-  ShareImage({
+  const ShareImage({
     @required this.primaryColor,
     @required this.accentColor,
     @required this.size,
+    @required this.peaks,
   });
+
+  final Color primaryColor;
+  final Color accentColor;
+  final Size size;
+  final List<double> peaks;
 
   @override
   Widget build(BuildContext context) {
-    var sessionManager = context.use<SessionManager>();
-    List<double> peaks = sessionManager.getNormalizedSessions(5);
-
     return Container(
       width: this.size.width,
       height: this.size.height,
@@ -27,7 +22,7 @@ class ShareImage extends StatelessWidget {
       alignment: Alignment.bottomCenter,
       child: CustomPaint(
         size: Size(size.width, size.height),
-        painter: SharePainter(
+        painter: _SharePainter(
           peaks: peaks,
           size: this.size,
           context: context,
@@ -38,7 +33,7 @@ class ShareImage extends StatelessWidget {
   }
 }
 
-class SharePainter extends CustomPainter {
+class _SharePainter extends CustomPainter {
   Paint _paint = Paint()
     ..style = PaintingStyle.fill
     ..strokeWidth = 0.0;
@@ -50,7 +45,7 @@ class SharePainter extends CustomPainter {
   var topBottomPadding;
   double height;
 
-  SharePainter({
+  _SharePainter({
     @required this.peaks,
     @required this.size,
     @required this.context,
