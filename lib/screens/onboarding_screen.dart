@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import 'package:minimalisticpush/controllers/preferences_controller.dart';
 import 'package:minimalisticpush/localizations.dart';
+import 'package:minimalisticpush/managers/preferences_manager.dart';
 import 'package:minimalisticpush/managers/session_manager.dart';
 import 'package:minimalisticpush/screens/error_screen.dart';
 import 'package:minimalisticpush/styles/styles.dart';
@@ -42,6 +42,7 @@ class _OnboardingScreenState extends State<OnboardingScreen>
   Widget build(BuildContext context) {
     PageController pageController = PageController(initialPage: 0);
     var sessionManager = context.use<SessionManager>();
+    var preferencesManager = context.use<PreferencesManager>();
 
     return AnimatedBuilder(
       animation: _animationController,
@@ -221,7 +222,7 @@ class _OnboardingScreenState extends State<OnboardingScreen>
                             );
 
                             sessionManager.setNormalizedSessions();
-                            PreferencesController.instance.acceptOnboarding();
+                            preferencesManager.acceptOnboarding();
                           },
                         ),
                       )

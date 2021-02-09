@@ -3,12 +3,13 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
-import 'package:minimalisticpush/controllers/preferences_controller.dart';
 import 'package:minimalisticpush/localizations.dart';
+import 'package:minimalisticpush/managers/preferences_manager.dart';
 import 'package:minimalisticpush/managers/session_manager.dart';
 import 'package:minimalisticpush/styles/styles.dart';
 import 'package:minimalisticpush/widgets/custom_button.dart';
 
+import 'package:sprinkle/Observer.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:clipboard/clipboard.dart';
 import 'package:sprinkle/sprinkle.dart';
@@ -246,6 +247,7 @@ class SettingsContent extends StatelessWidget {
   }
 }
 
+// ignore: unused_element
 class _DebugBlock extends StatelessWidget {
   const _DebugBlock({
     Key key,
@@ -254,6 +256,7 @@ class _DebugBlock extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var sessionManager = context.use<SessionManager>();
+    var preferencesManager = context.use<PreferencesManager>();
 
     return _SettingsBlock(
       title: 'Debug Settings',
@@ -264,7 +267,7 @@ class _DebugBlock extends StatelessWidget {
           text: 'Return to Onboarding (debug)',
           onTap: () {
             Navigator.of(context).pop();
-            PreferencesController.instance.returnToOnboarding();
+            preferencesManager.returnToOnboarding();
           },
         ),
         CustomButton(
@@ -278,38 +281,27 @@ class _DebugBlock extends StatelessWidget {
   }
 }
 
-class _HardcoreToggle extends StatefulWidget {
+class _HardcoreToggle extends StatelessWidget {
   const _HardcoreToggle({key}) : super(key: key);
 
   @override
-  _HardcoreToggleState createState() => _HardcoreToggleState();
-}
-
-class _HardcoreToggleState extends State<_HardcoreToggle> {
-  var hardcore;
-
-  void _buttonPress() {
-    this.setState(() {
-      this.hardcore = !this.hardcore;
-      PreferencesController.instance.setHardcore(this.hardcore);
-    });
-  }
-
-  @override
-  void initState() {
-    hardcore = PreferencesController.instance.getHardcore();
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: _buttonPress,
-      child: Icon(
-        this.hardcore ? Icons.check_box : Icons.check_box_outline_blank,
-        size: 30.0,
-        color: Colors.white,
-      ),
+    var preferencesManager = context.use<PreferencesManager>();
+
+    return Observer<bool>(
+      stream: preferencesManager.hardcore,
+      builder: (context, value) {
+        return GestureDetector(
+          onTap: () {
+            preferencesManager.setHardcore(!value);
+          },
+          child: Icon(
+            value ? Icons.check_box : Icons.check_box_outline_blank,
+            size: 30.0,
+            color: Colors.white,
+          ),
+        );
+      },
     );
   }
 }

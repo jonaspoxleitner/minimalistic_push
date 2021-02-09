@@ -2,15 +2,17 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 
-import 'package:minimalisticpush/controllers/preferences_controller.dart';
 import 'package:minimalisticpush/localizations.dart';
+import 'package:minimalisticpush/managers/preferences_manager.dart';
 import 'package:minimalisticpush/managers/session_manager.dart';
 import 'package:minimalisticpush/models/session.dart';
 import 'package:minimalisticpush/screens/named_overlay_route.dart';
 import 'package:minimalisticpush/styles/styles.dart';
+import 'package:minimalisticpush/widgets/background.dart';
 import 'package:minimalisticpush/widgets/navigation_bar.dart';
 
 import 'package:all_sensors/all_sensors.dart';
+import 'package:sprinkle/Observer.dart';
 import 'package:sprinkle/sprinkle.dart';
 
 class MainScreen extends StatefulWidget {
@@ -25,12 +27,9 @@ class _MainScreenState extends State<MainScreen>
   AnimationController _animationController;
   final ValueNotifier<double> animationNotifier = ValueNotifier(0.0);
   final ValueNotifier<bool> trainingModeNotifier = ValueNotifier(false);
-  var hardcore = false;
 
   @override
   void initState() {
-    this.hardcore = PreferencesController.instance.getHardcore();
-
     this.trainingModeNotifier.addListener(() => super.setState(() {}));
 
     _animationController = AnimationController(
@@ -49,19 +48,11 @@ class _MainScreenState extends State<MainScreen>
         1.0 - this.animationNotifier.value,
         curve: Curves.easeInOutQuart,
       );
-
-      super.setState(() {
-        this.hardcore = PreferencesController.instance.getHardcore();
-      });
     });
 
-    super.initState();
-  }
+    Background.instance.factorNotifier.value = 0.6;
 
-  @override
-  void setState(fn) {
-    this.hardcore = PreferencesController.instance.getHardcore();
-    super.setState(fn);
+    super.initState();
   }
 
   @override
@@ -72,6 +63,8 @@ class _MainScreenState extends State<MainScreen>
 
   @override
   Widget build(BuildContext context) {
+    var preferencesManager = context.use<PreferencesManager>();
+
     if (!trainingModeNotifier.value) {
       return AnimatedBuilder(
         animation: _animationController,
@@ -162,10 +155,16 @@ class _MainScreenState extends State<MainScreen>
               },
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: Text(
-                    MyLocalizations.of(context)
-                        .getLocale('training')['hardcore'][this.hardcore],
-                    style: TextStyles.body),
+                child: Observer<bool>(
+                  stream: preferencesManager.hardcore,
+                  builder: (context, value) {
+                    return Text(
+                      MyLocalizations.of(context)
+                          .getLocale('training')['hardcore'][value],
+                      style: TextStyles.body,
+                    );
+                  },
+                ),
               ),
             ),
           ],
@@ -174,7 +173,7 @@ class _MainScreenState extends State<MainScreen>
     } else {
       return _TrainingWidget(
         trainingMode: this.trainingModeNotifier,
-        hardcore: this.hardcore,
+        hardcore: preferencesManager.hardcore.value,
       );
     }
   }
