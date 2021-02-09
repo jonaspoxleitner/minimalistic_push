@@ -3,6 +3,7 @@ import 'package:minimalisticpush/screens/route_manager.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 // TODO: convert to manager
+// this conversion will also remove the RouteManager.instance problem
 class PreferencesController {
   int newestOnboardingVersion = 4; // change to force new onboarding
   SharedPreferences prefs;

@@ -24,22 +24,22 @@ class SettingsContent extends StatelessWidget {
 
     return ListView(
       children: [
-        //DebugBlock(),
-        SettingsBlock(
+        //_DebugBlock(),
+        _SettingsBlock(
           title: MyLocalizations.of(context).getLocale('settings')['themes']
               ['title'],
           description: MyLocalizations.of(context)
               .getLocale('settings')['themes']['description'],
           children: AppThemes.getThemeButtons(context),
         ),
-        SettingsBlock(
+        _SettingsBlock(
           title: MyLocalizations.of(context).getLocale('settings')['hardcore']
               ['title'],
           description: MyLocalizations.of(context)
               .getLocale('settings')['hardcore']['description'],
-          children: [HardcoreToggle()],
+          children: [_HardcoreToggle()],
         ),
-        SettingsBlock(
+        _SettingsBlock(
           title: MyLocalizations.of(context).getLocale('settings')['backup']
               ['title'],
           description: MyLocalizations.of(context)
@@ -246,8 +246,8 @@ class SettingsContent extends StatelessWidget {
   }
 }
 
-class DebugBlock extends StatelessWidget {
-  const DebugBlock({
+class _DebugBlock extends StatelessWidget {
+  const _DebugBlock({
     Key key,
   }) : super(key: key);
 
@@ -255,7 +255,7 @@ class DebugBlock extends StatelessWidget {
   Widget build(BuildContext context) {
     var sessionManager = context.use<SessionManager>();
 
-    return SettingsBlock(
+    return _SettingsBlock(
       title: 'Debug Settings',
       description:
           'These Settings are only for debug purposes and will likely be removed from the final Application.',
@@ -278,12 +278,14 @@ class DebugBlock extends StatelessWidget {
   }
 }
 
-class HardcoreToggle extends StatefulWidget {
+class _HardcoreToggle extends StatefulWidget {
+  const _HardcoreToggle({key}) : super(key: key);
+
   @override
   _HardcoreToggleState createState() => _HardcoreToggleState();
 }
 
-class _HardcoreToggleState extends State<HardcoreToggle> {
+class _HardcoreToggleState extends State<_HardcoreToggle> {
   var hardcore;
 
   void _buttonPress() {
@@ -313,17 +315,17 @@ class _HardcoreToggleState extends State<HardcoreToggle> {
 }
 
 // this widget represents a block in the settings
-class SettingsBlock extends StatelessWidget {
-  final String title;
-  final String description;
-  final List<Widget> children;
-
-  SettingsBlock({
-    Key key,
+class _SettingsBlock extends StatelessWidget {
+  const _SettingsBlock({
+    key,
     this.title,
     this.description,
     @required this.children,
   }) : super(key: key);
+
+  final String title;
+  final String description;
+  final List<Widget> children;
 
   @override
   Widget build(BuildContext context) {

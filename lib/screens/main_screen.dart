@@ -14,11 +14,13 @@ import 'package:all_sensors/all_sensors.dart';
 import 'package:sprinkle/sprinkle.dart';
 
 class MainScreen extends StatefulWidget {
+  const MainScreen({key}) : super(key: key);
+
   @override
-  MainScreenState createState() => MainScreenState();
+  _MainScreenState createState() => _MainScreenState();
 }
 
-class MainScreenState extends State<MainScreen>
+class _MainScreenState extends State<MainScreen>
     with SingleTickerProviderStateMixin {
   AnimationController _animationController;
   final ValueNotifier<double> animationNotifier = ValueNotifier(0.0);
@@ -170,7 +172,7 @@ class MainScreenState extends State<MainScreen>
         ),
       );
     } else {
-      return TrainingWidget(
+      return _TrainingWidget(
         trainingMode: this.trainingModeNotifier,
         hardcore: this.hardcore,
       );
@@ -178,21 +180,21 @@ class MainScreenState extends State<MainScreen>
   }
 }
 
-class TrainingWidget extends StatefulWidget {
-  final ValueNotifier<bool> trainingMode;
-  final bool hardcore;
-
-  TrainingWidget({
+class _TrainingWidget extends StatefulWidget {
+  const _TrainingWidget({
     Key key,
     @required this.trainingMode,
     @required this.hardcore,
   }) : super(key: key);
 
+  final ValueNotifier<bool> trainingMode;
+  final bool hardcore;
+
   @override
   _TrainingWidgetState createState() => _TrainingWidgetState();
 }
 
-class _TrainingWidgetState extends State<TrainingWidget> {
+class _TrainingWidgetState extends State<_TrainingWidget> {
   int counter = 1;
 
   var _proximity = false;
@@ -264,7 +266,7 @@ class _TrainingWidgetState extends State<TrainingWidget> {
             onTap: () => this._buttonTap(),
             child: Center(
               child: Padding(
-                padding: EdgeInsets.all(16.0),
+                padding: const EdgeInsets.all(16.0),
                 child: Text(
                   counter.toString(),
                   style: TextStyle(

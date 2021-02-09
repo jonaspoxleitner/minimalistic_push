@@ -4,10 +4,11 @@ import 'package:minimalisticpush/widgets/location_text.dart';
 
 class NavigationBar extends StatelessWidget {
   const NavigationBar({
+    key,
     @required this.text,
     this.leftOption,
     this.rightOption,
-  });
+  }) : super(key: key);
 
   final String text;
   final NavigationOption leftOption;
@@ -44,9 +45,10 @@ class NavigationBar extends StatelessWidget {
 
 class NavigationOption extends StatelessWidget {
   const NavigationOption({
+    key,
     @required this.icon,
     @required this.onPressed,
-  });
+  }) : super(key: key);
 
   final IconData icon;
   final Function onPressed;

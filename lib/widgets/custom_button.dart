@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 
 class CustomButton extends StatelessWidget {
   const CustomButton({
+    key,
     @required this.text,
     @required this.onTap,
-  });
+  }) : super(key: key);
 
   final String text;
   final Function onTap;
@@ -21,8 +22,8 @@ class CustomButton extends StatelessWidget {
             child: Container(
               constraints: BoxConstraints.tightForFinite(),
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.all(
-                  Radius.circular(10.0),
+                borderRadius: const BorderRadius.all(
+                  const Radius.circular(10.0),
                 ),
                 border: Border.all(
                   color: Colors.white,

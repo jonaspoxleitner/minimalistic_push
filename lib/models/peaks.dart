@@ -14,7 +14,8 @@ class Peaks {
     return Peaks(list: _lerpList(a.list, b.list, t));
   }
 
-  // TODO: give credit to fl_chart
+  // this function for lerping a list of doubles was copied from
+  // https://github.com/imaNNeoFighT/fl_chart
   List<double> _lerpList(List<double> a, List<double> b, double t) {
     if (a != null && b != null && a.length == b.length) {
       return List.generate(a.length, (i) {
@@ -30,7 +31,7 @@ class Peaks {
   }
 }
 
-// TODO: give credit to fl_chart
+// this class was kinda copied from https://github.com/imaNNeoFighT/fl_chart
 class PeaksTween extends Tween<Peaks> {
   PeaksTween({Peaks begin, Peaks end}) : super(begin: begin, end: end);
 

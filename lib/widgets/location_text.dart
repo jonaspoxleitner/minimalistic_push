@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class LocationText extends StatelessWidget {
   const LocationText({
-    Key key,
+    key,
     @required this.text,
   }) : super(key: key);
 
@@ -14,8 +14,8 @@ class LocationText extends StatelessWidget {
       padding: const EdgeInsets.all(8.0),
       child: Container(
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.all(
-            Radius.circular(10.0),
+          borderRadius: const BorderRadius.all(
+            const Radius.circular(10.0),
           ),
           border: Border.all(
             color: Colors.white,

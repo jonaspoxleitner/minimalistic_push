@@ -4,9 +4,10 @@ import 'package:theme_provider/theme_provider.dart';
 
 class ThemeButton extends StatelessWidget {
   const ThemeButton({
+    key,
     @required this.appTheme,
     @required this.isCurrent,
-  });
+  }) : super(key: key);
 
   final AppTheme appTheme;
   final bool isCurrent;
@@ -36,7 +37,7 @@ class ThemeButton extends StatelessWidget {
                 height: height,
               ),
               CustomPaint(
-                painter: DiagonalPainter(
+                painter: _DiagonalPainter(
                   color: this.appTheme.data.primaryColor,
                 ),
                 size: Size(
@@ -55,7 +56,7 @@ class ThemeButton extends StatelessWidget {
                     style: BorderStyle.solid,
                   ),
                   borderRadius: const BorderRadius.all(
-                    Radius.circular(10.0),
+                    const Radius.circular(10.0),
                   ),
                 ),
                 child: Text(
@@ -75,19 +76,20 @@ class ThemeButton extends StatelessWidget {
   }
 }
 
-class DiagonalPainter extends CustomPainter {
-  Paint _paint = Paint()
-    ..style = PaintingStyle.fill
-    ..strokeWidth = 0.0;
+class _DiagonalPainter extends CustomPainter {
+  const _DiagonalPainter({
+    this.color,
+  });
 
-  DiagonalPainter({
-    Color color,
-  }) {
-    _paint.color = color;
-  }
+  final Color color;
 
   @override
   void paint(Canvas canvas, Size size) {
+    Paint _paint = Paint()
+      ..style = PaintingStyle.fill
+      ..strokeWidth = 0.0
+      ..color = this.color;
+
     Path path = Path();
 
     path.moveTo(size.width, 0.0);

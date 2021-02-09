@@ -76,10 +76,12 @@ class TextStyles {
     fontWeight: FontWeight.w800,
     fontSize: 30.0,
   );
+
   static TextStyle subHeading = TextStyle(
     color: Colors.white,
     fontSize: 20.0,
   );
+
   static TextStyle body = TextStyle(
     color: Colors.white,
     fontSize: 18.0,

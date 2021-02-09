@@ -6,6 +6,7 @@ import 'package:minimalisticpush/models/peaks.dart';
 import 'package:sprinkle/Observer.dart';
 import 'package:sprinkle/sprinkle.dart';
 
+// TODO: remove Background.instance when creating the background manager
 class Background extends StatefulWidget {
   final bool chartVisibility = false;
   final ValueNotifier<double> factorNotifier = ValueNotifier(0.0);

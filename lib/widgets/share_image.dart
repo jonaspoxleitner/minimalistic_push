@@ -2,11 +2,12 @@ import 'package:flutter/material.dart';
 
 class ShareImage extends StatelessWidget {
   const ShareImage({
+    key,
     @required this.primaryColor,
     @required this.accentColor,
     @required this.size,
     @required this.peaks,
-  });
+  }) : super(key: key);
 
   final Color primaryColor;
   final Color accentColor;
@@ -34,30 +35,25 @@ class ShareImage extends StatelessWidget {
 }
 
 class _SharePainter extends CustomPainter {
-  Paint _paint = Paint()
-    ..style = PaintingStyle.fill
-    ..strokeWidth = 0.0;
-  List<double> peaks;
-  Size size;
-  BuildContext context;
-  Color color;
-
-  var topBottomPadding;
-  double height;
-
-  _SharePainter({
+  const _SharePainter({
     @required this.peaks,
     @required this.size,
     @required this.context,
     @required this.color,
-  }) {
-    this.topBottomPadding = 50;
-    this.height = this.size.height - (2 * this.topBottomPadding);
-  }
+  });
+
+  final List<double> peaks;
+  final Size size;
+  final BuildContext context;
+  final Color color;
+  final topBottomPadding = 50;
 
   @override
   void paint(Canvas canvas, Size size) {
-    _paint.color = this.color;
+    Paint paint = Paint()
+      ..style = PaintingStyle.fill
+      ..strokeWidth = 0.0
+      ..color = this.color;
 
     var steps = this.peaks.length * 2 - 2;
     var stepWidth = this.size.width / steps;
@@ -82,13 +78,14 @@ class _SharePainter extends CustomPainter {
     path.lineTo(size.width, size.height);
 
     path.close();
-    canvas.drawPath(path, _paint);
+    canvas.drawPath(path, paint);
   }
 
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 
   double getHeight(double factor) {
-    return (this.height - this.height * factor) + this.topBottomPadding;
+    var height = this.size.height - (2 * this.topBottomPadding);
+    return (height - height * factor) + this.topBottomPadding;
   }
 }

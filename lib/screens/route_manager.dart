@@ -7,7 +7,7 @@ import 'package:minimalisticpush/screens/main_screen.dart';
 import 'package:minimalisticpush/screens/onboarding_screen.dart';
 import 'package:minimalisticpush/widgets/background.dart';
 
-// ignore: must_be_immutable
+// TODO: change to stateless widget when creating the preferences manager
 class RouteManager extends StatefulWidget {
   ValueNotifier<bool> onboarding;
 
@@ -24,10 +24,10 @@ class RouteManager extends StatefulWidget {
   RouteManager._internal();
 
   @override
-  RouteManagerState createState() => RouteManagerState();
+  _RouteManagerState createState() => _RouteManagerState();
 }
 
-class RouteManagerState extends State<RouteManager> {
+class _RouteManagerState extends State<RouteManager> {
   @override
   void initState() {
     widget.onboarding =

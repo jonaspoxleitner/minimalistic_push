@@ -14,13 +14,13 @@ import 'package:minimalisticpush/widgets/navigation_bar.dart';
 import 'package:sprinkle/sprinkle.dart';
 
 class NamedOverlayRoute extends OverlayRoute {
-  final ValueNotifier<double> animationNotifier;
-  final String overlayName;
-
   NamedOverlayRoute({
     @required this.overlayName,
     @required this.animationNotifier,
   });
+
+  final ValueNotifier<double> animationNotifier;
+  final String overlayName;
 
   // closes the overlay by notifying the animations
   void _close() async {
@@ -36,12 +36,6 @@ class NamedOverlayRoute extends OverlayRoute {
     this.animationNotifier.value = 1.0;
     Background.instance.factorNotifier.value = 1.0;
     return super.didPush();
-  }
-
-  // sets the underlying state to visible and animates the background to 0.5
-  @override
-  bool didPop(result) {
-    return super.didPop(result);
   }
 
   @override
@@ -109,12 +103,12 @@ class NamedOverlayRoute extends OverlayRoute {
 }
 
 class _CustomOverlayEntry extends StatefulWidget {
-  const _CustomOverlayEntry(
-      {key,
-      @required this.navigationBar,
-      @required this.child,
-      @required this.animationNotifier})
-      : super(key: key);
+  const _CustomOverlayEntry({
+    key,
+    @required this.navigationBar,
+    @required this.child,
+    @required this.animationNotifier,
+  }) : super(key: key);
 
   final NavigationBar navigationBar;
   final Widget child;
