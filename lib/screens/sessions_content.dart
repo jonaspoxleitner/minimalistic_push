@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
+import 'package:minimalisticpush/localizations.dart';
 import 'package:minimalisticpush/managers/session_manager.dart';
 import 'package:minimalisticpush/models/session.dart';
 import 'package:minimalisticpush/styles/styles.dart';
@@ -19,22 +20,40 @@ class SessionsContent extends StatelessWidget {
 
     return Observer<List<Session>>(
       stream: sessionManager.sessions,
-      builder: (context, value) => ListView.builder(
-        itemCount: value.length,
-        itemBuilder: (context, index) {
-          int id = index + 1;
-          return SessionWidget(
-            session: value[index],
-            idToShow: id,
+      builder: (context, value) {
+        if (value.length == 0) {
+          return _NoSessionWidget();
+        } else {
+          return ListView.builder(
+            itemCount: value.length,
+            itemBuilder: (context, index) {
+              int id = index + 1;
+              return _SessionWidget(
+                session: value[index],
+                idToShow: id,
+              );
+            },
           );
-        },
+        }
+      },
+    );
+  }
+}
+
+class _NoSessionWidget extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Text(
+        MyLocalizations.of(context).getLocale('sessions')['empty'],
+        style: TextStyles.body,
       ),
     );
   }
 }
 
-class SessionWidget extends StatelessWidget {
-  const SessionWidget({
+class _SessionWidget extends StatelessWidget {
+  const _SessionWidget({
     @required this.session,
     @required this.idToShow,
   });
