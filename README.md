@@ -18,7 +18,7 @@ Minimalistic Push is one of the simplest push-up trackers out there. You can tra
 A few years ago, I experimented with PhoneGap and uploaded a more simpler app to the Google Play Store ([Google Play](https://play.google.com/store/apps/details?id=com.byBjorn.Push&hl=en_US)). As it turns out, people still download and try the app, even if there isn't much functionalty there. The project files can still be found in the 'legacy_web' directory in this repository. To improve my Flutter skills, I decided to give the app the update it deserves and provide maybe the simplest push-up tracker to the stores.
 
 ## Functionality
-On the fist start, the user is welcomed by three onboarding pages. These pages inform about the use and benefits of the app. After this, the user gets navigated to the main screen of the app.
+On the first start, the user is welcomed by three onboarding pages. These pages inform about the use and benefits of the app. After this, the user gets navigated to the main screen of the app.
 The main purpose of the app is to do your push-ups and track your progress with your nose ('Training Mode'). You can save your sessions in an offline database and also list your previous sessions ('Sessions Overview'). Furthermore, the 'Settings' screen gives the user the ability to clear all the sessions and change the theme of the app.
 
 ## Design
