@@ -98,52 +98,32 @@ class SessionManager extends Manager {
   }
 
   /// Creates a list with a given [length] with normalized session values.
-  ///
-  /// TODO: use List.filled
   List<double> _getNormalizedSessions(int length) {
-    var normalizedPeaks = <double>[];
-    var peaks = <int>[];
+    var normalizedPeaks = List.filled(length, 0.0);
+    var peaks = List.filled(length, 0);
 
-    for (var session in sessions.value) {
-      peaks.add(session.count);
-    }
-
-    while (peaks.length < length) {
-      peaks.insert(0, 0);
-    }
-
-    if (peaks.length > length) {
-      peaks = peaks.sublist(peaks.length - length);
-    }
-
-    var min = peaks[0];
-    var max = peaks[0];
-
-    // find min and max
-    for (var peak in peaks) {
-      if (peak < min) {
-        min = peak;
-      }
-      if (peak > max) {
-        max = peak;
+    for (var i = 1; i <= length; i++) {
+      if (sessions.value.length - i >= 0) {
+        peaks[length - i] = sessions.value[sessions.value.length - i].count;
       }
     }
 
-    // normalize list
+    var minMax = _findMinMax(peaks);
+
+    var min = minMax[0];
+    var max = minMax[1];
+
     if (max == 0) {
       // this should show something cool
-      for (var i = 0; i < peaks.length; i++) {
-        normalizedPeaks.add(0.5);
-      }
+      return List.filled(length, 0.5);
     } else if (min == max) {
       // steady pace
-      for (var i = 0; i < peaks.length; i++) {
-        normalizedPeaks.add(0.7);
-      }
-    } else {
-      for (var peak in peaks) {
-        normalizedPeaks.add((peak - min) / (max - min));
-      }
+      return List.filled(length, 0.7);
+    }
+
+    // normalize peaks
+    for (var i = 0; i < length; i++) {
+      normalizedPeaks[i] = ((peaks[i] - min) / (max - min));
     }
 
     return normalizedPeaks;
@@ -186,6 +166,17 @@ class SessionManager extends Manager {
     }
 
     return jsonEncode(data);
+  }
+
+  List<int> _findMinMax(List<int> list) {
+    var min = 0, max = 0;
+
+    for (var l in list) {
+      min = l < min ? l : min;
+      max = l > max ? l : max;
+    }
+
+    return [min, max];
   }
 
   @override
