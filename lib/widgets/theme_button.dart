@@ -2,24 +2,29 @@ import 'package:flutter/material.dart';
 
 import 'package:theme_provider/theme_provider.dart';
 
+/// The button for the theme selection in the settings.
 class ThemeButton extends StatelessWidget {
+  /// The constructor.
   const ThemeButton({
     key,
     @required this.appTheme,
     @required this.isCurrent,
   }) : super(key: key);
 
+  /// The AppTheme.
   final AppTheme appTheme;
+
+  /// If the theme is currently selected.
   final bool isCurrent;
 
   @override
   Widget build(BuildContext context) {
-    double width = MediaQuery.of(context).size.width;
-    final double height = 70;
+    var width = MediaQuery.of(context).size.width;
+    final height = 70.0;
 
     return GestureDetector(
       onTap: () {
-        ThemeProvider.controllerOf(context).setTheme(this.appTheme.id);
+        ThemeProvider.controllerOf(context).setTheme(appTheme.id);
       },
       child: Padding(
         padding: const EdgeInsets.all(8.0),
@@ -31,14 +36,14 @@ class ThemeButton extends StatelessWidget {
             children: [
               Container(
                 decoration: BoxDecoration(
-                  color: this.appTheme.data.accentColor,
+                  color: appTheme.data.accentColor,
                 ),
                 width: width,
                 height: height,
               ),
               CustomPaint(
                 painter: _DiagonalPainter(
-                  color: this.appTheme.data.primaryColor,
+                  color: appTheme.data.primaryColor,
                 ),
                 size: Size(
                   width,
@@ -55,12 +60,10 @@ class ThemeButton extends StatelessWidget {
                     width: 2.0,
                     style: BorderStyle.solid,
                   ),
-                  borderRadius: const BorderRadius.all(
-                    const Radius.circular(10.0),
-                  ),
+                  borderRadius: const BorderRadius.all(Radius.circular(10.0)),
                 ),
                 child: Text(
-                  this.appTheme.description,
+                  appTheme.description,
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 18.0,
@@ -85,12 +88,12 @@ class _DiagonalPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    Paint _paint = Paint()
+    var _paint = Paint()
       ..style = PaintingStyle.fill
       ..strokeWidth = 0.0
-      ..color = this.color;
+      ..color = color;
 
-    Path path = Path();
+    var path = Path();
 
     path.moveTo(size.width, 0.0);
     path.lineTo(size.width, size.height);

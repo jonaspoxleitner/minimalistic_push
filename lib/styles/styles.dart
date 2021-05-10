@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
-
-import 'package:minimalisticpush/widgets/theme_button.dart';
-
 import 'package:theme_provider/theme_provider.dart';
 
+import '../widgets/theme_button.dart';
+
+/// A collection of the available AppThemes in the application.
 class AppThemes {
-  static List<AppTheme> list = [
+  AppThemes._();
+
+  /// The list of the available [AppTheme]s.
+  static final list = <AppTheme>[
     AppTheme(
       id: "outdoor",
       data: ThemeData(
@@ -53,11 +56,14 @@ class AppThemes {
     ),
   ];
 
+  /// A function, which returns a list of [ThemeButton].
+  ///
+  /// The context is necessary to identify the current theme.
   static List<Widget> getThemeButtons(BuildContext context) {
-    List<Widget> themeButtons = [];
-    String current = ThemeProvider.controllerOf(context).currentThemeId;
+    var themeButtons = <Widget>[];
+    var current = ThemeProvider.controllerOf(context).currentThemeId;
 
-    for (AppTheme theme in list) {
+    for (var theme in list) {
       themeButtons.add(
         ThemeButton(
           appTheme: theme,
@@ -70,19 +76,23 @@ class AppThemes {
   }
 }
 
+/// A collection of the different text styles of the application.
 class TextStyles {
-  static TextStyle heading = TextStyle(
+  /// The syle for headings.
+  static const heading = TextStyle(
     color: Colors.white,
     fontWeight: FontWeight.w800,
     fontSize: 30.0,
   );
 
-  static TextStyle subHeading = TextStyle(
+  /// The syle for sub headings.
+  static const subHeading = TextStyle(
     color: Colors.white,
     fontSize: 20.0,
   );
 
-  static TextStyle body = TextStyle(
+  /// The style for longer text or a body.
+  static const body = TextStyle(
     color: Colors.white,
     fontSize: 18.0,
   );

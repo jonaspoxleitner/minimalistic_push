@@ -1,18 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-
-import 'package:minimalisticpush/localizations.dart';
-import 'package:minimalisticpush/managers/session_manager.dart';
-import 'package:minimalisticpush/models/session.dart';
-import 'package:minimalisticpush/styles/styles.dart';
-
 import 'package:sprinkle/Observer.dart';
 import 'package:sprinkle/sprinkle.dart';
 
+import '../localizations.dart';
+import '../managers/session_manager.dart';
+import '../models/session.dart';
+import '../styles/styles.dart';
+
+/// The content for the session overlay route.
 class SessionsContent extends StatelessWidget {
-  const SessionsContent({
-    Key key,
-  }) : super(key: key);
+  /// The constructor.
+  const SessionsContent({Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -21,13 +20,13 @@ class SessionsContent extends StatelessWidget {
     return Observer<List<Session>>(
       stream: sessionManager.sessions,
       builder: (context, value) {
-        if (value.length == 0) {
+        if (value.isEmpty) {
           return _NoSessionWidget();
         } else {
           return ListView.builder(
             itemCount: value.length,
             itemBuilder: (context, index) {
-              int id = index + 1;
+              var id = index + 1;
               return _SessionWidget(
                 session: value[index],
                 idToShow: id,
@@ -82,7 +81,7 @@ class _SessionWidget extends StatelessWidget {
                 color: Colors.white,
                 shape: BoxShape.circle,
               ),
-              child: Text(this.idToShow.toString(),
+              child: Text(idToShow.toString(),
                   style: TextStyle(
                     color: Theme.of(context).primaryColor,
                     fontWeight: FontWeight.bold,
@@ -92,7 +91,7 @@ class _SessionWidget extends StatelessWidget {
           ),
           Expanded(
             child: Text(
-              this.session.count.toString(),
+              session.count.toString(),
               softWrap: true,
               style: TextStyles.body,
             ),
@@ -105,7 +104,7 @@ class _SessionWidget extends StatelessWidget {
               Icons.remove_circle_outline,
               color: Colors.white,
             ),
-            onPressed: () => sessionManager.deleteSession(this.session.id),
+            onPressed: () => sessionManager.deleteSession(session.id),
           )
         ],
       ),

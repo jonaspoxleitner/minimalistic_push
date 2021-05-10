@@ -1,4 +1,8 @@
 # Minimalistic Push
+
+[![style: effective dart](https://img.shields.io/badge/style-effective_dart-40c4ff.svg)](https://pub.dev/packages/effective_dart)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+
 Minimalistic Push is one of the simplest push-up trackers out there. You can track your push-ups in the training mode and see an overview of your sessions.
 
 <img src="https://user-images.githubusercontent.com/18596113/101342862-71707a00-3883-11eb-951b-51d66f3c611f.gif" height="400" width="400">

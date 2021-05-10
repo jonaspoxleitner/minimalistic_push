@@ -1,16 +1,20 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
+/// The localizations for the application.
 class MyLocalizations {
+  /// The constructor.
   const MyLocalizations(this.locale);
 
+  /// The current locale.
   final Locale locale;
 
+  /// Returns the instance for the current locale.
   static MyLocalizations of(BuildContext context) {
     return Localizations.of<MyLocalizations>(context, MyLocalizations);
   }
 
-  static Map<String, Map<String, dynamic>> _localizedValues = {
+  static final Map<String, Map<String, dynamic>> _localizedValues = {
     'en': {
       'title': 'Minimalistic Push',
       'onboarding': {
@@ -66,25 +70,30 @@ class MyLocalizations {
         'themes': {
           'title': 'Themes',
           'description':
-              'You can choose your preferred theme. You have a theme idea? Check my website for instructions.',
+              'You can choose your preferred theme. You have a theme idea? '
+                  'Check my website for instructions.',
         },
         'hardcore': {
           'title': 'Hardcore',
-          'description':
-              'If you activate the hardcore mode, you will have to touch the screen with your nose. Otherwise, the proximity sensor of your phone will be used to determine a new push.',
+          'description': 'If you activate the hardcore mode, you will have to '
+              'touch the screen with your nose. Otherwise, the proximity '
+              'sensor of your phone will be used to determine a new push.',
         },
         'backup': {
           'title': 'Data Backup',
-          'description':
-              'With this function of the app, you are able to export your current sessions or import old sessions. Attention: If you import old sessions, your current session will be deleted. Please export your sessions before.',
+          'description': 'With this function of the app, you are able to '
+              'export your current sessions or import old sessions. '
+              'Attention: If you import old sessions, your current session '
+              'will be deleted. Please export your sessions before.',
           'import': {
             'title': 'Import',
-            'description':
-                'Do you want to continue importing your new sessions? Your current sessions will be deleted. If an error occurs, your current sessions will not be deleted.',
-            'success':
-                'Perfect! Your new sessions should be saved in the application.',
-            'fail':
-                'Unfortunately, something went wrong. Please make sure your copied data is in the right format.'
+            'description': 'Do you want to continue importing your new '
+                'sessions? Your current sessions will be deleted. If an '
+                'error occurs, your current sessions will not be deleted.',
+            'success': 'Perfect! Your new sessions should be saved '
+                'in the application.',
+            'fail': 'Unfortunately, something went wrong. Please make '
+                'sure your copied data is in the right format.'
           },
           'export': {
             'title': 'Export',
@@ -94,8 +103,8 @@ class MyLocalizations {
           'okay': 'Okay.',
         },
         'about': 'About',
-        'thanks':
-            'Thank you so much for using my app \'Minimalistic Push\'. Feel free to check out the GitHub repository.',
+        'thanks': 'Thank you so much for using my app \'Minimalistic Push\'. '
+            'Feel free to check out the GitHub repository.',
         'github button': 'View the source-code on GitHub.',
       },
       'share': {
@@ -157,38 +166,46 @@ class MyLocalizations {
         'title': 'Einstellungen',
         'themes': {
           'title': 'Themes',
-          'description':
-              'Hier kannst du ein Theme auswählen, das dir gefällt. Du hast eine Idee für ein neues Theme? Auf meiner Internetseite kannst du dich hierzu informieren.',
+          'description': 'Hier kannst du ein Theme auswählen, das dir gefällt. '
+              'Du hast eine Idee für ein neues Theme? Auf meiner '
+              'Internetseite kannst du dich hierzu informieren.',
         },
         'hardcore': {
           'title': 'Hardcore',
-          'description':
-              'Bei aktiviertem Hardcore-Modus ist es nur möglich die Liegestützen per Berührung mit dem Display zu zählen. Andernfalls wird der Näherungssensor des Smartphones verwendet.',
+          'description': 'Bei aktiviertem Hardcore-Modus ist es nur möglich '
+              'die Liegestützen per Berührung mit dem Display zu zählen. '
+              'Andernfalls wird der Näherungssensor des Smartphones verwendet.',
         },
         'backup': {
           'title': 'Daten Backup',
-          'description':
-              'Mit dieser Funktion hast du die Möglichkeit deine Sessions zu exportieren oder alte Sessions zu importieren. Achtung: Beim Import neuer Sessions werden deine aktuellen Sessions gelöscht. Bitte fertige davor ein Backup mit der Exportieren-Funktion an.',
+          'description': 'Mit dieser Funktion hast du die Möglichkeit deine '
+              'Sessions zu exportieren oder alte Sessions zu importieren. '
+              'Achtung: Beim Import neuer Sessions werden deine aktuellen '
+              'Sessions gelöscht. Bitte fertige davor ein Backup mit der '
+              'Exportieren-Funktion an.',
           'import': {
             'title': 'Importieren',
-            'description':
-                'Bist du sicher, dass du deine aktuellen Sessions löschen und neue Sessions importieren möchtest? Falls ein Fehler auftritt werden deine aktuellen Sessions natürlich nicht gelöscht.',
+            'description': 'Bist du sicher, dass du deine aktuellen Sessions '
+                'löschen und neue Sessions importieren möchtest? Falls ein '
+                'Fehler auftritt werden deine aktuellen Sessions natürlich '
+                'nicht gelöscht.',
             'success':
                 'Super! Deine neuen Daten sollten in der App gespeichert sein.',
-            'fail':
-                'Leider ist etwas schief gelaufen. Bitte stelle sicher, dass deine Daten im richtigen Format sind.'
+            'fail': 'Leider ist etwas schief gelaufen. Bitte stelle sicher, '
+                'dass deine Daten im richtigen Format sind.'
           },
           'export': {
             'title': 'Exportieren',
-            'success':
-                'Deine Daten wurden in der Zwischenablage deines Smartphones zwischengespeichert.'
+            'success': 'Deine Daten wurden in der Zwischenablage deines '
+                'Smartphones zwischengespeichert.'
           },
           'cancel': 'Abbrechen.',
           'okay': 'Okay.',
         },
         'about': 'Über',
-        'thanks':
-            'Vielen Dank, dass du meine App \'Minimalistic Push\' verwendest. Gerne kannst du dir das GitHub Repository dieser App ansehen.',
+        'thanks': 'Vielen Dank, dass du meine App \'Minimalistic Push\' '
+            'verwendest. Gerne kannst du dir das GitHub Repository dieser '
+            'App ansehen.',
         'github button': 'Den Quellcode auf GitHub ansehen.',
       },
       'share': {
@@ -198,12 +215,15 @@ class MyLocalizations {
     },
   };
 
+  /// Returns the localization.
   dynamic getLocale(String key) {
     return _localizedValues[locale.languageCode][key];
   }
 }
 
+/// The localizations delegate.
 class MyLocalizationsDelegate extends LocalizationsDelegate<MyLocalizations> {
+  /// The constructor.
   const MyLocalizationsDelegate();
 
   @override

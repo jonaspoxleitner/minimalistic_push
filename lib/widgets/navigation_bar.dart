@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 
-import 'package:minimalisticpush/widgets/location_text.dart';
+import 'location_text.dart';
 
+/// The custom navigation bar of the app.
 class NavigationBar extends StatelessWidget {
+  /// The constructor.
   const NavigationBar({
     key,
     @required this.text,
@@ -10,13 +12,18 @@ class NavigationBar extends StatelessWidget {
     this.rightOption,
   }) : super(key: key);
 
+  /// The text for the location.
   final String text;
+
+  /// The left option.
   final NavigationOption leftOption;
+
+  /// The right option.
   final NavigationOption rightOption;
 
   @override
   Widget build(BuildContext context) {
-    List<Widget> options = [];
+    var options = <Widget>[];
 
     if (leftOption != null) {
       options.add(leftOption);
@@ -32,7 +39,7 @@ class NavigationBar extends StatelessWidget {
       alignment: Alignment.center,
       children: [
         LocationText(
-          text: this.text,
+          text: text,
         ),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -43,14 +50,19 @@ class NavigationBar extends StatelessWidget {
   }
 }
 
+/// The navigation option inside the navigation bar.
 class NavigationOption extends StatelessWidget {
+  /// The constructor.
   const NavigationOption({
     key,
     @required this.icon,
     @required this.onPressed,
   }) : super(key: key);
 
+  /// The icon for the option.
   final IconData icon;
+
+  /// The event for the press.
   final Function onPressed;
 
   @override
@@ -60,7 +72,7 @@ class NavigationOption extends StatelessWidget {
       splashColor: Colors.transparent,
       highlightColor: Colors.transparent,
       icon: Icon(
-        this.icon,
+        icon,
         color: Colors.white,
       ),
       onPressed: onPressed,

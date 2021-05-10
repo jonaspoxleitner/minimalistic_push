@@ -30,6 +30,7 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_launcher_icons:
+  effective_dart: ^1.3.0
 
 flutter_icons:
   image_path: 'assets/icons/app_icon.png'

@@ -1,21 +1,22 @@
 import 'dart:async';
 
-import 'package:flutter/material.dart';
-
-import 'package:minimalisticpush/localizations.dart';
-import 'package:minimalisticpush/managers/preferences_manager.dart';
-import 'package:minimalisticpush/managers/session_manager.dart';
-import 'package:minimalisticpush/models/session.dart';
-import 'package:minimalisticpush/screens/named_overlay_route.dart';
-import 'package:minimalisticpush/styles/styles.dart';
-import 'package:minimalisticpush/widgets/background.dart';
-import 'package:minimalisticpush/widgets/navigation_bar.dart';
-
 import 'package:all_sensors/all_sensors.dart';
+import 'package:flutter/material.dart';
 import 'package:sprinkle/Observer.dart';
 import 'package:sprinkle/sprinkle.dart';
 
+import '../localizations.dart';
+import '../managers/preferences_manager.dart';
+import '../managers/session_manager.dart';
+import '../models/session.dart';
+import '../styles/styles.dart';
+import '../widgets/background.dart';
+import '../widgets/navigation_bar.dart';
+import 'named_overlay_route.dart';
+
+/// The main screen of the application.
 class MainScreen extends StatefulWidget {
+  /// The constructor for the main screen.
   const MainScreen({key}) : super(key: key);
 
   @override
@@ -30,7 +31,7 @@ class _MainScreenState extends State<MainScreen>
 
   @override
   void initState() {
-    this.trainingModeNotifier.addListener(() => super.setState(() {}));
+    trainingModeNotifier.addListener(() => super.setState(() {}));
 
     _animationController = AnimationController(
       duration: Duration(milliseconds: 500),
@@ -43,9 +44,9 @@ class _MainScreenState extends State<MainScreen>
     );
 
     // this listener gets executed, when this widget comes into focus again
-    this.animationNotifier.addListener(() {
+    animationNotifier.addListener(() {
       _animationController.animateTo(
-        1.0 - this.animationNotifier.value,
+        1.0 - animationNotifier.value,
         curve: Curves.easeInOutQuart,
       );
     });
@@ -95,7 +96,7 @@ class _MainScreenState extends State<MainScreen>
                     context,
                     NamedOverlayRoute(
                       overlayName: 'sessions',
-                      animationNotifier: this.animationNotifier,
+                      animationNotifier: animationNotifier,
                     ),
                   ),
                 ),
@@ -105,7 +106,7 @@ class _MainScreenState extends State<MainScreen>
                     context,
                     NamedOverlayRoute(
                       overlayName: 'settings',
-                      animationNotifier: this.animationNotifier,
+                      animationNotifier: animationNotifier,
                     ),
                   ),
                 ),
@@ -115,7 +116,7 @@ class _MainScreenState extends State<MainScreen>
               child: GestureDetector(
                 behavior: HitTestBehavior.translucent,
                 onTap: () {
-                  this.trainingModeNotifier.value = true;
+                  trainingModeNotifier.value = true;
                 },
                 child: Center(
                   child: Container(
@@ -172,7 +173,7 @@ class _MainScreenState extends State<MainScreen>
       );
     } else {
       return _TrainingWidget(
-        trainingMode: this.trainingModeNotifier,
+        trainingMode: trainingModeNotifier,
         hardcore: preferencesManager.hardcore.value,
       );
     }
@@ -201,17 +202,17 @@ class _TrainingWidgetState extends State<_TrainingWidget> {
 
   void _buttonTap() {
     super.setState(() {
-      this.counter++;
+      counter++;
     });
   }
 
   @override
   void initState() {
     if (!widget.hardcore) {
-      _streamSubscription = proximityEvents.listen((ProximityEvent event) {
+      _streamSubscription = proximityEvents.listen((event) {
         var p = event.getValue();
         if (_proximity && !p) {
-          this._buttonTap();
+          _buttonTap();
         }
         _proximity = p;
       });
@@ -244,7 +245,7 @@ class _TrainingWidgetState extends State<_TrainingWidget> {
                 Icons.close,
                 color: Colors.white,
               ),
-              onPressed: () => _showCancelDialog(this.counter),
+              onPressed: () => _showCancelDialog(counter),
             ),
             IconButton(
               padding: const EdgeInsets.all(16.0),
@@ -262,7 +263,7 @@ class _TrainingWidgetState extends State<_TrainingWidget> {
         Expanded(
           child: GestureDetector(
             behavior: HitTestBehavior.translucent,
-            onTap: () => this._buttonTap(),
+            onTap: _buttonTap,
             child: Center(
               child: Padding(
                 padding: const EdgeInsets.all(16.0),
@@ -285,7 +286,7 @@ class _TrainingWidgetState extends State<_TrainingWidget> {
   Future<void> _showCancelDialog(int count) async {
     return showDialog<void>(
       context: context,
-      builder: (BuildContext context) {
+      builder: (context) {
         return AlertDialog(
           title: Text(
             MyLocalizations.of(context).getLocale('training')['alert']['title'],

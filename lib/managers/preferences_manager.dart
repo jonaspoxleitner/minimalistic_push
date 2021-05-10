@@ -2,67 +2,77 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sprinkle/Manager.dart';
 import 'package:sprinkle/sprinkle.dart';
 
+/// The manager for the data regarding the hardcore mode and the onboarding.
 class PreferencesManager extends Manager {
-  final int newestOnboardingVersion = 4; // change to force new onboarding
-  SharedPreferences prefs;
+  /// The version of the onboarding version, which can be used to force the
+  /// onboarding.
+  final newestOnboardingVersion = 4;
 
+  /// A stream of the value of hardcore.
   final hardcore = true.reactive;
+
+  /// A stream of the value of the onboarding.
   final onboarding = true.reactive;
 
+  /// The constructor of the class, which also initializes the streams.
   PreferencesManager() {
-    setSharedPreferences();
-  }
-
-  // sets the shared preferences
-  void setSharedPreferences() async {
-    prefs = await SharedPreferences.getInstance();
     isHardcore();
     isOnboarding();
   }
 
-  // publishes to the stream if hardcore is enabled
-  void isHardcore() {
-    hardcore.value = getHardcore();
+  /// Returns an instance of [SharedPreferences].
+  Future<SharedPreferences> get sharedPreferences async =>
+      await SharedPreferences.getInstance();
+
+  /// Publishes the value of hardcore to the stream.
+  void isHardcore() async {
+    hardcore.value = await getHardcore();
   }
 
-  // returns the value of hardcore, if no value is set, false will return
-  bool getHardcore() {
-    return prefs.getBool('hardcore') ?? false;
+  /// Returns the value of hardcore from the SharedPreferences.
+  Future<bool> getHardcore() async {
+    return sharedPreferences.then((sp) => sp.getBool('hardcore') ?? false);
   }
 
-  // sets a new value to hardcore
-  void setHardcore(bool hardcore) async {
-    await prefs.setBool('hardcore', hardcore);
+  /// Enables the hardcore mode.
+  void enableHardcore() {
+    _setHardcore(true);
+  }
+
+  /// Disables the hardcore mode.
+  void disableHardcore() {
+    _setHardcore(false);
+  }
+
+  /// Sets the new mode to the SharedPreferences and updates the UI.
+  void _setHardcore(bool hardcore) async {
+    await sharedPreferences.then((sp) => sp.setBool('hardcore', hardcore));
     isHardcore();
   }
 
-  // publishes to the stream if onboarding should be shown
-  void isOnboarding() {
-    onboarding.value = newestOnboardingVersion > getOnboardingVersion();
+  /// Publishes the onboarding state to the stream.
+  void isOnboarding() async {
+    onboarding.value = newestOnboardingVersion > await getOnboardingVersion();
   }
 
-  // returns the already accepted version of the onboarding
-  // if no onboarding was accepted it returns 0
-  int getOnboardingVersion() {
-    return prefs.getInt('onboarding') ?? 0;
+  /// Returns the already accepted onboarding version.
+  Future<int> getOnboardingVersion() async {
+    return sharedPreferences.then((sp) => sp.getInt('onboarding') ?? 0);
   }
 
-  // is called when the user completes the onboarding experience
-  // sets the newest version into the shared preferences and reloads
+  /// Sets the [newestOnboardingVersion].
   void acceptOnboarding() {
     _setOnboardingVersion(newestOnboardingVersion);
   }
 
-  // debug
-  // sets the onboarding version to 0 and forces the RouteManager to reload
+  /// Sets the onboarding version to 0 for debug purposes.
   void returnToOnboarding() {
     _setOnboardingVersion(0);
   }
 
-  // debug
-  // sets a version into the shared preferences
+  /// Sets the onboardingVersion and updates the UI.
   void _setOnboardingVersion(int version) async {
-    await prefs.setInt('onboarding', version);
+    await sharedPreferences.then((sp) => sp.setInt('onboarding', version));
     isOnboarding();
   }
 

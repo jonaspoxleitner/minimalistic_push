@@ -3,13 +3,17 @@ import 'dart:ui';
 import 'package:flutter/animation.dart';
 import 'package:flutter/foundation.dart';
 
+/// The object for a list of peaks.
 class Peaks {
+  /// The constructor, which requires a list.
   Peaks({
     @required this.list,
   });
 
+  /// The list with the 'height' of the peaks as double.
   final List<double> list;
 
+  /// Lerps the list.
   Peaks lerp(Peaks a, Peaks b, double t) {
     return Peaks(list: _lerpList(a.list, b.list, t));
   }
@@ -31,8 +35,10 @@ class Peaks {
   }
 }
 
+/// A Tween of the Peaks object.
 // this class was kinda copied from https://github.com/imaNNeoFighT/fl_chart
 class PeaksTween extends Tween<Peaks> {
+  /// The constructor, which requires a beginning and end.
   PeaksTween({Peaks begin, Peaks end}) : super(begin: begin, end: end);
 
   @override

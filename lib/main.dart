@@ -1,24 +1,25 @@
 import 'package:flutter/material.dart';
-
-import 'package:minimalisticpush/localizations.dart';
-import 'package:minimalisticpush/managers/preferences_manager.dart';
-import 'package:minimalisticpush/managers/session_manager.dart';
-import 'package:minimalisticpush/screens/route_manager.dart';
-import 'package:minimalisticpush/styles/styles.dart';
+import 'package:flutter/services.dart';
 
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:sprinkle/Supervisor.dart';
 import 'package:sprinkle/sprinkle.dart';
 import 'package:theme_provider/theme_provider.dart';
 
-void main() {
-  final supervisor = Supervisor();
-  supervisor.register<SessionManager>(() => SessionManager());
-  supervisor.register<PreferencesManager>(() => PreferencesManager());
+import 'localizations.dart';
+import 'managers/preferences_manager.dart';
+import 'managers/session_manager.dart';
+import 'screens/route_manager.dart';
+import 'styles/styles.dart';
 
+void main() {
+  final supervisor = Supervisor()
+    ..register<SessionManager>(() => SessionManager())
+    ..register<PreferencesManager>(() => PreferencesManager());
   runApp(Sprinkle(supervisor: supervisor, child: MinimalisticPush()));
 }
 
+/// The application.
 class MinimalisticPush extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -42,7 +43,12 @@ class MinimalisticPush extends StatelessWidget {
             title: 'Minimalistic Push',
             debugShowCheckedModeBanner: false,
             theme: ThemeProvider.themeOf(themeContext).data,
-            home: RouteManager(),
+            home: AnnotatedRegion<SystemUiOverlayStyle>(
+                value: const SystemUiOverlayStyle(
+                  statusBarIconBrightness: Brightness.light,
+                  statusBarBrightness: Brightness.dark,
+                ),
+                child: RouteManager()),
           ),
         ),
       ),

@@ -1,17 +1,18 @@
 import 'package:flutter/material.dart';
-
-import 'package:minimalisticpush/localizations.dart';
-import 'package:minimalisticpush/managers/preferences_manager.dart';
-import 'package:minimalisticpush/managers/session_manager.dart';
-import 'package:minimalisticpush/screens/error_screen.dart';
-import 'package:minimalisticpush/styles/styles.dart';
-import 'package:minimalisticpush/widgets/background.dart';
-import 'package:minimalisticpush/widgets/custom_button.dart';
-import 'package:minimalisticpush/widgets/location_text.dart';
-
 import 'package:sprinkle/sprinkle.dart';
 
+import '../localizations.dart';
+import '../managers/preferences_manager.dart';
+import '../managers/session_manager.dart';
+import '../styles/styles.dart';
+import '../widgets/background.dart';
+import '../widgets/custom_button.dart';
+import '../widgets/location_text.dart';
+import 'error_screen.dart';
+
+/// A widget for the onboarding experience.
 class OnboardingScreen extends StatefulWidget {
+  /// The constructor for the clas
   const OnboardingScreen({key}) : super(key: key);
 
   @override
@@ -40,7 +41,7 @@ class _OnboardingScreenState extends State<OnboardingScreen>
 
   @override
   Widget build(BuildContext context) {
-    PageController pageController = PageController(initialPage: 0);
+    var pageController = PageController(initialPage: 0);
     var sessionManager = context.use<SessionManager>();
     var preferencesManager = context.use<PreferencesManager>();
 
@@ -248,9 +249,9 @@ class _IconDescriptionList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    List<Widget> widgets = [];
+    var widgets = <Widget>[];
 
-    for (_ListElement e in this.elements) {
+    for (var e in elements) {
       if (e.iconData == null && e.number == null) {
         widgets.add(
           Padding(
@@ -337,9 +338,9 @@ class _ListElement {
     this.number,
     @required this.description,
   }) {
-    assert((this.iconData == null && this.number != null) ||
-        (this.iconData != null && this.number == null));
-    assert(this.description != null && this.description.trim().length != 0);
+    assert((iconData == null && number != null) ||
+        (iconData != null && number == null));
+    assert(description != null && description.trim().isNotEmpty);
   }
 
   final IconData iconData;

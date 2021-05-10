@@ -1,20 +1,19 @@
 import 'dart:io';
-import 'dart:ui' as UI;
+import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:flutter/services.dart';
-
-import 'package:minimalisticpush/localizations.dart';
-import 'package:minimalisticpush/widgets/share_image.dart';
-
 import 'package:path_provider/path_provider.dart';
 import 'package:share/share.dart';
 
-void callShareImage(BuildContext context, List<double> peaks) async {
-  Size imageSize = Size(900, 450);
+import '../localizations.dart';
+import '../widgets/share_image.dart';
 
-  String path = await _createTempImageFileFromWidget(
+/// This method calls and handles the Share API.
+void callShareImage(BuildContext context, List<double> peaks) async {
+  var imageSize = Size(900, 450);
+
+  var path = await _createTempImageFileFromWidget(
     widget: ShareImage(
       primaryColor: Theme.of(context).primaryColor,
       accentColor: Theme.of(context).accentColor,
@@ -32,15 +31,15 @@ void callShareImage(BuildContext context, List<double> peaks) async {
   );
 }
 
-// Code by Christian Mürtz, GitHub: christian-muertz with slight modifications by me
+// Code by Christian Mürtz, GitHub: christian-muertz with slight modifications
 Future<String> _createTempImageFileFromWidget(
     {Widget widget, Size size}) async {
-  final RenderRepaintBoundary repaintBoundary = RenderRepaintBoundary();
+  final repaintBoundary = RenderRepaintBoundary();
 
   assert(widget != null);
   assert(size != null);
 
-  final RenderView renderView = RenderView(
+  final renderView = RenderView(
     window: null,
     child: RenderPositionedBox(
       alignment: Alignment.center,
@@ -52,14 +51,13 @@ Future<String> _createTempImageFileFromWidget(
     ),
   );
 
-  final PipelineOwner pipelineOwner = PipelineOwner();
-  final BuildOwner buildOwner = BuildOwner();
+  final pipelineOwner = PipelineOwner();
+  final buildOwner = BuildOwner();
 
   pipelineOwner.rootNode = renderView;
   renderView.prepareInitialFrame();
 
-  final RenderObjectToWidgetElement<RenderBox> rootElement =
-      RenderObjectToWidgetAdapter<RenderBox>(
+  final rootElement = RenderObjectToWidgetAdapter<RenderBox>(
     container: repaintBoundary,
     child: widget,
   ).attachToRenderTree(buildOwner);
@@ -73,12 +71,11 @@ Future<String> _createTempImageFileFromWidget(
   pipelineOwner.flushCompositingBits();
   pipelineOwner.flushPaint();
 
-  final UI.Image image = await repaintBoundary.toImage();
-  final ByteData byteData =
-      await image.toByteData(format: UI.ImageByteFormat.png);
+  final image = await repaintBoundary.toImage();
+  final byteData = await image.toByteData(format: ui.ImageByteFormat.png);
 
   final tempDir = await getTemporaryDirectory();
-  final file = await new File('${tempDir.path}/curve.png').create();
+  final file = await File('${tempDir.path}/curve.png').create();
   file.writeAsBytesSync(byteData.buffer.asUint8List());
 
   return file.path;

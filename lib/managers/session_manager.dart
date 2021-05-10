@@ -1,28 +1,29 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:minimalisticpush/models/session.dart';
-
+import 'package:path/path.dart';
 import 'package:sprinkle/Manager.dart';
 import 'package:sprinkle/sprinkle.dart';
-
-import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
-// TODO: all instance fields should be final
-class SessionManager extends Manager {
-  Database database;
+import '../models/session.dart';
 
+/// The manager for the completed sessions.
+class SessionManager extends Manager {
+  /// A list of all the sessions.
   final sessions = <Session>[].reactive;
+
+  /// A list of the normalized sessions with the length of 5.
   final normalized = <double>[0.0, 0.0, 0.0, 0.0, 0.0].reactive;
 
+  /// The constructor of the manager, which also initializes the lists.
   SessionManager() {
-    this.setDatabase();
+    _init();
   }
 
-  // sets the database or creates it on first start of the app
-  void setDatabase() async {
-    this.database = await openDatabase(
+  /// The database of the sessions.
+  Future<Database> get database async {
+    return await openDatabase(
       join(await getDatabasesPath(), 'sessions_database.database'),
       onCreate: (database, version) {
         return database.execute(
@@ -31,36 +32,36 @@ class SessionManager extends Manager {
       },
       version: 2,
     );
-
-    await this._loadSessions();
-    this.setNormalizedSessions();
   }
 
-  // inserts a new session into the database
+  void _init() async {
+    await _loadSessions();
+    setNormalizedSessions();
+  }
+
+  /// Insert a new [Session] into the database and update the UI.
   void insertSession(Session session) async {
-    if (session.id == null) {
-      if (sessions.value.isEmpty) {
-        session.id = 1;
-      } else {
-        session.id = sessions.value.last.id + 1;
-      }
+    if (session.id == null && sessions.value.isEmpty) {
+      session.id = 1;
+    } else if (session.id == null) {
+      session.id = sessions.value.last.id + 1;
     }
 
-    await database.insert(
-      'sessions',
-      session.toMap(),
-      conflictAlgorithm: ConflictAlgorithm.replace,
-    );
+    await database.then((db) => db.insert(
+          'sessions',
+          session.toMap(),
+          conflictAlgorithm: ConflictAlgorithm.replace,
+        ));
 
-    await this._loadSessions();
-    this.setNormalizedSessions();
+    await _loadSessions();
+    setNormalizedSessions();
   }
 
-  // loads all sessions from the database ordered by the id
-  Future<List<Map<String, dynamic>>> _loadSessions() async {
-    var response = database.query('sessions', orderBy: 'id');
+  /// Load all the sessions from the database.
+  void _loadSessions() async {
+    var response = database.then((db) => db.query('sessions', orderBy: 'id'));
 
-    response.then((value) {
+    await response.then((value) {
       sessions.value = List.generate(value.length, (i) {
         return Session(
           id: value[i]['id'],
@@ -70,47 +71,40 @@ class SessionManager extends Manager {
 
       return response;
     });
-
-    return response;
   }
 
-  // returns the sessions in a list
-  // does not call this.loadSessions() for performace reasons
-  List<Session> getSessions() {
-    return sessions.value;
-  }
-
-  // delete a session from the database by id
+  /// Delete a session from the database by the [id] and update the UI.
   Future<void> deleteSession(int id) async {
-    await database.delete(
-      'sessions',
-      where: "id = ?",
-      whereArgs: [id],
-    );
+    await database.then((db) => db.delete(
+          'sessions',
+          where: "id = ?",
+          whereArgs: [id],
+        ));
 
-    await this._loadSessions();
-    this.setNormalizedSessions();
+    await _loadSessions();
+    setNormalizedSessions();
   }
 
-  // debug
-  // this method clears the whole session database
+  /// Clears the database for debug purposes.
   void clear() async {
-    await database.delete('sessions');
-    await this._loadSessions();
-    this.setNormalizedSessions();
+    await database.then((db) => db.delete('sessions'));
+    await _loadSessions();
+    setNormalizedSessions();
   }
 
-  // sets 5 normlized sessions into the background
+  /// Sets the normalized Sessions to the stream.
   void setNormalizedSessions() {
-    normalized.value = this.getNormalizedSessions(5);
+    normalized.value = _getNormalizedSessions(5);
   }
 
-  // returns normalized sessions with a variable length
-  List<double> getNormalizedSessions(int length) {
-    List<double> normalizedPeaks = [];
-    List<int> peaks = [];
+  /// Creates a list with a given [length] with normalized session values.
+  ///
+  /// TODO: use List.filled
+  List<double> _getNormalizedSessions(int length) {
+    var normalizedPeaks = <double>[];
+    var peaks = <int>[];
 
-    for (Session session in sessions.value) {
+    for (var session in sessions.value) {
       peaks.add(session.count);
     }
 
@@ -126,7 +120,7 @@ class SessionManager extends Manager {
     var max = peaks[0];
 
     // find min and max
-    for (int peak in peaks) {
+    for (var peak in peaks) {
       if (peak < min) {
         min = peak;
       }
@@ -138,16 +132,16 @@ class SessionManager extends Manager {
     // normalize list
     if (max == 0) {
       // this should show something cool
-      for (int i = 0; i < peaks.length; i++) {
+      for (var i = 0; i < peaks.length; i++) {
         normalizedPeaks.add(0.5);
       }
     } else if (min == max) {
       // steady pace
-      for (int i = 0; i < peaks.length; i++) {
+      for (var i = 0; i < peaks.length; i++) {
         normalizedPeaks.add(0.7);
       }
     } else {
-      for (int peak in peaks) {
+      for (var peak in peaks) {
         normalizedPeaks.add((peak - min) / (max - min));
       }
     }
@@ -155,13 +149,12 @@ class SessionManager extends Manager {
     return normalizedPeaks;
   }
 
-  // // publishes fake normalized sessions to the stream
+  /// Publishes fake normalizes sessions for the onboarding experience.
   void publishOnboardingSessions() {
     normalized.value = [0.2, 0.4, 0.6, 0.8, 1.0];
   }
 
-  // import data from string
-  // returns true if everything went fine
+  /// Imports a data from a json String.
   bool importDataFromString(String json) {
     try {
       Map<String, dynamic> data = jsonDecode(json);
@@ -170,24 +163,25 @@ class SessionManager extends Manager {
         return false;
       }
 
-      this.clear();
+      clear();
 
       for (Map m in data['sessions']) {
-        this.insertSession(Session(id: m['id'], count: m['count']));
+        insertSession(Session(id: m['id'], count: m['count']));
       }
 
       return true;
+      // ignore: avoid_catches_without_on_clauses
     } catch (e) {
       // calling function will handle error because it belongs to UI
       return false;
     }
   }
 
-  // export data to string
+  /// Exports the sessions as a String.
   String exportDataToString() {
-    Map data = {'sessions': []};
+    var data = {'sessions': []};
 
-    for (Session s in sessions.value) {
+    for (var s in sessions.value) {
       data['sessions'].add(s.toMap());
     }
 

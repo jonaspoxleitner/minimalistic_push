@@ -1,23 +1,24 @@
 import 'package:flutter/material.dart';
-
-import 'package:minimalisticpush/managers/session_manager.dart';
-import 'package:minimalisticpush/models/peaks.dart';
-
 import 'package:sprinkle/Observer.dart';
 import 'package:sprinkle/sprinkle.dart';
 
-// TODO: remove Background.instance when creating the background manager
+import '../managers/session_manager.dart';
+import '../models/peaks.dart';
+
+/// This Widget represents the background of the application.
+///
+/// TODO: remove Background.instance when creating the background manager
 class Background extends StatefulWidget {
-  final bool chartVisibility = false;
+  /// The ValueNotifier for the height of the background.
   final ValueNotifier<double> factorNotifier = ValueNotifier(0.0);
 
   static Background _instance;
 
-  static get instance {
+  /// The single instance of the widget.
+  static Background get instance {
     if (_instance == null) {
       _instance = Background._internal();
     }
-
     return _instance;
   }
 
@@ -70,7 +71,7 @@ class _BackgroundState extends State<Background> with TickerProviderStateMixin {
           return Observer<List<double>>(
             stream: sessionManager.normalized,
             builder: (context, value) {
-              return new AnimatedPeaks(
+              return _AnimatedPeaks(
                 peaks: Peaks(list: value),
                 animationController: _animationController,
                 duration: Duration(milliseconds: 1000),
@@ -84,11 +85,11 @@ class _BackgroundState extends State<Background> with TickerProviderStateMixin {
   }
 }
 
-class AnimatedPeaks extends ImplicitlyAnimatedWidget {
+class _AnimatedPeaks extends ImplicitlyAnimatedWidget {
   final Peaks peaks;
   final AnimationController animationController;
 
-  AnimatedPeaks({
+  _AnimatedPeaks({
     Key key,
     @required this.peaks,
     @required this.animationController,
@@ -101,14 +102,14 @@ class AnimatedPeaks extends ImplicitlyAnimatedWidget {
       _AnimatedPeaksState();
 }
 
-class _AnimatedPeaksState extends AnimatedWidgetBaseState<AnimatedPeaks> {
+class _AnimatedPeaksState extends AnimatedWidgetBaseState<_AnimatedPeaks> {
   PeaksTween _peaksTween;
 
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
     return CustomPaint(
-      painter: CurvePainter(
+      painter: _CurvePainter(
         peaks: _peaksTween.evaluate(animation),
         context: context,
         factor: widget.animationController.value,
@@ -119,19 +120,19 @@ class _AnimatedPeaksState extends AnimatedWidgetBaseState<AnimatedPeaks> {
 
   @override
   void forEachTween(TweenVisitor visitor) {
-    _peaksTween = visitor(_peaksTween, widget.peaks,
-        (dynamic value) => new PeaksTween(begin: value));
+    _peaksTween = visitor(
+        _peaksTween, widget.peaks, (dynamic value) => PeaksTween(begin: value));
   }
 }
 
-class CurvePainter extends CustomPainter {
-  Paint _paint = Paint()
+class _CurvePainter extends CustomPainter {
+  final _paint = Paint()
     ..style = PaintingStyle.fill
     ..strokeWidth = 0.0;
 
-  var spaceOnTop;
+  double spaceOnTop;
 
-  CurvePainter({
+  _CurvePainter({
     @required this.peaks,
     @required this.context,
     @required this.factor,
@@ -148,7 +149,7 @@ class CurvePainter extends CustomPainter {
     var height = size.height * 0.2;
     spaceOnTop = size.height - size.height * (factor);
 
-    var steps = this.peaks.list.length * 2 - 2;
+    var steps = peaks.list.length * 2 - 2;
     var stepWidth = size.width / steps;
 
     if (spaceOnTop >= size.height * 0.8) {
@@ -157,12 +158,12 @@ class CurvePainter extends CustomPainter {
       height = spaceOnTop;
     }
 
-    Path path = Path();
+    var path = Path();
     path.moveTo(0.0, size.height);
     path.lineTo(0.0, _getHeight(height, peaks.list.first));
 
     var offset = 0;
-    for (int i = 0; i < peaks.list.length - 1; i++) {
+    for (var i = 0; i < peaks.list.length - 1; i++) {
       path.cubicTo(
           stepWidth * (offset + i + 1),
           _getHeight(height, peaks.list[i]),
@@ -183,7 +184,7 @@ class CurvePainter extends CustomPainter {
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) => true;
 
-  double _getHeight(double height, var factor) {
+  double _getHeight(double height, double factor) {
     return (height - height * factor) + spaceOnTop;
   }
 }

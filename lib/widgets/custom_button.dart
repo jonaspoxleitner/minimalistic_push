@@ -1,13 +1,18 @@
 import 'package:flutter/material.dart';
 
+/// A custom button widget.
 class CustomButton extends StatelessWidget {
+  /// The constructor.
   const CustomButton({
     key,
     @required this.text,
     @required this.onTap,
   }) : super(key: key);
 
+  /// The text inside the button.
   final String text;
+
+  /// The event, which will be called on tap of the button.
   final Function onTap;
 
   @override
@@ -22,9 +27,7 @@ class CustomButton extends StatelessWidget {
             child: Container(
               constraints: BoxConstraints.tightForFinite(),
               decoration: BoxDecoration(
-                borderRadius: const BorderRadius.all(
-                  const Radius.circular(10.0),
-                ),
+                borderRadius: const BorderRadius.all(Radius.circular(10.0)),
                 border: Border.all(
                   color: Colors.white,
                   width: 2.0,
@@ -34,7 +37,7 @@ class CustomButton extends StatelessWidget {
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Text(
-                  this.text,
+                  text,
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 18.0,

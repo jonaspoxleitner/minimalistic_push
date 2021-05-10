@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
+/// The image, which will be shared.
 class ShareImage extends StatelessWidget {
+  /// The constructor.
   const ShareImage({
     key,
     @required this.primaryColor,
@@ -9,25 +11,32 @@ class ShareImage extends StatelessWidget {
     @required this.peaks,
   }) : super(key: key);
 
+  /// The primary color.
   final Color primaryColor;
+
+  /// The accent color.
   final Color accentColor;
+
+  /// The size of the widget/image.
   final Size size;
+
+  /// The list with the normalized peaks.
   final List<double> peaks;
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: this.size.width,
-      height: this.size.height,
-      color: this.accentColor,
+      width: size.width,
+      height: size.height,
+      color: accentColor,
       alignment: Alignment.bottomCenter,
       child: CustomPaint(
         size: Size(size.width, size.height),
         painter: _SharePainter(
           peaks: peaks,
-          size: this.size,
+          size: size,
           context: context,
-          color: this.primaryColor,
+          color: primaryColor,
         ),
       ),
     );
@@ -50,20 +59,20 @@ class _SharePainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    Paint paint = Paint()
+    var paint = Paint()
       ..style = PaintingStyle.fill
       ..strokeWidth = 0.0
-      ..color = this.color;
+      ..color = color;
 
-    var steps = this.peaks.length * 2 - 2;
+    var steps = peaks.length * 2 - 2;
     var stepWidth = this.size.width / steps;
 
-    Path path = Path();
+    var path = Path();
     path.moveTo(0.0, size.height);
     path.lineTo(0.0, getHeight(peaks.first));
 
     var offset = 0;
-    for (int i = 0; i < peaks.length - 1; i++) {
+    for (var i = 0; i < peaks.length - 1; i++) {
       path.cubicTo(
           stepWidth * (offset + i + 1),
           getHeight(peaks[i]),
@@ -85,7 +94,7 @@ class _SharePainter extends CustomPainter {
   bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 
   double getHeight(double factor) {
-    var height = this.size.height - (2 * this.topBottomPadding);
-    return (height - height * factor) + this.topBottomPadding;
+    var height = size.height - (2 * topBottomPadding);
+    return (height - height * factor) + topBottomPadding;
   }
 }

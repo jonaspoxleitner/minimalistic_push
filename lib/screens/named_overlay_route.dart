@@ -1,39 +1,43 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-
-import 'package:minimalisticpush/localizations.dart';
-import 'package:minimalisticpush/managers/session_manager.dart';
-import 'package:minimalisticpush/screens/error_screen.dart';
-import 'package:minimalisticpush/screens/sessions_content.dart';
-import 'package:minimalisticpush/screens/settings_content.dart';
-import 'package:minimalisticpush/utils/share_image.dart';
-import 'package:minimalisticpush/widgets/background.dart';
-import 'package:minimalisticpush/widgets/navigation_bar.dart';
-
 import 'package:sprinkle/sprinkle.dart';
 
+import '../localizations.dart';
+import '../managers/session_manager.dart';
+import '../utils/share_image.dart';
+import '../widgets/background.dart';
+import '../widgets/navigation_bar.dart';
+import 'error_screen.dart';
+import 'sessions_content.dart';
+import 'settings_content.dart';
+
+/// This OverlayRoute handles the name and the ValueNotifier for the animation.
 class NamedOverlayRoute extends OverlayRoute {
+  /// The constructor.
   NamedOverlayRoute({
     @required this.overlayName,
     @required this.animationNotifier,
   });
 
+  /// This ValueNotifier handles the animation of the widget.
   final ValueNotifier<double> animationNotifier;
+
+  /// The overlay will be used to change the current Route.
   final String overlayName;
 
-  // closes the overlay by notifying the animations
+  // Closes the overlay by notifying the animations.
   void _close() async {
-    this.animationNotifier.value = 0.0;
+    animationNotifier.value = 0.0;
     Timer(Duration(milliseconds: 250), () {
       Background.instance.factorNotifier.value = 0.6;
     });
   }
 
-  // sets the underlying state to invisible and animates the background to 1.0
+  // Sets the underlying state to invisible and animates the background to 1.0.
   @override
   TickerFuture didPush() {
-    this.animationNotifier.value = 1.0;
+    animationNotifier.value = 1.0;
     Background.instance.factorNotifier.value = 1.0;
     return super.didPush();
   }
@@ -43,7 +47,7 @@ class NamedOverlayRoute extends OverlayRoute {
     Background.instance.factorNotifier.value = 1.0;
 
     return [
-      new OverlayEntry(
+      OverlayEntry(
         builder: (context) {
           _CustomOverlayEntry current;
           var sessionManager = context.use<SessionManager>();
@@ -63,7 +67,7 @@ class NamedOverlayRoute extends OverlayRoute {
                   ),
                   rightOption: NavigationOption(
                     icon: Icons.close,
-                    onPressed: () => _close(),
+                    onPressed: _close,
                   ),
                 ),
                 child: SessionsContent(),
@@ -77,7 +81,7 @@ class NamedOverlayRoute extends OverlayRoute {
                       .getLocale('settings')['title'],
                   rightOption: NavigationOption(
                     icon: Icons.close,
-                    onPressed: () => _close(),
+                    onPressed: _close,
                   ),
                 ),
                 child: SettingsContent(),
@@ -178,9 +182,9 @@ class _CustomOverlayEntryState extends State<_CustomOverlayEntry>
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              this.widget.navigationBar,
+              widget.navigationBar,
               Expanded(
-                child: this.widget.child,
+                child: widget.child,
               ),
             ],
           ),
