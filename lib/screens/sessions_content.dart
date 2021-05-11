@@ -24,17 +24,48 @@ class SessionsContent extends StatelessWidget {
           return _NoSessionWidget();
         } else {
           return ListView.builder(
-            itemCount: value.length,
+            itemCount: value.length + 1,
             itemBuilder: (context, index) {
-              var id = index + 1;
-              return _SessionWidget(
-                session: value[index],
-                idToShow: id,
-              );
+              if (index == 0) {
+                return Padding(
+                  padding: const EdgeInsets.only(top: 70.0),
+                  child: _buildHighscore(context),
+                );
+              } else {
+                var id = value.length - index + 1;
+                return _SessionWidget(
+                  session: value[value.length - index],
+                  idToShow: id,
+                );
+              }
             },
           );
         }
       },
+    );
+  }
+
+  Widget _buildHighscore(BuildContext context) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Icon(
+            Icons.emoji_events,
+            color: Colors.white,
+            size: 50.0,
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Text(
+            context.use<SessionManager>().highscore.value.toString(),
+            style: TextStyles.heading,
+          ),
+        ),
+      ],
     );
   }
 }

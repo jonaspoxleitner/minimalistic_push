@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:sprinkle/sprinkle.dart';
 
@@ -165,35 +167,37 @@ class _CustomOverlayEntryState extends State<_CustomOverlayEntry>
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.transparent,
-      body: GestureDetector(
-        onTap: () => print('tap'),
-        behavior: HitTestBehavior.opaque,
-        child: AnimatedBuilder(
-          animation: _animationController,
-          builder: (context, child) {
-            var height = MediaQuery.of(context).size.height;
-            var offset = height - _animationController.value * height;
-            return Opacity(
-              opacity: _animationController.value,
-              child: Transform.translate(
-                offset: Offset(0.0, offset),
-                child: child,
-              ),
-            );
-          },
-          child: SafeArea(
-            bottom: false,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
+      body: AnimatedBuilder(
+        animation: _animationController,
+        builder: (context, child) {
+          var height = MediaQuery.of(context).size.height;
+          var offset = height - _animationController.value * height;
+          return Opacity(
+            opacity: _animationController.value,
+            child: Transform.translate(
+              offset: Offset(0.0, offset),
+              child: child,
+            ),
+          );
+        },
+        child: Stack(
+          // crossAxisAlignment: CrossAxisAlignment.center,
+          // mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            widget.child,
+            Column(
               mainAxisAlignment: MainAxisAlignment.start,
+              mainAxisSize: MainAxisSize.max,
               children: [
-                widget.navigationBar,
-                Expanded(
-                  child: widget.child,
+                ClipRRect(
+                  child: BackdropFilter(
+                    filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+                    child: SafeArea(bottom: false, child: widget.navigationBar),
+                  ),
                 ),
               ],
             ),
-          ),
+          ],
         ),
       ),
     );

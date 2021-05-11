@@ -205,7 +205,7 @@ class _TrainingWidgetState extends State<_TrainingWidget> {
   var _proximity = false;
   StreamSubscription<dynamic> _streamSubscription;
 
-  void _buttonTap() {
+  void _buttonTap() async {
     super.setState(() {
       counter++;
     });

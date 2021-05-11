@@ -40,6 +40,7 @@ class Background extends StatelessWidget {
   }
 }
 
+/// TODO: Performance optimization.
 class _AnimatedPeaks extends ImplicitlyAnimatedWidget {
   _AnimatedPeaks({
     Key key,
@@ -63,7 +64,6 @@ class _AnimatedPeaksState extends AnimatedWidgetBaseState<_AnimatedPeaks> {
 
   @override
   Widget build(BuildContext context) {
-    print(widget.factor.toString());
     return CustomPaint(
       painter: _CurvePainter(
         peaks: _peaksTween.evaluate(animation),

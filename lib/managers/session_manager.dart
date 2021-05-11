@@ -16,6 +16,8 @@ class SessionManager extends Manager {
   /// A list of the normalized sessions with the length of 5.
   final normalized = <double>[0.0, 0.0, 0.0, 0.0, 0.0].reactive;
 
+  final highscore = 0.reactive;
+
   /// The constructor of the manager, which also initializes the lists.
   SessionManager() {
     _init();
@@ -60,9 +62,11 @@ class SessionManager extends Manager {
   /// Load all the sessions from the database.
   void _loadSessions() async {
     var response = database.then((db) => db.query('sessions', orderBy: 'id'));
+    var max = 0;
 
     await response.then((value) {
       sessions.value = List.generate(value.length, (i) {
+        max = value[i]['count'] > max ? value[i]['count'] : max;
         return Session(
           id: value[i]['id'],
           count: value[i]['count'],
@@ -71,6 +75,8 @@ class SessionManager extends Manager {
 
       return response;
     });
+
+    highscore.value = max;
   }
 
   /// Delete a session from the database by the [id] and update the UI.
