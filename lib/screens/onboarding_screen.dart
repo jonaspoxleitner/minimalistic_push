@@ -98,6 +98,7 @@ class _OnboardingScreenState extends State<OnboardingScreen>
                           MyLocalizations.of(context)
                               .getLocale('onboarding')['welcome'][0],
                           style: TextStyles.subHeading,
+                          textAlign: TextAlign.center,
                         ),
                       ),
                       Padding(
@@ -105,6 +106,7 @@ class _OnboardingScreenState extends State<OnboardingScreen>
                         child: Text(
                           MyLocalizations.of(context).getLocale('title'),
                           style: TextStyles.heading,
+                          textAlign: TextAlign.center,
                         ),
                       ),
                       Padding(
@@ -113,6 +115,7 @@ class _OnboardingScreenState extends State<OnboardingScreen>
                           MyLocalizations.of(context)
                               .getLocale('onboarding')['welcome'][1],
                           style: TextStyles.subHeading,
+                          textAlign: TextAlign.center,
                         ),
                       ),
                       Spacer(),
@@ -227,6 +230,7 @@ class _OnboardingScreenState extends State<OnboardingScreen>
 
                             sessionManager.setNormalizedSessions();
                             preferencesManager.acceptOnboarding();
+                            backgroundManager.updateFactor(0.0);
                           },
                         ),
                       )
