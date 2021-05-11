@@ -6,11 +6,11 @@ import 'package:sprinkle/Observer.dart';
 import 'package:sprinkle/sprinkle.dart';
 
 import '../localizations.dart';
+import '../managers/background_manager.dart';
 import '../managers/preferences_manager.dart';
 import '../managers/session_manager.dart';
 import '../models/session.dart';
 import '../styles/styles.dart';
-import '../widgets/background.dart';
 import '../widgets/navigation_bar.dart';
 import 'named_overlay_route.dart';
 
@@ -51,8 +51,6 @@ class _MainScreenState extends State<MainScreen>
       );
     });
 
-    Background.instance.factorNotifier.value = 0.6;
-
     super.initState();
   }
 
@@ -65,6 +63,11 @@ class _MainScreenState extends State<MainScreen>
   @override
   Widget build(BuildContext context) {
     var preferencesManager = context.use<PreferencesManager>();
+    var backgroundManager = context.use<BackgroundManager>();
+
+    if (backgroundManager.factor.value <= 0.6) {
+      backgroundManager.updateFactor(0.6);
+    }
 
     if (!trainingModeNotifier.value) {
       return AnimatedBuilder(
@@ -97,6 +100,7 @@ class _MainScreenState extends State<MainScreen>
                     NamedOverlayRoute(
                       overlayName: 'sessions',
                       animationNotifier: animationNotifier,
+                      context: context,
                     ),
                   ),
                 ),
@@ -107,6 +111,7 @@ class _MainScreenState extends State<MainScreen>
                     NamedOverlayRoute(
                       overlayName: 'settings',
                       animationNotifier: animationNotifier,
+                      context: context,
                     ),
                   ),
                 ),

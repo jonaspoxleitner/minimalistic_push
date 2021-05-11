@@ -20,21 +20,20 @@ class RouteManager extends StatelessWidget {
     return Scaffold(
       body: Stack(
         children: [
-          Background.instance,
+          const Background(),
           SafeArea(
             child: Observer<bool>(
               stream: preferencesManager.onboarding,
               builder: (context, value) {
                 switch (value) {
                   case true:
-                    Background.instance.factorNotifier.value = 0.0;
-                    return OnboardingScreen();
+                    return const OnboardingScreen();
                     break;
                   case false:
-                    return MainScreen();
+                    return const MainScreen();
                     break;
                   default:
-                    return ErrorScreen();
+                    return const ErrorScreen();
                 }
               },
             ),

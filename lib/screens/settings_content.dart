@@ -22,7 +22,7 @@ class SettingsContent extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListView(
       children: [
-        //_buildDebugBlock(context),
+        _buildDebugBlock(context),
         _buildThemesBlock(context),
         _buildHardcoreBlock(context),
         _buildBackupBlock(context),

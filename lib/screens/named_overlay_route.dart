@@ -1,12 +1,10 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:sprinkle/sprinkle.dart';
 
 import '../localizations.dart';
+import '../managers/background_manager.dart';
 import '../managers/session_manager.dart';
 import '../utils/share_image.dart';
-import '../widgets/background.dart';
 import '../widgets/navigation_bar.dart';
 import 'error_screen.dart';
 import 'sessions_content.dart';
@@ -18,6 +16,7 @@ class NamedOverlayRoute extends OverlayRoute {
   NamedOverlayRoute({
     @required this.overlayName,
     @required this.animationNotifier,
+    @required this.context,
   });
 
   /// This ValueNotifier handles the animation of the widget.
@@ -26,26 +25,29 @@ class NamedOverlayRoute extends OverlayRoute {
   /// The overlay will be used to change the current Route.
   final String overlayName;
 
+  /// The context.
+  final BuildContext context;
+
   // Closes the overlay by notifying the animations.
-  void _close() async {
+  void _close() {
     animationNotifier.value = 0.0;
-    Timer(Duration(milliseconds: 250), () {
-      Background.instance.factorNotifier.value = 0.6;
-    });
+    context.use<BackgroundManager>().updateFactor(0.6);
+  }
+
+  void _init() async {
+    animationNotifier.value = 1.0;
+    context.use<BackgroundManager>().updateFactor(1.0);
   }
 
   // Sets the underlying state to invisible and animates the background to 1.0.
   @override
   TickerFuture didPush() {
-    animationNotifier.value = 1.0;
-    Background.instance.factorNotifier.value = 1.0;
+    _init();
     return super.didPush();
   }
 
   @override
   Iterable<OverlayEntry> createOverlayEntries() {
-    Background.instance.factorNotifier.value = 1.0;
-
     return [
       OverlayEntry(
         builder: (context) {
@@ -126,7 +128,7 @@ class _CustomOverlayEntryState extends State<_CustomOverlayEntry>
     with SingleTickerProviderStateMixin {
   AnimationController _animationController;
 
-  void _close() {
+  void _close() async {
     _animationController
         .animateTo(
           widget.animationNotifier.value,
@@ -163,30 +165,34 @@ class _CustomOverlayEntryState extends State<_CustomOverlayEntry>
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.transparent,
-      body: AnimatedBuilder(
-        animation: _animationController,
-        builder: (context, child) {
-          var height = MediaQuery.of(context).size.height;
-          var offset = height - _animationController.value * height;
-          return Opacity(
-            opacity: _animationController.value,
-            child: Transform.translate(
-              offset: Offset(0.0, offset),
-              child: child,
-            ),
-          );
-        },
-        child: SafeArea(
-          bottom: false,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              widget.navigationBar,
-              Expanded(
-                child: widget.child,
+      body: GestureDetector(
+        onTap: () => print('tap'),
+        behavior: HitTestBehavior.opaque,
+        child: AnimatedBuilder(
+          animation: _animationController,
+          builder: (context, child) {
+            var height = MediaQuery.of(context).size.height;
+            var offset = height - _animationController.value * height;
+            return Opacity(
+              opacity: _animationController.value,
+              child: Transform.translate(
+                offset: Offset(0.0, offset),
+                child: child,
               ),
-            ],
+            );
+          },
+          child: SafeArea(
+            bottom: false,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                widget.navigationBar,
+                Expanded(
+                  child: widget.child,
+                ),
+              ],
+            ),
           ),
         ),
       ),

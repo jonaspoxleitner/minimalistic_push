@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:sprinkle/sprinkle.dart';
 
 import '../localizations.dart';
+import '../managers/background_manager.dart';
 import '../managers/preferences_manager.dart';
 import '../managers/session_manager.dart';
 import '../styles/styles.dart';
-import '../widgets/background.dart';
 import '../widgets/custom_button.dart';
 import '../widgets/location_text.dart';
 import 'error_screen.dart';
@@ -44,6 +44,9 @@ class _OnboardingScreenState extends State<OnboardingScreen>
     var pageController = PageController(initialPage: 0);
     var sessionManager = context.use<SessionManager>();
     var preferencesManager = context.use<PreferencesManager>();
+    var backgroundManager = context.use<BackgroundManager>();
+
+    backgroundManager.updateFactor(0.0);
 
     return AnimatedBuilder(
       animation: _animationController,
@@ -64,13 +67,13 @@ class _OnboardingScreenState extends State<OnboardingScreen>
 
             switch (value) {
               case 0:
-                Background.instance.factorNotifier.value = 0.0;
+                backgroundManager.updateFactor(0.0);
                 break;
               case 1:
-                Background.instance.factorNotifier.value = 0.6;
+                backgroundManager.updateFactor(0.6);
                 break;
               case 2:
-                Background.instance.factorNotifier.value = 1.0;
+                backgroundManager.updateFactor(1.0);
                 break;
             }
           },

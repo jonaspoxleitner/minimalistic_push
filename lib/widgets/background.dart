@@ -2,78 +2,33 @@ import 'package:flutter/material.dart';
 import 'package:sprinkle/Observer.dart';
 import 'package:sprinkle/sprinkle.dart';
 
+import '../managers/background_manager.dart';
 import '../managers/session_manager.dart';
 import '../models/peaks.dart';
 
 /// This Widget represents the background of the application.
-///
-/// TODO: remove Background.instance when creating the background manager
-class Background extends StatefulWidget {
-  /// The ValueNotifier for the height of the background.
-  final ValueNotifier<double> factorNotifier = ValueNotifier(0.0);
-
-  static Background _instance;
-
-  /// The single instance of the widget.
-  static Background get instance {
-    if (_instance == null) {
-      _instance = Background._internal();
-    }
-    return _instance;
-  }
-
-  Background._internal();
-
-  @override
-  _BackgroundState createState() => _BackgroundState();
-}
-
-class _BackgroundState extends State<Background> with TickerProviderStateMixin {
-  AnimationController _animationController;
-
-  @override
-  void initState() {
-    _animationController = AnimationController(
-      duration: Duration(milliseconds: 1200),
-      vsync: this,
-    );
-
-    _animationController.animateTo(
-      widget.factorNotifier.value,
-      curve: Curves.easeInOutQuart,
-    );
-
-    widget.factorNotifier.addListener(() => _animationController.animateTo(
-          widget.factorNotifier.value,
-          curve: Curves.easeInOutQuart,
-        ));
-
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    _animationController.dispose();
-    super.dispose();
-  }
+class Background extends StatelessWidget {
+  /// The constructor.
+  const Background({Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     var sessionManager = context.use<SessionManager>();
+    var backgroundManager = context.use<BackgroundManager>();
 
     return Container(
       constraints: BoxConstraints.expand(),
       color: Theme.of(context).accentColor,
       alignment: Alignment.bottomCenter,
-      child: AnimatedBuilder(
-        animation: _animationController,
-        builder: (context, child) {
-          return Observer<List<double>>(
-            stream: sessionManager.normalized,
-            builder: (context, value) {
+      child: Observer<List<double>>(
+        stream: sessionManager.normalized,
+        builder: (context, list) {
+          return Observer<double>(
+            stream: backgroundManager.factor,
+            builder: (context, factor) {
               return _AnimatedPeaks(
-                peaks: Peaks(list: value),
-                animationController: _animationController,
+                peaks: Peaks(list: list),
+                factor: factor,
                 duration: Duration(milliseconds: 1000),
                 curve: Curves.easeInOutQuart,
               );
@@ -86,16 +41,16 @@ class _BackgroundState extends State<Background> with TickerProviderStateMixin {
 }
 
 class _AnimatedPeaks extends ImplicitlyAnimatedWidget {
-  final Peaks peaks;
-  final AnimationController animationController;
-
   _AnimatedPeaks({
     Key key,
     @required this.peaks,
-    @required this.animationController,
+    @required this.factor,
     @required Duration duration,
     Curve curve = Curves.linear,
   }) : super(duration: duration, curve: curve, key: key);
+
+  final Peaks peaks;
+  final double factor;
 
   @override
   ImplicitlyAnimatedWidgetState<ImplicitlyAnimatedWidget> createState() =>
@@ -104,24 +59,33 @@ class _AnimatedPeaks extends ImplicitlyAnimatedWidget {
 
 class _AnimatedPeaksState extends AnimatedWidgetBaseState<_AnimatedPeaks> {
   PeaksTween _peaksTween;
+  Tween<double> _factorTween;
 
   @override
   Widget build(BuildContext context) {
-    var size = MediaQuery.of(context).size;
+    print(widget.factor.toString());
     return CustomPaint(
       painter: _CurvePainter(
         peaks: _peaksTween.evaluate(animation),
         context: context,
-        factor: widget.animationController.value,
+        factor: _factorTween.evaluate(animation),
       ),
-      size: Size(size.width, size.height),
+      size: MediaQuery.of(context).size,
     );
   }
 
   @override
   void forEachTween(TweenVisitor visitor) {
     _peaksTween = visitor(
-        _peaksTween, widget.peaks, (dynamic value) => PeaksTween(begin: value));
+      _peaksTween,
+      widget.peaks,
+      (dynamic value) => PeaksTween(begin: value),
+    );
+    _factorTween = visitor(
+      _factorTween,
+      widget.factor,
+      (dynamic value) => Tween<double>(begin: value),
+    );
   }
 }
 
