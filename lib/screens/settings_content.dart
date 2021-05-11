@@ -23,7 +23,7 @@ class SettingsContent extends StatelessWidget {
     return ListView(
       children: [
         Container(padding: const EdgeInsets.only(top: 70.0)),
-        _buildDebugBlock(context),
+        // _buildDebugBlock(context),
         _buildThemesBlock(context),
         _buildHardcoreBlock(context),
         _buildBackupBlock(context),

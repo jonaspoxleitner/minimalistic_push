@@ -82,160 +82,18 @@ class _OnboardingScreenState extends State<OnboardingScreen>
           itemBuilder: (context, index) {
             switch (index) {
               case 0:
-                return SafeArea(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      LocationText(
-                        text: MyLocalizations.of(context)
-                            .getLocale('onboarding')['locations'][index],
-                      ),
-                      Spacer(),
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Text(
-                          MyLocalizations.of(context)
-                              .getLocale('onboarding')['welcome'][0],
-                          style: TextStyles.subHeading,
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Text(
-                          MyLocalizations.of(context).getLocale('title'),
-                          style: TextStyles.heading,
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Text(
-                          MyLocalizations.of(context)
-                              .getLocale('onboarding')['welcome'][1],
-                          style: TextStyles.subHeading,
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
-                      Spacer(),
-                      Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: CustomButton(
-                          text: MyLocalizations.of(context)
-                              .getLocale('onboarding')['titles'][index],
-                          onTap: () {
-                            pageController.animateToPage(
-                              1,
-                              duration: Duration(milliseconds: 300),
-                              curve: Curves.easeInOutQuart,
-                            );
-                          },
-                        ),
-                      )
-                    ],
-                  ),
-                );
+                return _buildFirstPage(context, index, pageController);
                 break;
               case 1:
-                return SafeArea(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      LocationText(
-                        text: MyLocalizations.of(context)
-                            .getLocale('onboarding')['locations'][index],
-                      ),
-                      Spacer(),
-                      _IconDescriptionList(
-                        elements: [
-                          _ListElement(
-                            number: 1,
-                            description: MyLocalizations.of(context)
-                                .getLocale('onboarding')['instructions'][0],
-                          ),
-                          _ListElement(
-                            number: 2,
-                            description: MyLocalizations.of(context)
-                                .getLocale('onboarding')['instructions'][1],
-                          ),
-                          _ListElement(
-                            number: 3,
-                            description: MyLocalizations.of(context)
-                                .getLocale('onboarding')['instructions'][2],
-                          ),
-                        ],
-                      ),
-                      Spacer(),
-                      Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: CustomButton(
-                          text: MyLocalizations.of(context)
-                              .getLocale('onboarding')['titles'][index],
-                          onTap: () {
-                            pageController.animateToPage(
-                              2,
-                              duration: Duration(milliseconds: 300),
-                              curve: Curves.easeInOutQuart,
-                            );
-                          },
-                        ),
-                      )
-                    ],
-                  ),
-                );
+                return _buildSecondPage(context, index, pageController);
                 break;
               case 2:
-                return SafeArea(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      LocationText(
-                        text: MyLocalizations.of(context)
-                            .getLocale('onboarding')['locations'][index],
-                      ),
-                      Spacer(),
-                      _IconDescriptionList(
-                        elements: [
-                          _ListElement(
-                            iconData: Icons.bar_chart,
-                            description: MyLocalizations.of(context)
-                                .getLocale('onboarding')['benefits'][0],
-                          ),
-                          _ListElement(
-                            iconData: Icons.cloud_off,
-                            description: MyLocalizations.of(context)
-                                .getLocale('onboarding')['benefits'][1],
-                          ),
-                          _ListElement(
-                            iconData: Icons.code,
-                            description: MyLocalizations.of(context)
-                                .getLocale('onboarding')['benefits'][2],
-                          ),
-                        ],
-                      ),
-                      Spacer(),
-                      Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: CustomButton(
-                          text: MyLocalizations.of(context)
-                              .getLocale('onboarding')['titles'][index],
-                          onTap: () {
-                            _animationController.animateTo(
-                              1.0,
-                              curve: Curves.easeInOutQuart,
-                            );
-
-                            sessionManager.setNormalizedSessions();
-                            preferencesManager.acceptOnboarding();
-                            backgroundManager.updateFactor(0.0);
-                          },
-                        ),
-                      )
-                    ],
-                  ),
+                return _buildThirdPage(
+                  context,
+                  index,
+                  sessionManager,
+                  preferencesManager,
+                  backgroundManager,
                 );
                 break;
               default:
@@ -244,6 +102,171 @@ class _OnboardingScreenState extends State<OnboardingScreen>
             }
           },
         ),
+      ),
+    );
+  }
+
+  SafeArea _buildThirdPage(
+      BuildContext context,
+      int index,
+      SessionManager sessionManager,
+      PreferencesManager preferencesManager,
+      BackgroundManager backgroundManager) {
+    return SafeArea(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          LocationText(
+            text: MyLocalizations.of(context)
+                .getLocale('onboarding')['locations'][index],
+          ),
+          Spacer(),
+          _IconDescriptionList(
+            elements: [
+              _ListElement(
+                iconData: Icons.bar_chart,
+                description: MyLocalizations.of(context)
+                    .getLocale('onboarding')['benefits'][0],
+              ),
+              _ListElement(
+                iconData: Icons.cloud_off,
+                description: MyLocalizations.of(context)
+                    .getLocale('onboarding')['benefits'][1],
+              ),
+              _ListElement(
+                iconData: Icons.code,
+                description: MyLocalizations.of(context)
+                    .getLocale('onboarding')['benefits'][2],
+              ),
+            ],
+          ),
+          Spacer(),
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: CustomButton(
+              text: MyLocalizations.of(context)
+                  .getLocale('onboarding')['titles'][index],
+              onTap: () {
+                _animationController.animateTo(
+                  1.0,
+                  curve: Curves.easeInOutQuart,
+                );
+
+                sessionManager.setNormalizedSessions();
+                preferencesManager.acceptOnboarding();
+                backgroundManager.updateFactor(0.0);
+              },
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
+  SafeArea _buildSecondPage(
+      BuildContext context, int index, PageController pageController) {
+    return SafeArea(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          LocationText(
+            text: MyLocalizations.of(context)
+                .getLocale('onboarding')['locations'][index],
+          ),
+          Spacer(),
+          _IconDescriptionList(
+            elements: [
+              _ListElement(
+                number: 1,
+                description: MyLocalizations.of(context)
+                    .getLocale('onboarding')['instructions'][0],
+              ),
+              _ListElement(
+                number: 2,
+                description: MyLocalizations.of(context)
+                    .getLocale('onboarding')['instructions'][1],
+              ),
+              _ListElement(
+                number: 3,
+                description: MyLocalizations.of(context)
+                    .getLocale('onboarding')['instructions'][2],
+              ),
+            ],
+          ),
+          Spacer(),
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: CustomButton(
+              text: MyLocalizations.of(context)
+                  .getLocale('onboarding')['titles'][index],
+              onTap: () {
+                pageController.animateToPage(
+                  2,
+                  duration: Duration(milliseconds: 300),
+                  curve: Curves.easeInOutQuart,
+                );
+              },
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
+  SafeArea _buildFirstPage(
+      BuildContext context, int index, PageController pageController) {
+    return SafeArea(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          LocationText(
+            text: MyLocalizations.of(context)
+                .getLocale('onboarding')['locations'][index],
+          ),
+          Spacer(),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text(
+              MyLocalizations.of(context).getLocale('onboarding')['welcome'][0],
+              style: TextStyles.subHeading,
+              textAlign: TextAlign.center,
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text(
+              MyLocalizations.of(context).getLocale('title'),
+              style: TextStyles.heading,
+              textAlign: TextAlign.center,
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text(
+              MyLocalizations.of(context).getLocale('onboarding')['welcome'][1],
+              style: TextStyles.subHeading,
+              textAlign: TextAlign.center,
+            ),
+          ),
+          Spacer(),
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: CustomButton(
+              text: MyLocalizations.of(context)
+                  .getLocale('onboarding')['titles'][index],
+              onTap: () {
+                pageController.animateToPage(
+                  1,
+                  duration: Duration(milliseconds: 300),
+                  curve: Curves.easeInOutQuart,
+                );
+              },
+            ),
+          )
+        ],
       ),
     );
   }
