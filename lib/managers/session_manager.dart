@@ -16,6 +16,7 @@ class SessionManager extends Manager {
   /// A list of the normalized sessions with the length of 5.
   final normalized = <double>[0.0, 0.0, 0.0, 0.0, 0.0].reactive;
 
+  /// The hightest count from all sessions.
   final highscore = 0.reactive;
 
   /// The constructor of the manager, which also initializes the lists.
@@ -25,7 +26,7 @@ class SessionManager extends Manager {
 
   /// The database of the sessions.
   Future<Database> get database async {
-    return await openDatabase(
+    return openDatabase(
       join(await getDatabasesPath(), 'sessions_database.database'),
       onCreate: (database, version) {
         return database.execute(
@@ -72,8 +73,6 @@ class SessionManager extends Manager {
           count: value[i]['count'],
         );
       });
-
-      return response;
     });
 
     highscore.value = max;
@@ -189,5 +188,6 @@ class SessionManager extends Manager {
   void dispose() {
     sessions.close();
     normalized.close();
+    highscore.close();
   }
 }

@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:clipboard/clipboard.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:sprinkle/Observer.dart';
@@ -20,15 +21,20 @@ class SettingsContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var widgets = <Widget>[
+      Container(padding: const EdgeInsets.only(top: 70.0)),
+      _buildThemesBlock(context),
+      _buildHardcoreBlock(context),
+      _buildBackupBlock(context),
+      _buildAboutButton(context),
+    ];
+
+    if (!kReleaseMode) {
+      widgets.insert(1, _buildDebugBlock(context));
+    }
+
     return ListView(
-      children: [
-        Container(padding: const EdgeInsets.only(top: 70.0)),
-        // _buildDebugBlock(context),
-        _buildThemesBlock(context),
-        _buildHardcoreBlock(context),
-        _buildBackupBlock(context),
-        _buildAboutButton(context),
-      ],
+      children: widgets,
     );
   }
 

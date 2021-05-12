@@ -12,7 +12,7 @@ import 'error_screen.dart';
 
 /// A widget for the onboarding experience.
 class OnboardingScreen extends StatefulWidget {
-  /// The constructor for the clas
+  /// The constructor of the widget.
   const OnboardingScreen({key}) : super(key: key);
 
   @override
@@ -22,6 +22,7 @@ class OnboardingScreen extends StatefulWidget {
 class _OnboardingScreenState extends State<OnboardingScreen>
     with SingleTickerProviderStateMixin {
   AnimationController _animationController;
+  PageController _pageController;
 
   @override
   void initState() {
@@ -29,6 +30,8 @@ class _OnboardingScreenState extends State<OnboardingScreen>
       duration: Duration(milliseconds: 500),
       vsync: this,
     );
+
+    _pageController = PageController(initialPage: 0);
 
     super.initState();
   }
@@ -41,10 +44,8 @@ class _OnboardingScreenState extends State<OnboardingScreen>
 
   @override
   Widget build(BuildContext context) {
-    var pageController = PageController(initialPage: 0);
-    var sessionManager = context.use<SessionManager>();
-    var preferencesManager = context.use<PreferencesManager>();
     var backgroundManager = context.use<BackgroundManager>();
+    var sessionManager = context.use<SessionManager>();
 
     backgroundManager.updateFactor(0.0);
 
@@ -77,24 +78,18 @@ class _OnboardingScreenState extends State<OnboardingScreen>
                 break;
             }
           },
-          controller: pageController,
+          controller: _pageController,
           itemCount: 3,
           itemBuilder: (context, index) {
             switch (index) {
               case 0:
-                return _buildFirstPage(context, index, pageController);
+                return _buildFirstPage(context, index);
                 break;
               case 1:
-                return _buildSecondPage(context, index, pageController);
+                return _buildSecondPage(context, index);
                 break;
               case 2:
-                return _buildThirdPage(
-                  context,
-                  index,
-                  sessionManager,
-                  preferencesManager,
-                  backgroundManager,
-                );
+                return _buildThirdPage(context, index);
                 break;
               default:
                 return ErrorScreen();
@@ -106,12 +101,10 @@ class _OnboardingScreenState extends State<OnboardingScreen>
     );
   }
 
-  SafeArea _buildThirdPage(
-      BuildContext context,
-      int index,
-      SessionManager sessionManager,
-      PreferencesManager preferencesManager,
-      BackgroundManager backgroundManager) {
+  SafeArea _buildThirdPage(BuildContext context, int index) {
+    var backgroundManager = context.use<BackgroundManager>();
+    var preferencesManager = context.use<PreferencesManager>();
+    var sessionManager = context.use<SessionManager>();
     return SafeArea(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -164,8 +157,7 @@ class _OnboardingScreenState extends State<OnboardingScreen>
     );
   }
 
-  SafeArea _buildSecondPage(
-      BuildContext context, int index, PageController pageController) {
+  SafeArea _buildSecondPage(BuildContext context, int index) {
     return SafeArea(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -202,7 +194,7 @@ class _OnboardingScreenState extends State<OnboardingScreen>
               text: MyLocalizations.of(context)
                   .getLocale('onboarding')['titles'][index],
               onTap: () {
-                pageController.animateToPage(
+                _pageController.animateToPage(
                   2,
                   duration: Duration(milliseconds: 300),
                   curve: Curves.easeInOutQuart,
@@ -215,8 +207,7 @@ class _OnboardingScreenState extends State<OnboardingScreen>
     );
   }
 
-  SafeArea _buildFirstPage(
-      BuildContext context, int index, PageController pageController) {
+  SafeArea _buildFirstPage(BuildContext context, int index) {
     return SafeArea(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -258,7 +249,7 @@ class _OnboardingScreenState extends State<OnboardingScreen>
               text: MyLocalizations.of(context)
                   .getLocale('onboarding')['titles'][index],
               onTap: () {
-                pageController.animateToPage(
+                _pageController.animateToPage(
                   1,
                   duration: Duration(milliseconds: 300),
                   curve: Curves.easeInOutQuart,

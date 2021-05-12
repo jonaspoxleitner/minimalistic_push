@@ -181,8 +181,6 @@ class _CustomOverlayEntryState extends State<_CustomOverlayEntry>
           );
         },
         child: Stack(
-          // crossAxisAlignment: CrossAxisAlignment.center,
-          // mainAxisAlignment: MainAxisAlignment.start,
           children: [
             widget.child,
             Column(
@@ -191,7 +189,7 @@ class _CustomOverlayEntryState extends State<_CustomOverlayEntry>
               children: [
                 ClipRRect(
                   child: BackdropFilter(
-                    filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+                    filter: ImageFilter.blur(sigmaX: 7, sigmaY: 7),
                     child: SafeArea(bottom: false, child: widget.navigationBar),
                   ),
                 ),
