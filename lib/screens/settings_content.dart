@@ -67,7 +67,7 @@ class SettingsContent extends StatelessWidget {
                 padding: const EdgeInsets.only(top: 8.0),
                 child: GestureDetector(
                   onTap: () => launch(
-                    'https://github.com/iIDRAGONFIREIi/minimalistic_push',
+                    'https://github.com/jonaspoxleitner/minimalistic_push',
                     forceSafariVC: false,
                   ),
                   child: Text(
