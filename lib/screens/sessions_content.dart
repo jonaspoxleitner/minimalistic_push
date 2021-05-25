@@ -1,30 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:sprinkle/Observer.dart';
-import 'package:sprinkle/sprinkle.dart';
+import 'package:get/get.dart';
 
 import '../localizations.dart';
-import '../managers/session_manager.dart';
+import '../managers/session_controller.dart';
 import '../models/session.dart';
 import '../styles/styles.dart';
 
 /// The content for the session overlay route.
 class SessionsContent extends StatelessWidget {
   /// The constructor.
-  const SessionsContent({Key key}) : super(key: key);
+  const SessionsContent({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    var sessionManager = context.use<SessionManager>();
+    return GetBuilder<SessionController>(
+      builder: (sessionController) {
+        var list = sessionController.sessions.toList();
 
-    return Observer<List<Session>>(
-      stream: sessionManager.sessions,
-      builder: (context, value) {
-        if (value.isEmpty) {
+        if (list.isEmpty) {
           return _NoSessionWidget();
         } else {
           return ListView.builder(
-            itemCount: value.length + 1,
+            physics: BouncingScrollPhysics(),
+            itemCount: list.length + 1,
             itemBuilder: (context, index) {
               if (index == 0) {
                 return Padding(
@@ -32,9 +31,9 @@ class SessionsContent extends StatelessWidget {
                   child: _buildHighscore(context),
                 );
               } else {
-                var id = value.length - index + 1;
+                var id = list.length - index + 1;
                 return _SessionWidget(
-                  session: value[value.length - index],
+                  session: list[list.length - index],
                   idToShow: id,
                 );
               }
@@ -61,7 +60,7 @@ class SessionsContent extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.all(16.0),
           child: Text(
-            context.use<SessionManager>().highscore.value.toString(),
+            Get.find<SessionController>().highscore.toInt().toString(),
             style: TextStyles.heading,
           ),
         ),
@@ -71,11 +70,12 @@ class SessionsContent extends StatelessWidget {
 }
 
 class _NoSessionWidget extends StatelessWidget {
+  const _NoSessionWidget({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return Center(
       child: Text(
-        MyLocalizations.of(context).getLocale('sessions')['empty'],
+        MyLocalizations.of(context).values!['sessions']['empty'],
         style: TextStyles.body,
       ),
     );
@@ -84,17 +84,16 @@ class _NoSessionWidget extends StatelessWidget {
 
 class _SessionWidget extends StatelessWidget {
   const _SessionWidget({
-    @required this.session,
-    @required this.idToShow,
-  });
+    Key? key,
+    required this.session,
+    required this.idToShow,
+  }) : super(key: key);
 
   final Session session;
   final int idToShow;
 
   @override
   Widget build(BuildContext context) {
-    var sessionManager = context.use<SessionManager>();
-
     return Padding(
       padding: const EdgeInsets.symmetric(
         horizontal: 16.0,
@@ -135,7 +134,8 @@ class _SessionWidget extends StatelessWidget {
               Icons.remove_circle_outline,
               color: Colors.white,
             ),
-            onPressed: () => sessionManager.deleteSession(session.id),
+            onPressed: () =>
+                Get.find<SessionController>().deleteSession(session.id!),
           )
         ],
       ),

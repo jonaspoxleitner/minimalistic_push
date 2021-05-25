@@ -1,13 +1,12 @@
 import 'dart:ui';
 
 import 'package:flutter/animation.dart';
-import 'package:flutter/foundation.dart';
 
 /// The object for a list of peaks.
 class Peaks {
   /// The constructor, which requires a list.
   Peaks({
-    @required this.list,
+    required this.list,
   });
 
   /// The list with the 'height' of the peaks as double.
@@ -21,16 +20,14 @@ class Peaks {
   // this function for lerping a list of doubles was copied from
   // https://github.com/imaNNeoFighT/fl_chart
   List<double> _lerpList(List<double> a, List<double> b, double t) {
-    if (a != null && b != null && a.length == b.length) {
+    if (a.length == b.length) {
       return List.generate(a.length, (i) {
-        return lerpDouble(a[i], b[i], t);
-      });
-    } else if (a != null && b != null) {
-      return List.generate(b.length, (i) {
-        return lerpDouble(i >= a.length ? b[i] : a[i], b[i], t);
+        return lerpDouble(a[i], b[i], t)!;
       });
     } else {
-      return b;
+      return List.generate(b.length, (i) {
+        return lerpDouble(i >= a.length ? b[i] : a[i], b[i], t)!;
+      });
     }
   }
 }
@@ -39,8 +36,8 @@ class Peaks {
 // this class was kinda copied from https://github.com/imaNNeoFighT/fl_chart
 class PeaksTween extends Tween<Peaks> {
   /// The constructor, which requires a beginning and end.
-  PeaksTween({Peaks begin, Peaks end}) : super(begin: begin, end: end);
+  PeaksTween({Peaks? begin, Peaks? end}) : super(begin: begin, end: end);
 
   @override
-  Peaks lerp(double t) => begin.lerp(begin, end, t);
+  Peaks lerp(double t) => begin!.lerp(begin!, end!, t);
 }

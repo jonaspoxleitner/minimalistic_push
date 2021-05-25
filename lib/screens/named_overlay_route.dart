@@ -1,13 +1,14 @@
 import 'dart:ui';
 
+import 'package:davinci/davinci.dart';
 import 'package:flutter/material.dart';
-import 'package:sprinkle/sprinkle.dart';
+import 'package:get/get.dart';
 
 import '../localizations.dart';
-import '../managers/background_manager.dart';
-import '../managers/session_manager.dart';
-import '../utils/share_image.dart';
+import '../managers/background_controller.dart';
+import '../managers/session_controller.dart';
 import '../widgets/navigation_bar.dart';
+import '../widgets/share_image.dart';
 import 'error_screen.dart';
 import 'sessions_content.dart';
 import 'settings_content.dart';
@@ -16,9 +17,9 @@ import 'settings_content.dart';
 class NamedOverlayRoute extends OverlayRoute {
   /// The constructor.
   NamedOverlayRoute({
-    @required this.overlayName,
-    @required this.animationNotifier,
-    @required this.context,
+    required this.overlayName,
+    required this.animationNotifier,
+    required this.context,
   });
 
   /// This ValueNotifier handles the animation of the widget.
@@ -33,12 +34,12 @@ class NamedOverlayRoute extends OverlayRoute {
   // Closes the overlay by notifying the animations.
   void _close() {
     animationNotifier.value = 0.0;
-    context.use<BackgroundManager>().updateFactor(0.6);
+    Get.find<BackgroundController>().updateFactor(0.6);
   }
 
   void _init() async {
     animationNotifier.value = 1.0;
-    context.use<BackgroundManager>().updateFactor(1.0);
+    Get.find<BackgroundController>().updateFactor(1.0);
   }
 
   // Sets the underlying state to invisible and animates the background to 1.0.
@@ -54,19 +55,17 @@ class NamedOverlayRoute extends OverlayRoute {
       OverlayEntry(
         builder: (context) {
           _CustomOverlayEntry current;
-          var sessionManager = context.use<SessionManager>();
-
           switch (overlayName) {
             case 'sessions':
               current = _CustomOverlayEntry(
                 navigationBar: NavigationBar(
-                  text: MyLocalizations.of(context)
-                      .getLocale('sessions')['title'],
+                  text: MyLocalizations.of(context).values!['sessions']
+                      ['title'],
                   leftOption: NavigationOption(
                     icon: Icons.reply,
-                    onPressed: () => callShareImage(
+                    onPressed: () => _callShareImage(
                       context,
-                      sessionManager.normalized.value,
+                      Get.find<SessionController>().normalized.toList(),
                     ),
                   ),
                   rightOption: NavigationOption(
@@ -81,8 +80,8 @@ class NamedOverlayRoute extends OverlayRoute {
             case 'settings':
               current = _CustomOverlayEntry(
                 navigationBar: NavigationBar(
-                  text: MyLocalizations.of(context)
-                      .getLocale('settings')['title'],
+                  text: MyLocalizations.of(context).values!['settings']
+                      ['title'],
                   rightOption: NavigationOption(
                     icon: Icons.close,
                     onPressed: _close,
@@ -113,9 +112,9 @@ class NamedOverlayRoute extends OverlayRoute {
 class _CustomOverlayEntry extends StatefulWidget {
   const _CustomOverlayEntry({
     key,
-    @required this.navigationBar,
-    @required this.child,
-    @required this.animationNotifier,
+    required this.navigationBar,
+    required this.child,
+    required this.animationNotifier,
   }) : super(key: key);
 
   final NavigationBar navigationBar;
@@ -128,7 +127,7 @@ class _CustomOverlayEntry extends StatefulWidget {
 
 class _CustomOverlayEntryState extends State<_CustomOverlayEntry>
     with SingleTickerProviderStateMixin {
-  AnimationController _animationController;
+  late AnimationController _animationController;
 
   void _close() async {
     _animationController
@@ -176,28 +175,46 @@ class _CustomOverlayEntryState extends State<_CustomOverlayEntry>
             opacity: _animationController.value,
             child: Transform.translate(
               offset: Offset(0.0, offset),
-              child: child,
+              child: Stack(
+                children: [
+                  widget.child,
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.max,
+                    children: [
+                      ClipRRect(
+                        child: BackdropFilter(
+                          filter: (_animationController.value == 1.0)
+                              ? ImageFilter.blur(sigmaX: 7, sigmaY: 7)
+                              : ImageFilter.blur(sigmaX: 0, sigmaY: 0),
+                          child: SafeArea(
+                              bottom: false, child: widget.navigationBar),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
           );
         },
-        child: Stack(
-          children: [
-            widget.child,
-            Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              mainAxisSize: MainAxisSize.max,
-              children: [
-                ClipRRect(
-                  child: BackdropFilter(
-                    filter: ImageFilter.blur(sigmaX: 7, sigmaY: 7),
-                    child: SafeArea(bottom: false, child: widget.navigationBar),
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ),
       ),
     );
   }
+}
+
+void _callShareImage(BuildContext context, List<double> peaks) async {
+  var size = Size(900.0, 450.0);
+
+  await DavinciCapture.offStage(
+    ShareImage(
+      primaryColor: Theme.of(context).primaryColor,
+      accentColor: Theme.of(context).accentColor,
+      size: size,
+      peaks: peaks,
+    ),
+    imageSize: size,
+    logicalSize: size,
+    fileName: 'curve',
+  );
 }

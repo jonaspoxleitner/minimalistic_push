@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:sprinkle/sprinkle.dart';
+import 'package:get/get.dart';
 
 import '../localizations.dart';
-import '../managers/background_manager.dart';
-import '../managers/preferences_manager.dart';
-import '../managers/session_manager.dart';
+import '../managers/background_controller.dart';
+import '../managers/preferences_controller.dart';
+import '../managers/session_controller.dart';
 import '../styles/styles.dart';
 import '../widgets/custom_button.dart';
 import '../widgets/location_text.dart';
@@ -13,7 +13,7 @@ import 'error_screen.dart';
 /// A widget for the onboarding experience.
 class OnboardingScreen extends StatefulWidget {
   /// The constructor of the widget.
-  const OnboardingScreen({key}) : super(key: key);
+  const OnboardingScreen({Key? key}) : super(key: key);
 
   @override
   _OnboardingScreenState createState() => _OnboardingScreenState();
@@ -21,8 +21,8 @@ class OnboardingScreen extends StatefulWidget {
 
 class _OnboardingScreenState extends State<OnboardingScreen>
     with SingleTickerProviderStateMixin {
-  AnimationController _animationController;
-  PageController _pageController;
+  late AnimationController _animationController;
+  late PageController _pageController;
 
   @override
   void initState() {
@@ -32,6 +32,8 @@ class _OnboardingScreenState extends State<OnboardingScreen>
     );
 
     _pageController = PageController(initialPage: 0);
+
+    Get.find<BackgroundController>().updateFactor(0.0);
 
     super.initState();
   }
@@ -44,11 +46,6 @@ class _OnboardingScreenState extends State<OnboardingScreen>
 
   @override
   Widget build(BuildContext context) {
-    var backgroundManager = context.use<BackgroundManager>();
-    var sessionManager = context.use<SessionManager>();
-
-    backgroundManager.updateFactor(0.0);
-
     return AnimatedBuilder(
       animation: _animationController,
       builder: (context, child) {
@@ -64,17 +61,19 @@ class _OnboardingScreenState extends State<OnboardingScreen>
         constraints: BoxConstraints.expand(),
         child: PageView.builder(
           onPageChanged: (value) {
-            sessionManager.publishOnboardingSessions();
+            var backgroundController = Get.find<BackgroundController>();
+
+            Get.find<SessionController>().publishOnboardingSessions();
 
             switch (value) {
               case 0:
-                backgroundManager.updateFactor(0.0);
+                backgroundController.updateFactor(0.0);
                 break;
               case 1:
-                backgroundManager.updateFactor(0.6);
+                backgroundController.updateFactor(0.6);
                 break;
               case 2:
-                backgroundManager.updateFactor(1.0);
+                backgroundController.updateFactor(1.0);
                 break;
             }
           },
@@ -84,16 +83,12 @@ class _OnboardingScreenState extends State<OnboardingScreen>
             switch (index) {
               case 0:
                 return _buildFirstPage(context, index);
-                break;
               case 1:
                 return _buildSecondPage(context, index);
-                break;
               case 2:
                 return _buildThirdPage(context, index);
-                break;
               default:
                 return ErrorScreen();
-                break;
             }
           },
         ),
@@ -102,35 +97,32 @@ class _OnboardingScreenState extends State<OnboardingScreen>
   }
 
   SafeArea _buildThirdPage(BuildContext context, int index) {
-    var backgroundManager = context.use<BackgroundManager>();
-    var preferencesManager = context.use<PreferencesManager>();
-    var sessionManager = context.use<SessionManager>();
     return SafeArea(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           LocationText(
-            text: MyLocalizations.of(context)
-                .getLocale('onboarding')['locations'][index],
+            text: MyLocalizations.of(context).values!['onboarding']['locations']
+                [index],
           ),
           Spacer(),
           _IconDescriptionList(
             elements: [
               _ListElement(
                 iconData: Icons.bar_chart,
-                description: MyLocalizations.of(context)
-                    .getLocale('onboarding')['benefits'][0],
+                description: MyLocalizations.of(context).values!['onboarding']
+                    ['benefits'][0],
               ),
               _ListElement(
                 iconData: Icons.cloud_off,
-                description: MyLocalizations.of(context)
-                    .getLocale('onboarding')['benefits'][1],
+                description: MyLocalizations.of(context).values!['onboarding']
+                    ['benefits'][1],
               ),
               _ListElement(
                 iconData: Icons.code,
-                description: MyLocalizations.of(context)
-                    .getLocale('onboarding')['benefits'][2],
+                description: MyLocalizations.of(context).values!['onboarding']
+                    ['benefits'][2],
               ),
             ],
           ),
@@ -138,17 +130,17 @@ class _OnboardingScreenState extends State<OnboardingScreen>
           Padding(
             padding: const EdgeInsets.all(16.0),
             child: CustomButton(
-              text: MyLocalizations.of(context)
-                  .getLocale('onboarding')['titles'][index],
+              text: MyLocalizations.of(context).values!['onboarding']['titles']
+                  [index],
               onTap: () {
                 _animationController.animateTo(
                   1.0,
                   curve: Curves.easeInOutQuart,
                 );
 
-                sessionManager.setNormalizedSessions();
-                preferencesManager.acceptOnboarding();
-                backgroundManager.updateFactor(0.0);
+                Get.find<SessionController>().setNormalizedSessions();
+                Get.find<PreferencesController>().acceptOnboarding();
+                Get.find<BackgroundController>().updateFactor(0.0);
               },
             ),
           )
@@ -164,26 +156,26 @@ class _OnboardingScreenState extends State<OnboardingScreen>
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           LocationText(
-            text: MyLocalizations.of(context)
-                .getLocale('onboarding')['locations'][index],
+            text: MyLocalizations.of(context).values!['onboarding']['locations']
+                [index],
           ),
           Spacer(),
           _IconDescriptionList(
             elements: [
               _ListElement(
                 number: 1,
-                description: MyLocalizations.of(context)
-                    .getLocale('onboarding')['instructions'][0],
+                description: MyLocalizations.of(context).values!['onboarding']
+                    ['instructions'][0],
               ),
               _ListElement(
                 number: 2,
-                description: MyLocalizations.of(context)
-                    .getLocale('onboarding')['instructions'][1],
+                description: MyLocalizations.of(context).values!['onboarding']
+                    ['instructions'][1],
               ),
               _ListElement(
                 number: 3,
-                description: MyLocalizations.of(context)
-                    .getLocale('onboarding')['instructions'][2],
+                description: MyLocalizations.of(context).values!['onboarding']
+                    ['instructions'][2],
               ),
             ],
           ),
@@ -191,8 +183,8 @@ class _OnboardingScreenState extends State<OnboardingScreen>
           Padding(
             padding: const EdgeInsets.all(16.0),
             child: CustomButton(
-              text: MyLocalizations.of(context)
-                  .getLocale('onboarding')['titles'][index],
+              text: MyLocalizations.of(context).values!['onboarding']['titles']
+                  [index],
               onTap: () {
                 _pageController.animateToPage(
                   2,
@@ -214,14 +206,14 @@ class _OnboardingScreenState extends State<OnboardingScreen>
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           LocationText(
-            text: MyLocalizations.of(context)
-                .getLocale('onboarding')['locations'][index],
+            text: MyLocalizations.of(context).values!['onboarding']['locations']
+                [index],
           ),
           Spacer(),
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Text(
-              MyLocalizations.of(context).getLocale('onboarding')['welcome'][0],
+              MyLocalizations.of(context).values!['onboarding']['welcome'][0],
               style: TextStyles.subHeading,
               textAlign: TextAlign.center,
             ),
@@ -229,7 +221,7 @@ class _OnboardingScreenState extends State<OnboardingScreen>
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Text(
-              MyLocalizations.of(context).getLocale('title'),
+              MyLocalizations.of(context).values!['title'],
               style: TextStyles.heading,
               textAlign: TextAlign.center,
             ),
@@ -237,7 +229,7 @@ class _OnboardingScreenState extends State<OnboardingScreen>
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Text(
-              MyLocalizations.of(context).getLocale('onboarding')['welcome'][1],
+              MyLocalizations.of(context).values!['onboarding']['welcome'][1],
               style: TextStyles.subHeading,
               textAlign: TextAlign.center,
             ),
@@ -246,8 +238,8 @@ class _OnboardingScreenState extends State<OnboardingScreen>
           Padding(
             padding: const EdgeInsets.all(16.0),
             child: CustomButton(
-              text: MyLocalizations.of(context)
-                  .getLocale('onboarding')['titles'][index],
+              text: MyLocalizations.of(context).values!['onboarding']['titles']
+                  [index],
               onTap: () {
                 _pageController.animateToPage(
                   1,
@@ -264,7 +256,10 @@ class _OnboardingScreenState extends State<OnboardingScreen>
 }
 
 class _IconDescriptionList extends StatelessWidget {
-  const _IconDescriptionList({key, this.elements}) : super(key: key);
+  const _IconDescriptionList({
+    Key? key,
+    required this.elements,
+  }) : super(key: key);
 
   final List<_ListElement> elements;
 
@@ -357,14 +352,14 @@ class _ListElement {
   _ListElement({
     this.iconData,
     this.number,
-    @required this.description,
+    required this.description,
   }) {
     assert((iconData == null && number != null) ||
         (iconData != null && number == null));
-    assert(description != null && description.trim().isNotEmpty);
+    assert(description.trim().isNotEmpty);
   }
 
-  final IconData iconData;
-  final int number;
+  final IconData? iconData;
+  final int? number;
   final String description;
 }

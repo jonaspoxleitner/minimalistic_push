@@ -11,7 +11,7 @@ class MyLocalizations {
 
   /// Returns the instance for the current locale.
   static MyLocalizations of(BuildContext context) {
-    return Localizations.of<MyLocalizations>(context, MyLocalizations);
+    return Localizations.of<MyLocalizations>(context, MyLocalizations)!;
   }
 
   static final Map<String, Map<String, dynamic>> _localizedValues = {
@@ -106,10 +106,6 @@ class MyLocalizations {
         'thanks': 'Thank you so much for using my app \'Minimalistic Push\'. '
             'Feel free to check out the GitHub repository.',
         'github button': 'View the source-code on GitHub.',
-      },
-      'share': {
-        'subject': 'That\'s my Curve!',
-        'text': 'Hey, check out my curve in #minimalisticpush!',
       },
     },
     'de': {
@@ -208,16 +204,12 @@ class MyLocalizations {
             'App ansehen.',
         'github button': 'Den Quellcode auf GitHub ansehen.',
       },
-      'share': {
-        'subject': 'Das ist meine Kurve!',
-        'text': 'Hey, sieh Dir meine Kurve in #minimalisticpush an!',
-      },
     },
   };
 
   /// Returns the localization.
-  dynamic getLocale(String key) {
-    return _localizedValues[locale.languageCode][key];
+  Map<String, dynamic>? get values {
+    return _localizedValues[locale.languageCode];
   }
 }
 

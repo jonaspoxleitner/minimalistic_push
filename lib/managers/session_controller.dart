@@ -1,26 +1,25 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:get/get.dart';
 import 'package:path/path.dart';
-import 'package:sprinkle/Manager.dart';
-import 'package:sprinkle/sprinkle.dart';
 import 'package:sqflite/sqflite.dart';
 
 import '../models/session.dart';
 
 /// The manager for the completed sessions.
-class SessionManager extends Manager {
+class SessionController extends GetxController {
   /// A list of all the sessions.
-  final sessions = <Session>[].reactive;
+  final RxList<Session> sessions = <Session>[].obs;
 
   /// A list of the normalized sessions with the length of 5.
-  final normalized = <double>[0.0, 0.0, 0.0, 0.0, 0.0].reactive;
+  final RxList<double> normalized = <double>[0.0, 0.0, 0.0, 0.0, 0.0].obs;
 
   /// The hightest count from all sessions.
-  final highscore = 0.reactive;
+  final RxInt highscore = 0.obs;
 
   /// The constructor of the manager, which also initializes the lists.
-  SessionManager() {
+  SessionController() {
     _init();
   }
 
@@ -37,17 +36,18 @@ class SessionManager extends Manager {
     );
   }
 
-  void _init() async {
+  Future<void> _init() async {
     await _loadSessions();
     setNormalizedSessions();
+    update();
   }
 
   /// Insert a new [Session] into the database and update the UI.
-  void insertSession(Session session) async {
-    if (session.id == null && sessions.value.isEmpty) {
+  Future<void> insertSession(Session session) async {
+    if (session.id == null && sessions.isEmpty) {
       session.id = 1;
     } else if (session.id == null) {
-      session.id = sessions.value.last.id + 1;
+      session.id = sessions.last.id! + 1;
     }
 
     await database.then((db) => db.insert(
@@ -58,19 +58,21 @@ class SessionManager extends Manager {
 
     await _loadSessions();
     setNormalizedSessions();
+
+    update();
   }
 
   /// Load all the sessions from the database.
-  void _loadSessions() async {
+  Future<void> _loadSessions() async {
     var response = database.then((db) => db.query('sessions', orderBy: 'id'));
     var max = 0;
 
     await response.then((value) {
       sessions.value = List.generate(value.length, (i) {
-        max = value[i]['count'] > max ? value[i]['count'] : max;
+        max = value[i]['count'] as int > max ? value[i]['count'] as int : max;
         return Session(
-          id: value[i]['id'],
-          count: value[i]['count'],
+          id: value[i]['id'] as int,
+          count: value[i]['count'] as int,
         );
       });
     });
@@ -88,13 +90,18 @@ class SessionManager extends Manager {
 
     await _loadSessions();
     setNormalizedSessions();
+
+    update();
   }
 
   /// Clears the database for debug purposes.
-  void clear() async {
+  Future<void> clear() async {
     await database.then((db) => db.delete('sessions'));
+
     await _loadSessions();
     setNormalizedSessions();
+
+    update();
   }
 
   /// Sets the normalized Sessions to the stream.
@@ -108,8 +115,8 @@ class SessionManager extends Manager {
     var peaks = List.filled(length, 0);
 
     for (var i = 1; i <= length; i++) {
-      if (sessions.value.length - i >= 0) {
-        peaks[length - i] = sessions.value[sessions.value.length - i].count;
+      if (sessions.length - i >= 0) {
+        peaks[length - i] = sessions[sessions.length - i].count!;
       }
     }
 
@@ -137,6 +144,8 @@ class SessionManager extends Manager {
   /// Publishes fake normalizes sessions for the onboarding experience.
   void publishOnboardingSessions() {
     normalized.value = [0.2, 0.4, 0.6, 0.8, 1.0];
+
+    update();
   }
 
   /// Imports a data from a json String.
@@ -154,10 +163,14 @@ class SessionManager extends Manager {
         insertSession(Session(id: m['id'], count: m['count']));
       }
 
+      update();
+
       return true;
       // ignore: avoid_catches_without_on_clauses
     } catch (e) {
       // calling function will handle error because it belongs to UI
+      update();
+
       return false;
     }
   }
@@ -166,15 +179,15 @@ class SessionManager extends Manager {
   String exportDataToString() {
     var data = {'sessions': []};
 
-    for (var s in sessions.value) {
-      data['sessions'].add(s.toMap());
+    for (var s in sessions) {
+      data['sessions']!.add(s.toMap());
     }
 
     return jsonEncode(data);
   }
 
   List<int> _findMinMax(List<int> list) {
-    var min = 0, max = 0;
+    var min = list[0], max = 0;
 
     for (var l in list) {
       min = l < min ? l : min;
@@ -182,12 +195,5 @@ class SessionManager extends Manager {
     }
 
     return [min, max];
-  }
-
-  @override
-  void dispose() {
-    sessions.close();
-    normalized.close();
-    highscore.close();
   }
 }

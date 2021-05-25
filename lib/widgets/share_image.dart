@@ -4,11 +4,11 @@ import 'package:flutter/material.dart';
 class ShareImage extends StatelessWidget {
   /// The constructor.
   const ShareImage({
-    key,
-    @required this.primaryColor,
-    @required this.accentColor,
-    @required this.size,
-    @required this.peaks,
+    Key? key,
+    required this.primaryColor,
+    required this.accentColor,
+    required this.size,
+    required this.peaks,
   }) : super(key: key);
 
   /// The primary color.
@@ -26,10 +26,7 @@ class ShareImage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: size.width,
-      height: size.height,
       color: accentColor,
-      alignment: Alignment.bottomCenter,
       child: CustomPaint(
         size: Size(size.width, size.height),
         painter: _SharePainter(
@@ -45,10 +42,10 @@ class ShareImage extends StatelessWidget {
 
 class _SharePainter extends CustomPainter {
   const _SharePainter({
-    @required this.peaks,
-    @required this.size,
-    @required this.context,
-    @required this.color,
+    required this.peaks,
+    required this.size,
+    required this.context,
+    required this.color,
   });
 
   final List<double> peaks;

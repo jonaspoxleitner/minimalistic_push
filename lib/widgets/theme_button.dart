@@ -1,18 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 
-import 'package:theme_provider/theme_provider.dart';
+import '../styles/styles.dart';
 
 /// The button for the theme selection in the settings.
 class ThemeButton extends StatelessWidget {
   /// The constructor.
   const ThemeButton({
-    key,
-    @required this.appTheme,
-    @required this.isCurrent,
+    Key? key,
+    required this.theme,
+    required this.isCurrent,
   }) : super(key: key);
 
   /// The AppTheme.
-  final AppTheme appTheme;
+  final AppTheme theme;
 
   /// If the theme is currently selected.
   final bool isCurrent;
@@ -24,7 +26,8 @@ class ThemeButton extends StatelessWidget {
 
     return GestureDetector(
       onTap: () {
-        ThemeProvider.controllerOf(context).setTheme(appTheme.id);
+        Get.changeTheme(theme.data);
+        GetStorage().write('theme', theme.id);
       },
       child: Padding(
         padding: const EdgeInsets.all(8.0),
@@ -36,14 +39,14 @@ class ThemeButton extends StatelessWidget {
             children: [
               Container(
                 decoration: BoxDecoration(
-                  color: appTheme.data.accentColor,
+                  color: theme.data.accentColor,
                 ),
                 width: width,
                 height: height,
               ),
               CustomPaint(
                 painter: _DiagonalPainter(
-                  color: appTheme.data.primaryColor,
+                  color: theme.data.primaryColor,
                 ),
                 size: Size(
                   width,
@@ -63,7 +66,7 @@ class ThemeButton extends StatelessWidget {
                   borderRadius: const BorderRadius.all(Radius.circular(10.0)),
                 ),
                 child: Text(
-                  appTheme.description,
+                  theme.name,
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 18.0,
@@ -81,7 +84,7 @@ class ThemeButton extends StatelessWidget {
 
 class _DiagonalPainter extends CustomPainter {
   const _DiagonalPainter({
-    this.color,
+    required this.color,
   });
 
   final Color color;

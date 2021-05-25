@@ -4,16 +4,16 @@ import 'package:flutter/material.dart';
 class CustomButton extends StatelessWidget {
   /// The constructor.
   const CustomButton({
-    key,
-    @required this.text,
-    @required this.onTap,
+    Key? key,
+    required this.text,
+    required this.onTap,
   }) : super(key: key);
 
   /// The text inside the button.
   final String text;
 
   /// The event, which will be called on tap of the button.
-  final Function onTap;
+  final void Function() onTap;
 
   @override
   Widget build(BuildContext context) {

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:theme_provider/theme_provider.dart';
+import 'package:get_storage/get_storage.dart';
 
 import '../widgets/theme_button.dart';
 
@@ -7,67 +7,95 @@ import '../widgets/theme_button.dart';
 class AppThemes {
   AppThemes._();
 
-  /// The list of the available [AppTheme]s.
-  static final list = <AppTheme>[
-    AppTheme(
-      id: "outdoor",
-      data: ThemeData(
-        primaryColor: Color(0xFF263D42),
-        accentColor: Color(0xFF3F5E5A),
-        visualDensity: VisualDensity.adaptivePlatformDensity,
-      ),
-      description: 'Outdoor',
+  /// The outdoor theme for the applicaton.
+  static final outdoor = AppTheme(
+    id: 'outdoor',
+    name: 'Outdoor',
+    data: ThemeData(
+      primaryColor: Color(0xFF263D42),
+      accentColor: Color(0xFF3F5E5A),
+      visualDensity: VisualDensity.adaptivePlatformDensity,
     ),
-    AppTheme(
-      id: "deep_ocean",
-      data: ThemeData(
-        primaryColor: Color(0xFF2A4158),
-        accentColor: Color(0xFF597387),
-        visualDensity: VisualDensity.adaptivePlatformDensity,
-      ),
-      description: 'Deep Ocean',
+  );
+
+  /// The ocean theme for the applicaton.
+  static final ocean = AppTheme(
+    id: 'ocean',
+    name: 'Ocean',
+    data: ThemeData(
+      primaryColor: Color(0xFF2A4158),
+      accentColor: Color(0xFF597387),
+      visualDensity: VisualDensity.adaptivePlatformDensity,
     ),
-    AppTheme(
-      id: "wine",
-      data: ThemeData(
-        primaryColor: Color(0xFF5C3C4B),
-        accentColor: Color(0xFF385F71),
-        visualDensity: VisualDensity.adaptivePlatformDensity,
-      ),
-      description: 'Wine',
+  );
+
+  /// The wine theme for the applicaton.
+  static final wine = AppTheme(
+    id: 'wine',
+    name: 'Wine',
+    data: ThemeData(
+      primaryColor: Color(0xFF5C3C4B),
+      accentColor: Color(0xFF385F71),
+      visualDensity: VisualDensity.adaptivePlatformDensity,
     ),
-    AppTheme(
-      id: "vulcano",
-      data: ThemeData(
-        primaryColor: Color(0xFF880044),
-        accentColor: Color(0xFFAA1155),
-        visualDensity: VisualDensity.adaptivePlatformDensity,
-      ),
-      description: 'Vulcano',
+  );
+
+  /// The vulcano theme for the applicaton.
+  static final vulcano = AppTheme(
+    id: 'vulcano',
+    name: 'Vulcano',
+    data: ThemeData(
+      primaryColor: Color(0xFF880044),
+      accentColor: Color(0xFFAA1155),
+      visualDensity: VisualDensity.adaptivePlatformDensity,
     ),
-    AppTheme(
-      id: "space",
-      data: ThemeData(
-        primaryColor: Color(0xFF2D3142),
-        accentColor: Color(0xFF4F5D75),
-        visualDensity: VisualDensity.adaptivePlatformDensity,
-      ),
-      description: 'Space',
+  );
+
+  /// The space theme for the applicaton.
+  static final space = AppTheme(
+    id: 'space',
+    name: 'Space',
+    data: ThemeData(
+      primaryColor: Color(0xFF2D3142),
+      accentColor: Color(0xFF4F5D75),
+      visualDensity: VisualDensity.adaptivePlatformDensity,
     ),
-  ];
+  );
+
+  /// The list of the available themes.
+  static List<AppTheme> get list {
+    return [
+      outdoor,
+      ocean,
+      wine,
+      vulcano,
+      space,
+    ];
+  }
+
+  /// Returns the theme by it's id and returns the 'outdoor' theme if the id
+  /// could not be found.
+  static AppTheme getById(String id) {
+    for (var theme in list) {
+      if (theme.id == id) {
+        return theme;
+      }
+    }
+
+    return outdoor;
+  }
 
   /// A function, which returns a list of [ThemeButton].
   ///
   /// The context is necessary to identify the current theme.
   static List<Widget> getThemeButtons(BuildContext context) {
     var themeButtons = <Widget>[];
-    var current = ThemeProvider.controllerOf(context).currentThemeId;
 
     for (var theme in list) {
       themeButtons.add(
         ThemeButton(
-          appTheme: theme,
-          isCurrent: theme.id == current,
+          theme: theme,
+          isCurrent: GetStorage().read('theme') == theme.id,
         ),
       );
     }
@@ -96,4 +124,23 @@ class TextStyles {
     color: Colors.white,
     fontSize: 18.0,
   );
+}
+
+/// A theme object with id and name.
+class AppTheme {
+  /// The id of the theme.
+  final String id;
+
+  /// The name of the theme.
+  final String name;
+
+  /// The theme data.
+  final ThemeData data;
+
+  /// The constructor.
+  const AppTheme({
+    required this.id,
+    required this.name,
+    required this.data,
+  });
 }

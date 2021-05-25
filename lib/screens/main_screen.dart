@@ -1,14 +1,14 @@
 import 'dart:async';
 
-import 'package:all_sensors/all_sensors.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:sprinkle/Observer.dart';
-import 'package:sprinkle/sprinkle.dart';
+import 'package:get/get.dart';
+import 'package:proximity_sensor/proximity_sensor.dart';
 
 import '../localizations.dart';
-import '../managers/background_manager.dart';
-import '../managers/preferences_manager.dart';
-import '../managers/session_manager.dart';
+import '../managers/background_controller.dart';
+import '../managers/preferences_controller.dart';
+import '../managers/session_controller.dart';
 import '../models/session.dart';
 import '../styles/styles.dart';
 import '../widgets/navigation_bar.dart';
@@ -17,7 +17,7 @@ import 'named_overlay_route.dart';
 /// The main screen of the application.
 class MainScreen extends StatefulWidget {
   /// The constructor for the main screen.
-  const MainScreen({key}) : super(key: key);
+  const MainScreen({Key? key}) : super(key: key);
 
   @override
   _MainScreenState createState() => _MainScreenState();
@@ -25,7 +25,7 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen>
     with SingleTickerProviderStateMixin {
-  AnimationController _animationController;
+  late AnimationController _animationController;
   final ValueNotifier<double> animationNotifier = ValueNotifier(0.0);
   final ValueNotifier<bool> trainingModeNotifier = ValueNotifier(false);
 
@@ -62,11 +62,10 @@ class _MainScreenState extends State<MainScreen>
 
   @override
   Widget build(BuildContext context) {
-    var preferencesManager = context.use<PreferencesManager>();
-    var backgroundManager = context.use<BackgroundManager>();
+    var backgroundController = Get.find<BackgroundController>();
 
-    if (backgroundManager.factor.value <= 0.6) {
-      backgroundManager.updateFactor(0.6);
+    if (backgroundController.factor.value <= 0.6) {
+      backgroundController.updateFactor(0.6);
     }
 
     if (!trainingModeNotifier.value) {
@@ -91,8 +90,7 @@ class _MainScreenState extends State<MainScreen>
                 );
               },
               child: NavigationBar(
-                text:
-                    MyLocalizations.of(context).getLocale('training')['title'],
+                text: MyLocalizations.of(context).values!['training']['title'],
                 leftOption: NavigationOption(
                   icon: Icons.list,
                   onPressed: () => Navigator.push(
@@ -118,59 +116,63 @@ class _MainScreenState extends State<MainScreen>
               ),
             ),
             Expanded(
-              child: GestureDetector(
-                behavior: HitTestBehavior.translucent,
-                onTap: () {
-                  trainingModeNotifier.value = true;
-                },
-                child: Center(
-                  child: Container(
-                    constraints: BoxConstraints.tightForFinite(),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.all(
-                        const Radius.circular(24.0),
-                      ),
-                      border: Border.all(
-                        color: Colors.white,
-                        width: 4.0,
-                        style: BorderStyle.solid,
-                      ),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(24.0),
-                      child: Text(
-                        MyLocalizations.of(context)
-                            .getLocale('training')['start'],
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 64.0,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.max,
+                children: [
+                  Expanded(
+                    child: GestureDetector(
+                      behavior: HitTestBehavior.translucent,
+                      onTap: () {
+                        trainingModeNotifier.value = true;
+                      },
+                      child: AnimatedBuilder(
+                        animation: _animationController,
+                        builder: (context, child) {
+                          return Transform.translate(
+                            offset: Offset(
+                                0.0, 20 - _animationController.value * 20),
+                            child: child,
+                          );
+                        },
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Padding(
+                              padding: EdgeInsets.only(
+                                bottom: MediaQuery.of(context).size.height / 10,
+                              ),
+                              child: Text(
+                                MyLocalizations.of(context).values!['training']
+                                    ['start'],
+                                style: TextStyle(
+                                  color: Colors.white.withOpacity(0.8),
+                                  fontSize: 64.0,
+                                ),
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: GetBuilder<PreferencesController>(
+                                builder: (preferencesController) {
+                                  var hardcore =
+                                      preferencesController.hardcore.isTrue;
+                                  return Text(
+                                    MyLocalizations.of(context)
+                                            .values!['training']['hardcore']
+                                        [hardcore],
+                                    style: TextStyles.body,
+                                  );
+                                },
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     ),
                   ),
-                ),
-              ),
-            ),
-            AnimatedBuilder(
-              animation: _animationController,
-              builder: (context, child) {
-                return Transform.translate(
-                  offset: Offset(0.0, 20 - _animationController.value * 20),
-                  child: child,
-                );
-              },
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Observer<bool>(
-                  stream: preferencesManager.hardcore,
-                  builder: (context, value) {
-                    return Text(
-                      MyLocalizations.of(context)
-                          .getLocale('training')['hardcore'][value],
-                      style: TextStyles.body,
-                    );
-                  },
-                ),
+                ],
               ),
             ),
           ],
@@ -179,7 +181,7 @@ class _MainScreenState extends State<MainScreen>
     } else {
       return _TrainingWidget(
         trainingMode: trainingModeNotifier,
-        hardcore: preferencesManager.hardcore.value,
+        hardcore: Get.find<PreferencesController>().hardcore.value,
       );
     }
   }
@@ -187,9 +189,9 @@ class _MainScreenState extends State<MainScreen>
 
 class _TrainingWidget extends StatefulWidget {
   const _TrainingWidget({
-    Key key,
-    @required this.trainingMode,
-    @required this.hardcore,
+    Key? key,
+    required this.trainingMode,
+    required this.hardcore,
   }) : super(key: key);
 
   final ValueNotifier<bool> trainingMode;
@@ -203,7 +205,7 @@ class _TrainingWidgetState extends State<_TrainingWidget> {
   int counter = 1;
 
   var _proximity = false;
-  StreamSubscription<dynamic> _streamSubscription;
+  late StreamSubscription<dynamic> _streamSubscription;
 
   void _buttonTap() async {
     super.setState(() {
@@ -214,12 +216,12 @@ class _TrainingWidgetState extends State<_TrainingWidget> {
   @override
   void initState() {
     if (!widget.hardcore) {
-      _streamSubscription = proximityEvents.listen((event) {
-        var p = event.getValue();
-        if (_proximity && !p) {
+      _streamSubscription = ProximitySensor.events.listen((event) {
+        var p = event > 0;
+        if (_proximity && p) {
           _buttonTap();
         }
-        _proximity = p;
+        _proximity = !p;
       });
     }
     super.initState();
@@ -235,8 +237,6 @@ class _TrainingWidgetState extends State<_TrainingWidget> {
 
   @override
   Widget build(BuildContext context) {
-    var sessionManager = context.use<SessionManager>();
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisAlignment: MainAxisAlignment.center,
@@ -259,7 +259,9 @@ class _TrainingWidgetState extends State<_TrainingWidget> {
                 color: Colors.white,
               ),
               onPressed: () {
-                sessionManager.insertSession(Session(count: counter));
+                Get.find<SessionController>().insertSession(Session(
+                  count: counter,
+                ));
                 widget.trainingMode.value = false;
               },
             ),
@@ -294,19 +296,19 @@ class _TrainingWidgetState extends State<_TrainingWidget> {
       builder: (context) {
         return AlertDialog(
           title: Text(
-            MyLocalizations.of(context).getLocale('training')['alert']['title'],
+            MyLocalizations.of(context).values!['training']['alert']['title'],
           ),
           content: SingleChildScrollView(
             child: ListBody(
               children: <Widget>[
                 Text(
-                  MyLocalizations.of(context).getLocale('training')['alert']
+                  MyLocalizations.of(context).values!['training']['alert']
                           ['contents'][0] +
                       count.toString() +
-                      MyLocalizations.of(context).getLocale('training')['alert']
+                      MyLocalizations.of(context).values!['training']['alert']
                           ['contents'][1],
                 ),
-                Text(MyLocalizations.of(context).getLocale('training')['alert']
+                Text(MyLocalizations.of(context).values!['training']['alert']
                     ['contents'][2]),
               ],
             ),
@@ -316,7 +318,7 @@ class _TrainingWidgetState extends State<_TrainingWidget> {
               style:
                   TextButton.styleFrom(primary: Theme.of(context).primaryColor),
               child: Text(
-                MyLocalizations.of(context).getLocale('training')['alert']
+                MyLocalizations.of(context).values!['training']['alert']
                     ['continue'],
                 style: TextStyle(
                   color: Theme.of(context).primaryColor,
@@ -330,8 +332,7 @@ class _TrainingWidgetState extends State<_TrainingWidget> {
               style:
                   TextButton.styleFrom(primary: Theme.of(context).primaryColor),
               child: Text(
-                MyLocalizations.of(context).getLocale('training')['alert']
-                    ['end'],
+                MyLocalizations.of(context).values!['training']['alert']['end'],
                 style: TextStyle(
                   color: Theme.of(context).primaryColor,
                 ),

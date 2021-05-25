@@ -3,42 +3,53 @@ description: A minimalistic push-up application.
 
 publish_to: 'none' # do not remove
 
-version: 1.5.1+35
+version: 1.6.0+36
 
 environment:
-  sdk: ">=2.7.0 <3.0.0"
+  sdk: '>=2.12.0 <3.0.0'
 
 dependencies:
   flutter:
     sdk: flutter
-  sqflite:
-  path:
-  shared_preferences:
-  theme_provider:
-  url_launcher:
-  share:
+  
   flutter_localizations:
     sdk: flutter
-  path_provider:
-  all_sensors:
-  clipboard:
-  sprinkle:
 
-  cupertino_icons: ^0.1.3 # check if needed
+  clipboard: ^0.1.3
+
+  davinci: ^2.0.2
+
+  get: ^4.1.4
+  get_storage: ^2.0.2
+
+  proximity_sensor: ^1.0.2
+
+  share: ^2.0.1
+  
+  sqflite: ^2.0.0
+
+  url_launcher: ^6.0.4
+
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+
   flutter_launcher_icons:
+
   effective_dart: ^1.3.0
+
 
 flutter_icons:
   image_path: 'assets/icons/app_icon.png'
+
   android: true
+
   ios: true
 
-# The following section is specific to Flutter.
+
 flutter:
   uses-material-design: true
+
   assets:
     - assets/icons/app_icon.png

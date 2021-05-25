@@ -4,23 +4,25 @@ import 'package:clipboard/clipboard.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:sprinkle/Observer.dart';
-import 'package:sprinkle/sprinkle.dart';
+import 'package:flutter/services.dart';
+import 'package:get/get.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../localizations.dart';
-import '../managers/preferences_manager.dart';
-import '../managers/session_manager.dart';
+import '../managers/preferences_controller.dart';
+import '../managers/session_controller.dart';
 import '../styles/styles.dart';
 import '../widgets/custom_button.dart';
 
 /// The settings content for the overlay route.
 class SettingsContent extends StatelessWidget {
   /// The constructor.
-  const SettingsContent({Key key}) : super(key: key);
+  const SettingsContent({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light);
+
     var widgets = <Widget>[
       Container(padding: const EdgeInsets.only(top: 70.0)),
       _buildThemesBlock(context),
@@ -34,18 +36,19 @@ class SettingsContent extends StatelessWidget {
     }
 
     return ListView(
+      physics: BouncingScrollPhysics(),
       children: widgets,
     );
   }
 
   CustomButton _buildAboutButton(BuildContext context) {
     return CustomButton(
-      text: '${MyLocalizations.of(context).getLocale('settings')['about']} '
-          '${MyLocalizations.of(context).getLocale('title')}',
+      text: '${MyLocalizations.of(context).values!['settings']['about']} '
+          '${MyLocalizations.of(context).values!['title']}',
       onTap: () {
         showLicensePage(
           context: context,
-          applicationName: MyLocalizations.of(context).getLocale('title'),
+          applicationName: MyLocalizations.of(context).values!['title'],
           applicationIcon: Column(
             children: [
               Container(
@@ -57,7 +60,7 @@ class SettingsContent extends StatelessWidget {
                 ),
               ),
               Text(
-                MyLocalizations.of(context).getLocale('settings')['thanks'],
+                MyLocalizations.of(context).values!['settings']['thanks'],
                 textAlign: TextAlign.center,
               ),
               Padding(
@@ -68,8 +71,8 @@ class SettingsContent extends StatelessWidget {
                     forceSafariVC: false,
                   ),
                   child: Text(
-                    MyLocalizations.of(context)
-                        .getLocale('settings')['github button'],
+                    MyLocalizations.of(context).values!['settings']
+                        ['github button'],
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       decoration: TextDecoration.underline,
@@ -86,29 +89,26 @@ class SettingsContent extends StatelessWidget {
   }
 
   _SettingsBlock _buildBackupBlock(BuildContext context) {
-    var sessionManager = context.use<SessionManager>();
-
     return _SettingsBlock(
-      title: MyLocalizations.of(context).getLocale('settings')['backup']
-          ['title'],
-      description: MyLocalizations.of(context).getLocale('settings')['backup']
+      title: MyLocalizations.of(context).values!['settings']['backup']['title'],
+      description: MyLocalizations.of(context).values!['settings']['backup']
           ['description'],
       children: [
         CustomButton(
-          text: MyLocalizations.of(context).getLocale('settings')['backup']
+          text: MyLocalizations.of(context).values!['settings']['backup']
               ['import']['title'],
           onTap: () => _showAlertDialog(
               context,
-              MyLocalizations.of(context).getLocale('settings')['backup']
+              MyLocalizations.of(context).values!['settings']['backup']
                   ['import']['title'],
-              MyLocalizations.of(context).getLocale('settings')['backup']
+              MyLocalizations.of(context).values!['settings']['backup']
                   ['import']['description'],
               [
                 TextButton(
                   style: TextButton.styleFrom(
                       primary: Theme.of(context).primaryColor),
                   child: Text(
-                    MyLocalizations.of(context).getLocale('settings')['backup']
+                    MyLocalizations.of(context).values!['settings']['backup']
                         ['cancel'],
                     style: TextStyle(
                       color: Theme.of(context).primaryColor,
@@ -121,7 +121,7 @@ class SettingsContent extends StatelessWidget {
                       primary: Theme.of(context).primaryColor),
                   child: Text(
                     // ignore: lines_longer_than_80_chars
-                    '${MyLocalizations.of(context).getLocale('settings')['backup']['import']['title']}.',
+                    '${MyLocalizations.of(context).values!['settings']['backup']['import']['title']}.',
                     style: TextStyle(
                       color: Theme.of(context).primaryColor,
                     ),
@@ -129,22 +129,21 @@ class SettingsContent extends StatelessWidget {
                   onPressed: () {
                     Navigator.of(context).pop();
                     FlutterClipboard.paste().then((value) {
-                      if (sessionManager.importDataFromString(value)) {
+                      if (Get.find<SessionController>()
+                          .importDataFromString(value)) {
                         _showAlertDialog(
                           context,
-                          MyLocalizations.of(context)
-                                  .getLocale('settings')['backup']['import']
-                              ['title'],
-                          MyLocalizations.of(context)
-                                  .getLocale('settings')['backup']['import']
-                              ['success'],
+                          MyLocalizations.of(context).values!['settings']
+                              ['backup']['import']['title'],
+                          MyLocalizations.of(context).values!['settings']
+                              ['backup']['import']['success'],
                           [
                             TextButton(
                               style: TextButton.styleFrom(
                                   primary: Theme.of(context).primaryColor),
                               child: Text(
-                                MyLocalizations.of(context)
-                                    .getLocale('settings')['backup']['okay'],
+                                MyLocalizations.of(context).values!['settings']
+                                    ['backup']['okay'],
                                 style: TextStyle(
                                   color: Theme.of(context).primaryColor,
                                 ),
@@ -156,19 +155,17 @@ class SettingsContent extends StatelessWidget {
                       } else {
                         _showAlertDialog(
                           context,
-                          MyLocalizations.of(context)
-                                  .getLocale('settings')['backup']['import']
-                              ['title'],
-                          MyLocalizations.of(context)
-                                  .getLocale('settings')['backup']['import']
-                              ['fail'],
+                          MyLocalizations.of(context).values!['settings']
+                              ['backup']['import']['title'],
+                          MyLocalizations.of(context).values!['settings']
+                              ['backup']['import']['fail'],
                           [
                             TextButton(
                               style: TextButton.styleFrom(
                                   primary: Theme.of(context).primaryColor),
                               child: Text(
-                                MyLocalizations.of(context)
-                                    .getLocale('settings')['backup']['okay'],
+                                MyLocalizations.of(context).values!['settings']
+                                    ['backup']['okay'],
                                 style: TextStyle(
                                   color: Theme.of(context).primaryColor,
                                 ),
@@ -184,23 +181,23 @@ class SettingsContent extends StatelessWidget {
               ]),
         ),
         CustomButton(
-          text: MyLocalizations.of(context).getLocale('settings')['backup']
+          text: MyLocalizations.of(context).values!['settings']['backup']
               ['export']['title'],
           onTap: () {
-            var data = sessionManager.exportDataToString();
+            var data = Get.find<SessionController>().exportDataToString();
             FlutterClipboard.copy(data).then((value) => _showAlertDialog(
                   context,
-                  MyLocalizations.of(context).getLocale('settings')['backup']
+                  MyLocalizations.of(context).values!['settings']['backup']
                       ['export']['title'],
-                  MyLocalizations.of(context).getLocale('settings')['backup']
+                  MyLocalizations.of(context).values!['settings']['backup']
                       ['export']['success'],
                   [
                     TextButton(
                       style: TextButton.styleFrom(
                           primary: Theme.of(context).primaryColor),
                       child: Text(
-                        MyLocalizations.of(context)
-                            .getLocale('settings')['backup']['okay'],
+                        MyLocalizations.of(context).values!['settings']
+                            ['backup']['okay'],
                         style: TextStyle(
                           color: Theme.of(context).primaryColor,
                         ),
@@ -217,9 +214,9 @@ class SettingsContent extends StatelessWidget {
 
   _SettingsBlock _buildHardcoreBlock(BuildContext context) {
     return _SettingsBlock(
-      title: MyLocalizations.of(context).getLocale('settings')['hardcore']
+      title: MyLocalizations.of(context).values!['settings']['hardcore']
           ['title'],
-      description: MyLocalizations.of(context).getLocale('settings')['hardcore']
+      description: MyLocalizations.of(context).values!['settings']['hardcore']
           ['description'],
       children: [_HardcoreToggle()],
     );
@@ -227,9 +224,8 @@ class SettingsContent extends StatelessWidget {
 
   _SettingsBlock _buildThemesBlock(BuildContext context) {
     return _SettingsBlock(
-      title: MyLocalizations.of(context).getLocale('settings')['themes']
-          ['title'],
-      description: MyLocalizations.of(context).getLocale('settings')['themes']
+      title: MyLocalizations.of(context).values!['settings']['themes']['title'],
+      description: MyLocalizations.of(context).values!['settings']['themes']
           ['description'],
       children: AppThemes.getThemeButtons(context),
     );
@@ -238,9 +234,6 @@ class SettingsContent extends StatelessWidget {
   /// This SettingsBlock is used for debug purposes.
   // ignore: unused_element
   _SettingsBlock _buildDebugBlock(BuildContext context) {
-    var sessionManager = context.use<SessionManager>();
-    var preferencesManager = context.use<PreferencesManager>();
-
     return _SettingsBlock(
       title: 'Debug Settings',
       description:
@@ -251,13 +244,13 @@ class SettingsContent extends StatelessWidget {
           text: 'Return to Onboarding (debug)',
           onTap: () {
             Navigator.of(context).pop();
-            preferencesManager.returnToOnboarding();
+            Get.find<PreferencesController>().returnToOnboarding();
           },
         ),
         CustomButton(
           text: 'Clear database (debug)',
           onTap: () {
-            sessionManager.clear();
+            Get.find<SessionController>().clear();
           },
         ),
       ],
@@ -292,19 +285,18 @@ class _HardcoreToggle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var preferencesManager = context.use<PreferencesManager>();
-
-    return Observer<bool>(
-      stream: preferencesManager.hardcore,
-      builder: (context, value) {
+    return GetBuilder<PreferencesController>(
+      builder: (preferencesController) {
         return GestureDetector(
           onTap: () {
-            value
-                ? preferencesManager.disableHardcore()
-                : preferencesManager.enableHardcore();
+            preferencesController.hardcore.isTrue
+                ? preferencesController.disableHardcore()
+                : preferencesController.enableHardcore();
           },
           child: Icon(
-            value ? Icons.check_box : Icons.check_box_outline_blank,
+            preferencesController.hardcore.isTrue
+                ? Icons.check_box
+                : Icons.check_box_outline_blank,
             size: 30.0,
             color: Colors.white,
           ),
@@ -317,14 +309,14 @@ class _HardcoreToggle extends StatelessWidget {
 // this widget represents a block in the settings
 class _SettingsBlock extends StatelessWidget {
   const _SettingsBlock({
-    key,
+    Key? key,
     this.title,
     this.description,
-    @required this.children,
+    required this.children,
   }) : super(key: key);
 
-  final String title;
-  final String description;
+  final String? title;
+  final String? description;
   final List<Widget> children;
 
   @override
@@ -337,7 +329,7 @@ class _SettingsBlock extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.all(8.0),
           child: Text(
-            description,
+            description!,
             textAlign: TextAlign.center,
             style: TextStyles.body,
           ),
@@ -350,7 +342,7 @@ class _SettingsBlock extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.all(8.0),
           child: Text(
-            title,
+            title!,
             textAlign: TextAlign.center,
             style: TextStyles.subHeading,
           ),

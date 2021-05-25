@@ -1,10 +1,10 @@
 /// The session object.
 class Session {
   /// The id of the session.
-  int id;
+  int? id;
 
   /// The number of push-ups of the session.
-  final int count;
+  final int? count;
 
   /// The constructor of the session object.
   Session({this.id, this.count});

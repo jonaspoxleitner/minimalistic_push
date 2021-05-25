@@ -1,34 +1,28 @@
 import 'package:flutter/material.dart';
-import 'package:sprinkle/Observer.dart';
-import 'package:sprinkle/sprinkle.dart';
+import 'package:get/get.dart';
 
-import '../managers/background_manager.dart';
-import '../managers/session_manager.dart';
+import '../managers/background_controller.dart';
+import '../managers/session_controller.dart';
 import '../models/peaks.dart';
 
 /// This Widget represents the background of the application.
 class Background extends StatelessWidget {
   /// The constructor.
-  const Background({Key key}) : super(key: key);
+  const Background({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    var sessionManager = context.use<SessionManager>();
-    var backgroundManager = context.use<BackgroundManager>();
-
     return Container(
       constraints: BoxConstraints.expand(),
       color: Theme.of(context).accentColor,
       alignment: Alignment.bottomCenter,
-      child: Observer<List<double>>(
-        stream: sessionManager.normalized,
-        builder: (context, list) {
-          return Observer<double>(
-            stream: backgroundManager.factor,
-            builder: (context, factor) {
+      child: GetBuilder<SessionController>(
+        builder: (sessionController) {
+          return GetBuilder<BackgroundController>(
+            builder: (backgroundcontroller) {
               return _AnimatedPeaks(
-                peaks: Peaks(list: list),
-                factor: factor,
+                peaks: Peaks(list: sessionController.normalized.toList()),
+                factor: backgroundcontroller.factor.toDouble(),
                 duration: Duration(milliseconds: 1000),
                 curve: Curves.easeInOutQuart,
               );
@@ -43,10 +37,10 @@ class Background extends StatelessWidget {
 /// TODO: Performance optimization.
 class _AnimatedPeaks extends ImplicitlyAnimatedWidget {
   _AnimatedPeaks({
-    Key key,
-    @required this.peaks,
-    @required this.factor,
-    @required Duration duration,
+    Key? key,
+    required this.peaks,
+    required this.factor,
+    required Duration duration,
     Curve curve = Curves.linear,
   }) : super(duration: duration, curve: curve, key: key);
 
@@ -59,33 +53,33 @@ class _AnimatedPeaks extends ImplicitlyAnimatedWidget {
 }
 
 class _AnimatedPeaksState extends AnimatedWidgetBaseState<_AnimatedPeaks> {
-  PeaksTween _peaksTween;
-  Tween<double> _factorTween;
+  PeaksTween? _peaksTween;
+  Tween<double>? _factorTween;
 
   @override
   Widget build(BuildContext context) {
     return CustomPaint(
       painter: _CurvePainter(
-        peaks: _peaksTween.evaluate(animation),
+        peaks: _peaksTween!.evaluate(animation),
         context: context,
-        factor: _factorTween.evaluate(animation),
+        factor: _factorTween!.evaluate(animation),
       ),
       size: MediaQuery.of(context).size,
     );
   }
 
   @override
-  void forEachTween(TweenVisitor visitor) {
+  void forEachTween(TweenVisitor<dynamic> visitor) {
     _peaksTween = visitor(
       _peaksTween,
       widget.peaks,
       (dynamic value) => PeaksTween(begin: value),
-    );
+    ) as PeaksTween;
     _factorTween = visitor(
       _factorTween,
       widget.factor,
       (dynamic value) => Tween<double>(begin: value),
-    );
+    ) as Tween<double>;
   }
 }
 
@@ -94,12 +88,12 @@ class _CurvePainter extends CustomPainter {
     ..style = PaintingStyle.fill
     ..strokeWidth = 0.0;
 
-  double spaceOnTop;
+  late double spaceOnTop;
 
   _CurvePainter({
-    @required this.peaks,
-    @required this.context,
-    @required this.factor,
+    required this.peaks,
+    required this.context,
+    required this.factor,
   });
 
   final Peaks peaks;

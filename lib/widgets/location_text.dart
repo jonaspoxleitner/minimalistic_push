@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 class LocationText extends StatelessWidget {
   /// The constructor.
   const LocationText({
-    key,
-    @required this.text,
+    Key? key,
+    required this.text,
   }) : super(key: key);
 
   /// The text of the location.
