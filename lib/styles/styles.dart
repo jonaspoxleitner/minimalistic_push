@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get_storage/get_storage.dart';
-
-import '../widgets/theme_button.dart';
+import 'package:minimalistic_push/widgets/theme_button.dart';
 
 /// A collection of the available AppThemes in the application.
 class AppThemes {
@@ -63,15 +62,13 @@ class AppThemes {
   );
 
   /// The list of the available themes.
-  static List<AppTheme> get list {
-    return [
-      outdoor,
-      ocean,
-      wine,
-      vulcano,
-      space,
-    ];
-  }
+  static List<AppTheme> get list => [
+        outdoor,
+        ocean,
+        wine,
+        vulcano,
+        space,
+      ];
 
   /// Returns the theme by it's id and returns the 'outdoor' theme if the id
   /// could not be found.
@@ -92,12 +89,7 @@ class AppThemes {
     var themeButtons = <Widget>[];
 
     for (var theme in list) {
-      themeButtons.add(
-        ThemeButton(
-          theme: theme,
-          isCurrent: GetStorage().read('theme') == theme.id,
-        ),
-      );
+      themeButtons.add(ThemeButton(theme: theme, isCurrent: GetStorage().read('theme') == theme.id));
     }
 
     return themeButtons;

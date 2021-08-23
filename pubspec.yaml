@@ -1,50 +1,41 @@
-name: minimalisticpush
+name: minimalistic_push
 description: A minimalistic push-up application.
 
 publish_to: 'none' # do not remove
 
-version: 1.6.0+36
+version: 1.6.1+37
 
 environment:
-  sdk: '>=2.12.0 <3.0.0'
+  sdk: '>=2.13.0 <3.0.0'
 
 dependencies:
   flutter:
     sdk: flutter
-  
   flutter_localizations:
     sdk: flutter
-
-  clipboard: ^0.1.3
-
-  davinci: ^2.0.2
-
-  get: ^4.1.4
-  get_storage: ^2.0.2
-
-  proximity_sensor: ^1.0.2
-
-  share: ^2.0.1
   
+  # common
+  clipboard: ^0.1.3
+  davinci: ^2.0.2
+  proximity_sensor: ^1.0.2
+  share: ^2.0.1
   sqflite: ^2.0.0
-
   url_launcher: ^6.0.4
 
+  # get
+  get: ^4.1.4
+  get_storage: ^2.0.2
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-
   flutter_launcher_icons:
-
   effective_dart: ^1.3.0
 
 
 flutter_icons:
   image_path: 'assets/icons/app_icon.png'
-
   android: true
-
   ios: true
 
 

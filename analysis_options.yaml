@@ -1,1 +1,95 @@
-include: package:effective_dart/analysis_options.yaml
+# allaboutlinter with modification
+linter:
+  rules:
+    # editor
+    # chars in line: 120
+
+    # code
+    - always_declare_return_types # pedantic
+    # - always_require_non_null_named_parameters # pedantic
+    - annotate_overrides # pedantic
+    # - avoid_catches_without_on_clauses # effective
+    # - avoid_catching_errors # effective
+    # - avoid_classes_with_only_static_members # effective
+    - avoid_equals_and_hash_code_on_mutable_classes # effective
+    - avoid_function_literals_in_foreach_calls # effective
+    - avoid_init_to_null
+    - avoid_null_checks_in_equality_operators
+    - avoid_positional_boolean_parameters # effective
+    # - avoid_private_typedef_functions # effective
+    - avoid_relative_lib_imports
+    - avoid_return_types_on_setters
+    # - avoid_returning_null # effective
+    # - avoid_returning_this # effective
+    # - avoid_setters_without_getters # effective
+    - avoid_shadowing_type_parameters # pedantic
+    - avoid_single_cascade_in_expression_statements #pedantic
+    - avoid_types_as_parameter_names # pedantic
+    - avoid_types_on_closure_parameters # effective
+    - await_only_futures # pedantic
+    - camel_case_extensions
+    - camel_case_types # effective
+    # - constant_identifier_names # effective
+    - curly_braces_in_flow_control_structures
+    - directives_ordering # effective
+    - empty_catches # pedantic
+    - empty_constructor_bodies
+    - file_names # effective
+    - hash_and_equals # effective
+    - implementation_imports # effective
+    - library_names
+    - library_prefixes
+    # - lines_longer_than_80_chars # effective
+    - no_duplicate_case_values # pedantic
+    - no_logic_in_create_state # flutter
+    - non_constant_identifier_names # effective
+    - null_closures # pedantic
+    - omit_local_variable_types
+    # - one_member_abstracts # effective
+    - prefer_adjacent_string_concatenation
+    - prefer_collection_literals
+    - prefer_conditional_assignment # pedantic
+    - prefer_contains # pedantic
+    - prefer_equal_for_default_values
+    - prefer_expression_function_bodies # effective
+    - prefer_final_fields
+    - prefer_for_elements_to_map_fromIterable # pedantic
+    - prefer_function_declarations_over_variables # effective
+    - prefer_generic_function_type_aliases
+    - prefer_initializing_formals # effective
+    - prefer_inlined_adds # pedantic
+    - prefer_interpolation_to_compose_strings # effective
+    - prefer_if_null_operators # pedantic
+    - prefer_is_empty
+    - prefer_is_not_empty
+    - prefer_iterable_whereType
+    # - prefer_mixin # effective
+    # - prefer_relative_imports # effective
+    - prefer_single_quotes # pedantic
+    - prefer_spread_collections # pedantic
+    - recursive_getters # pedantic
+    - slash_for_doc_comments
+    - sort_child_properties_last # pedantic
+    - type_annotate_public_apis # effective
+    - type_init_formals
+    - unawaited_futures # pedantic
+    - unnecessary_brace_in_string_interps
+    - unnecessary_const
+    - unnecessary_getters_setters
+    - unnecessary_lambdas # effective
+    - unnecessary_new
+    - unnecessary_null_in_if_null_operators # pedantic
+    - unnecessary_this
+    - unrelated_type_equality_checks # pedantic
+    - unsafe_html # pedantic
+    - use_full_hex_values_for_flutter_colors # pedantic
+    - use_function_type_syntax_for_parameters # pedantic
+    # - use_key_in_widget_constructors # flutter
+    - use_rethrow_when_possible
+    - use_setters_to_change_properties # effective
+    - use_to_and_as_if_applicable # effective
+    - valid_regexps # pedantic
+
+    # docs
+    - package_api_docs # effective
+    - public_member_api_docs # effective

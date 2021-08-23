@@ -1,23 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
-
-import '../styles/styles.dart';
+import 'package:minimalistic_push/styles/styles.dart';
 
 /// The button for the theme selection in the settings.
 class ThemeButton extends StatelessWidget {
+  /// The AppTheme.
+  final AppTheme theme;
+
+  /// If the theme is currently selected.
+  final bool isCurrent;
+
   /// The constructor.
   const ThemeButton({
     Key? key,
     required this.theme,
     required this.isCurrent,
   }) : super(key: key);
-
-  /// The AppTheme.
-  final AppTheme theme;
-
-  /// If the theme is currently selected.
-  final bool isCurrent;
 
   @override
   Widget build(BuildContext context) {
@@ -32,26 +31,17 @@ class ThemeButton extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: ClipRRect(
-          borderRadius: const BorderRadius.all(
-            Radius.circular(10.0),
-          ),
+          borderRadius: const BorderRadius.all(Radius.circular(10.0)),
           child: Stack(
             children: [
               Container(
-                decoration: BoxDecoration(
-                  color: theme.data.accentColor,
-                ),
+                decoration: BoxDecoration(color: theme.data.accentColor),
                 width: width,
                 height: height,
               ),
               CustomPaint(
-                painter: _DiagonalPainter(
-                  color: theme.data.primaryColor,
-                ),
-                size: Size(
-                  width,
-                  height,
-                ),
+                painter: _DiagonalPainter(color: theme.data.primaryColor),
+                size: Size(width, height),
               ),
               Container(
                 alignment: Alignment.center,
@@ -83,11 +73,9 @@ class ThemeButton extends StatelessWidget {
 }
 
 class _DiagonalPainter extends CustomPainter {
-  const _DiagonalPainter({
-    required this.color,
-  });
-
   final Color color;
+
+  const _DiagonalPainter({required this.color});
 
   @override
   void paint(Canvas canvas, Size size) {

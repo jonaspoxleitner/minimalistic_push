@@ -1,11 +1,9 @@
-import 'dart:async';
 import 'dart:convert';
 
 import 'package:get/get.dart';
+import 'package:minimalistic_push/models/session.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
-
-import '../models/session.dart';
 
 /// The manager for the completed sessions.
 class SessionController extends GetxController {
@@ -18,23 +16,20 @@ class SessionController extends GetxController {
   /// The hightest count from all sessions.
   final RxInt highscore = 0.obs;
 
-  /// The constructor of the manager, which also initializes the lists.
-  SessionController() {
+  @override
+  void onInit() {
     _init();
+    super.onInit();
   }
 
   /// The database of the sessions.
-  Future<Database> get database async {
-    return openDatabase(
-      join(await getDatabasesPath(), 'sessions_database.database'),
-      onCreate: (database, version) {
-        return database.execute(
-          "CREATE TABLE sessions (id INTEGER PRIMARY KEY, count INTEGER)",
-        );
-      },
-      version: 2,
-    );
-  }
+  Future<Database> get database async => await openDatabase(
+        join(await getDatabasesPath(), 'sessions_database.database'),
+        onCreate: (database, version) => database.execute(
+          'CREATE TABLE sessions (id INTEGER PRIMARY KEY, count INTEGER)',
+        ),
+        version: 2,
+      );
 
   Future<void> _init() async {
     await _loadSessions();
@@ -84,7 +79,7 @@ class SessionController extends GetxController {
   Future<void> deleteSession(int id) async {
     await database.then((db) => db.delete(
           'sessions',
-          where: "id = ?",
+          where: 'id = ?',
           whereArgs: [id],
         ));
 

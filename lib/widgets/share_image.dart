@@ -2,15 +2,6 @@ import 'package:flutter/material.dart';
 
 /// The image, which will be shared.
 class ShareImage extends StatelessWidget {
-  /// The constructor.
-  const ShareImage({
-    Key? key,
-    required this.primaryColor,
-    required this.accentColor,
-    required this.size,
-    required this.peaks,
-  }) : super(key: key);
-
   /// The primary color.
   final Color primaryColor;
 
@@ -23,24 +14,36 @@ class ShareImage extends StatelessWidget {
   /// The list with the normalized peaks.
   final List<double> peaks;
 
+  /// The constructor.
+  const ShareImage({
+    Key? key,
+    required this.primaryColor,
+    required this.accentColor,
+    required this.size,
+    required this.peaks,
+  }) : super(key: key);
+
   @override
-  Widget build(BuildContext context) {
-    return Container(
-      color: accentColor,
-      child: CustomPaint(
-        size: Size(size.width, size.height),
-        painter: _SharePainter(
-          peaks: peaks,
-          size: size,
-          context: context,
-          color: primaryColor,
+  Widget build(BuildContext context) => Container(
+        color: accentColor,
+        child: CustomPaint(
+          size: Size(size.width, size.height),
+          painter: _SharePainter(
+            peaks: peaks,
+            size: size,
+            context: context,
+            color: primaryColor,
+          ),
         ),
-      ),
-    );
-  }
+      );
 }
 
 class _SharePainter extends CustomPainter {
+  final List<double> peaks;
+  final Size size;
+  final BuildContext context;
+  final Color color;
+
   const _SharePainter({
     required this.peaks,
     required this.size,
@@ -48,11 +51,7 @@ class _SharePainter extends CustomPainter {
     required this.color,
   });
 
-  final List<double> peaks;
-  final Size size;
-  final BuildContext context;
-  final Color color;
-  final topBottomPadding = 50;
+  static const topBottomPadding = 50.0;
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -70,13 +69,8 @@ class _SharePainter extends CustomPainter {
 
     var offset = 0;
     for (var i = 0; i < peaks.length - 1; i++) {
-      path.cubicTo(
-          stepWidth * (offset + i + 1),
-          getHeight(peaks[i]),
-          stepWidth * (offset + i + 1),
-          getHeight(peaks[i + 1]),
-          stepWidth * (offset + i + 2),
-          getHeight(peaks[i + 1]));
+      path.cubicTo(stepWidth * (offset + i + 1), getHeight(peaks[i]), stepWidth * (offset + i + 1),
+          getHeight(peaks[i + 1]), stepWidth * (offset + i + 2), getHeight(peaks[i + 1]));
       offset++;
     }
 

@@ -1,17 +1,16 @@
-import 'dart:ui';
+import 'dart:ui' as ui;
 
 import 'package:davinci/davinci.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
-import '../localizations.dart';
-import '../managers/background_controller.dart';
-import '../managers/session_controller.dart';
-import '../widgets/navigation_bar.dart';
-import '../widgets/share_image.dart';
-import 'error_screen.dart';
-import 'sessions_content.dart';
-import 'settings_content.dart';
+import 'package:minimalistic_push/control/background_controller.dart';
+import 'package:minimalistic_push/control/session_controller.dart';
+import 'package:minimalistic_push/localizations.dart';
+import 'package:minimalistic_push/screens/error_screen.dart';
+import 'package:minimalistic_push/screens/sessions_content.dart';
+import 'package:minimalistic_push/screens/settings_content.dart';
+import 'package:minimalistic_push/widgets/navigation_bar.dart';
+import 'package:minimalistic_push/widgets/share_image.dart';
 
 /// This OverlayRoute handles the name and the ValueNotifier for the animation.
 class NamedOverlayRoute extends OverlayRoute {
@@ -50,93 +49,83 @@ class NamedOverlayRoute extends OverlayRoute {
   }
 
   @override
-  Iterable<OverlayEntry> createOverlayEntries() {
-    return [
-      OverlayEntry(
-        builder: (context) {
-          _CustomOverlayEntry current;
-          switch (overlayName) {
-            case 'sessions':
-              current = _CustomOverlayEntry(
-                navigationBar: NavigationBar(
-                  text: MyLocalizations.of(context).values!['sessions']
-                      ['title'],
-                  leftOption: NavigationOption(
-                    icon: Icons.reply,
-                    onPressed: () => _callShareImage(
-                      context,
-                      Get.find<SessionController>().normalized.toList(),
+  Iterable<OverlayEntry> createOverlayEntries() => [
+        OverlayEntry(
+          builder: (context) {
+            _CustomOverlayEntry current;
+            switch (overlayName) {
+              case 'sessions':
+                current = _CustomOverlayEntry(
+                  navigationBar: NavigationBar(
+                    text: MyLocalizations.of(context).values!['sessions']['title'],
+                    leftOption: NavigationOption(
+                      icon: Icons.reply,
+                      onPressed: () => _callShareImage(
+                        context,
+                        Get.find<SessionController>().normalized.toList(),
+                      ),
+                    ),
+                    rightOption: NavigationOption(
+                      icon: Icons.close,
+                      onPressed: _close,
                     ),
                   ),
-                  rightOption: NavigationOption(
-                    icon: Icons.close,
-                    onPressed: _close,
+                  animationNotifier: animationNotifier,
+                  child: SessionsContent(),
+                );
+                break;
+              case 'settings':
+                current = _CustomOverlayEntry(
+                  navigationBar: NavigationBar(
+                    text: MyLocalizations.of(context).values!['settings']['title'],
+                    rightOption: NavigationOption(
+                      icon: Icons.close,
+                      onPressed: _close,
+                    ),
                   ),
-                ),
-                child: SessionsContent(),
-                animationNotifier: animationNotifier,
-              );
-              break;
-            case 'settings':
-              current = _CustomOverlayEntry(
-                navigationBar: NavigationBar(
-                  text: MyLocalizations.of(context).values!['settings']
-                      ['title'],
-                  rightOption: NavigationOption(
-                    icon: Icons.close,
-                    onPressed: _close,
+                  animationNotifier: animationNotifier,
+                  child: SettingsContent(),
+                );
+                break;
+              default:
+                current = _CustomOverlayEntry(
+                  navigationBar: NavigationBar(
+                    text: 'Error',
                   ),
-                ),
-                child: SettingsContent(),
-                animationNotifier: animationNotifier,
-              );
-              break;
-            default:
-              current = _CustomOverlayEntry(
-                navigationBar: NavigationBar(
-                  text: 'Error',
-                ),
-                child: ErrorScreen(),
-                animationNotifier: animationNotifier,
-              );
-              break;
-          }
+                  animationNotifier: animationNotifier,
+                  child: ErrorScreen(),
+                );
+                break;
+            }
 
-          return current;
-        },
-      )
-    ];
-  }
+            return current;
+          },
+        )
+      ];
 }
 
 class _CustomOverlayEntry extends StatefulWidget {
+  final NavigationBar navigationBar;
+  final Widget child;
+  final ValueNotifier<double> animationNotifier;
+
   const _CustomOverlayEntry({
-    key,
+    Key? key,
     required this.navigationBar,
     required this.child,
     required this.animationNotifier,
   }) : super(key: key);
 
-  final NavigationBar navigationBar;
-  final Widget child;
-  final ValueNotifier<double> animationNotifier;
-
   @override
   _CustomOverlayEntryState createState() => _CustomOverlayEntryState();
 }
 
-class _CustomOverlayEntryState extends State<_CustomOverlayEntry>
-    with SingleTickerProviderStateMixin {
+class _CustomOverlayEntryState extends State<_CustomOverlayEntry> with SingleTickerProviderStateMixin {
   late AnimationController _animationController;
 
-  void _close() async {
-    _animationController
-        .animateTo(
-          widget.animationNotifier.value,
-          curve: Curves.easeInOutQuart,
-        )
-        .then((value) => Navigator.of(context).pop());
-  }
+  void _close() async => _animationController
+      .animateTo(widget.animationNotifier.value, curve: Curves.easeInOutQuart)
+      .then((value) => Navigator.of(context).pop());
 
   @override
   void initState() {
@@ -163,44 +152,41 @@ class _CustomOverlayEntryState extends State<_CustomOverlayEntry>
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.transparent,
-      body: AnimatedBuilder(
-        animation: _animationController,
-        builder: (context, child) {
-          var height = MediaQuery.of(context).size.height;
-          var offset = height - _animationController.value * height;
-          return Opacity(
-            opacity: _animationController.value,
-            child: Transform.translate(
-              offset: Offset(0.0, offset),
-              child: Stack(
-                children: [
-                  widget.child,
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.max,
-                    children: [
-                      ClipRRect(
-                        child: BackdropFilter(
-                          filter: (_animationController.value == 1.0)
-                              ? ImageFilter.blur(sigmaX: 7, sigmaY: 7)
-                              : ImageFilter.blur(sigmaX: 0, sigmaY: 0),
-                          child: SafeArea(
-                              bottom: false, child: widget.navigationBar),
+  Widget build(BuildContext context) => Scaffold(
+        backgroundColor: Colors.transparent,
+        body: AnimatedBuilder(
+          animation: _animationController,
+          builder: (context, child) {
+            var height = MediaQuery.of(context).size.height;
+            var offset = height - _animationController.value * height;
+            return Opacity(
+              opacity: _animationController.value,
+              child: Transform.translate(
+                offset: Offset(0.0, offset),
+                child: Stack(
+                  children: [
+                    widget.child,
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.max,
+                      children: [
+                        ClipRRect(
+                          child: BackdropFilter(
+                            filter: (_animationController.value == 1.0)
+                                ? ui.ImageFilter.blur(sigmaX: 7, sigmaY: 7)
+                                : ui.ImageFilter.blur(sigmaX: 0, sigmaY: 0),
+                            child: SafeArea(bottom: false, child: widget.navigationBar),
+                          ),
                         ),
-                      ),
-                    ],
-                  ),
-                ],
+                      ],
+                    ),
+                  ],
+                ),
               ),
-            ),
-          );
-        },
-      ),
-    );
-  }
+            );
+          },
+        ),
+      );
 }
 
 void _callShareImage(BuildContext context, List<double> peaks) async {

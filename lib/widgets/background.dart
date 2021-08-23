@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
-import '../managers/background_controller.dart';
-import '../managers/session_controller.dart';
-import '../models/peaks.dart';
+import 'package:minimalistic_push/control/background_controller.dart';
+import 'package:minimalistic_push/control/session_controller.dart';
+import 'package:minimalistic_push/models/peaks.dart';
 
 /// This Widget represents the background of the application.
 class Background extends StatelessWidget {
@@ -11,31 +10,28 @@ class Background extends StatelessWidget {
   const Background({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    return Container(
-      constraints: BoxConstraints.expand(),
-      color: Theme.of(context).accentColor,
-      alignment: Alignment.bottomCenter,
-      child: GetBuilder<SessionController>(
-        builder: (sessionController) {
-          return GetBuilder<BackgroundController>(
-            builder: (backgroundcontroller) {
-              return _AnimatedPeaks(
-                peaks: Peaks(list: sessionController.normalized.toList()),
-                factor: backgroundcontroller.factor.toDouble(),
-                duration: Duration(milliseconds: 1000),
-                curve: Curves.easeInOutQuart,
-              );
-            },
-          );
-        },
-      ),
-    );
-  }
+  Widget build(BuildContext context) => Container(
+        constraints: BoxConstraints.expand(),
+        color: Theme.of(context).accentColor,
+        alignment: Alignment.bottomCenter,
+        child: GetBuilder<SessionController>(
+          builder: (sessionController) => GetBuilder<BackgroundController>(
+            builder: (backgroundcontroller) => _AnimatedPeaks(
+              peaks: Peaks(list: sessionController.normalized.toList()),
+              factor: backgroundcontroller.factor.toDouble(),
+              duration: Duration(milliseconds: 1000),
+              curve: Curves.easeInOutQuart,
+            ),
+          ),
+        ),
+      );
 }
 
 /// TODO: Performance optimization.
 class _AnimatedPeaks extends ImplicitlyAnimatedWidget {
+  final Peaks peaks;
+  final double factor;
+
   _AnimatedPeaks({
     Key? key,
     required this.peaks,
@@ -44,12 +40,8 @@ class _AnimatedPeaks extends ImplicitlyAnimatedWidget {
     Curve curve = Curves.linear,
   }) : super(duration: duration, curve: curve, key: key);
 
-  final Peaks peaks;
-  final double factor;
-
   @override
-  ImplicitlyAnimatedWidgetState<ImplicitlyAnimatedWidget> createState() =>
-      _AnimatedPeaksState();
+  ImplicitlyAnimatedWidgetState<ImplicitlyAnimatedWidget> createState() => _AnimatedPeaksState();
 }
 
 class _AnimatedPeaksState extends AnimatedWidgetBaseState<_AnimatedPeaks> {
@@ -57,16 +49,14 @@ class _AnimatedPeaksState extends AnimatedWidgetBaseState<_AnimatedPeaks> {
   Tween<double>? _factorTween;
 
   @override
-  Widget build(BuildContext context) {
-    return CustomPaint(
-      painter: _CurvePainter(
-        peaks: _peaksTween!.evaluate(animation),
-        context: context,
-        factor: _factorTween!.evaluate(animation),
-      ),
-      size: MediaQuery.of(context).size,
-    );
-  }
+  Widget build(BuildContext context) => CustomPaint(
+        painter: _CurvePainter(
+          peaks: _peaksTween!.evaluate(animation),
+          context: context,
+          factor: _factorTween!.evaluate(animation),
+        ),
+        size: MediaQuery.of(context).size,
+      );
 
   @override
   void forEachTween(TweenVisitor<dynamic> visitor) {
@@ -122,13 +112,8 @@ class _CurvePainter extends CustomPainter {
 
     var offset = 0;
     for (var i = 0; i < peaks.list.length - 1; i++) {
-      path.cubicTo(
-          stepWidth * (offset + i + 1),
-          _getHeight(height, peaks.list[i]),
-          stepWidth * (offset + i + 1),
-          _getHeight(height, peaks.list[i + 1]),
-          stepWidth * (offset + i + 2),
-          _getHeight(height, peaks.list[i + 1]));
+      path.cubicTo(stepWidth * (offset + i + 1), _getHeight(height, peaks.list[i]), stepWidth * (offset + i + 1),
+          _getHeight(height, peaks.list[i + 1]), stepWidth * (offset + i + 2), _getHeight(height, peaks.list[i + 1]));
       offset++;
     }
 
@@ -142,7 +127,5 @@ class _CurvePainter extends CustomPainter {
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) => true;
 
-  double _getHeight(double height, double factor) {
-    return (height - height * factor) + spaceOnTop;
-  }
+  double _getHeight(double height, double factor) => (height - height * factor) + spaceOnTop;
 }

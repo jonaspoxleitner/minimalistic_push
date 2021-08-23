@@ -10,10 +10,8 @@ class Session {
   Session({this.id, this.count});
 
   /// Returns the representation of a session as a map.
-  Map<String, dynamic> toMap() {
-    return {
-      'id': id,
-      'count': count,
-    };
-  }
+  Map<String, dynamic> toMap() => {
+        'id': id,
+        'count': count,
+      };
 }

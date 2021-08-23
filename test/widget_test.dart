@@ -7,9 +7,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-
-// ignore: avoid_relative_lib_imports
-import '../lib/main.dart';
+import 'package:minimalistic_push/minimalistic_push.dart';
 
 void main() {
   testWidgets('Counter increments smoke test', (tester) async {

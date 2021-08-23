@@ -13,22 +13,21 @@ class PreferencesController extends GetxController {
   /// A stream of the value of the onboarding.
   final RxBool onboarding = true.obs;
 
-  /// The constructor of the class, which also initializes the streams.
-  PreferencesController() {
+  @override
+  void onInit() {
     isHardcore();
     isOnboarding();
+    super.onInit();
   }
 
   /// Publishes the value of hardcore to the stream.
   void isHardcore() async {
-    hardcore.value = await getHardcore();
+    hardcore.value = getHardcore();
     update();
   }
 
   /// Returns the value of hardcore from the SharedPreferences.
-  bool getHardcore() {
-    return GetStorage().read('hardcore') ?? true;
-  }
+  bool getHardcore() => GetStorage().read('hardcore') ?? true;
 
   /// Enables the hardcore mode.
   void enableHardcore() {
@@ -53,9 +52,7 @@ class PreferencesController extends GetxController {
   }
 
   /// Returns the already accepted onboarding version.
-  int getOnboardingVersion() {
-    return GetStorage().read('onboarding') ?? 0;
-  }
+  int getOnboardingVersion() => GetStorage().read('onboarding') ?? 0;
 
   /// Sets the [newestOnboardingVersion].
   void acceptOnboarding() {

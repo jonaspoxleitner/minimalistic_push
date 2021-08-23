@@ -1,33 +1,25 @@
-import 'dart:ui';
+import 'dart:ui' as ui;
 
 import 'package:flutter/animation.dart';
 
 /// The object for a list of peaks.
 class Peaks {
   /// The constructor, which requires a list.
-  Peaks({
-    required this.list,
-  });
+  Peaks({required this.list});
 
   /// The list with the 'height' of the peaks as double.
   final List<double> list;
 
   /// Lerps the list.
-  Peaks lerp(Peaks a, Peaks b, double t) {
-    return Peaks(list: _lerpList(a.list, b.list, t));
-  }
+  Peaks lerp(Peaks a, Peaks b, double t) => Peaks(list: _lerpList(a.list, b.list, t));
 
   // this function for lerping a list of doubles was copied from
   // https://github.com/imaNNeoFighT/fl_chart
   List<double> _lerpList(List<double> a, List<double> b, double t) {
     if (a.length == b.length) {
-      return List.generate(a.length, (i) {
-        return lerpDouble(a[i], b[i], t)!;
-      });
+      return List.generate(a.length, (i) => ui.lerpDouble(a[i], b[i], t)!);
     } else {
-      return List.generate(b.length, (i) {
-        return lerpDouble(i >= a.length ? b[i] : a[i], b[i], t)!;
-      });
+      return List.generate(b.length, (i) => ui.lerpDouble(i >= a.length ? b[i] : a[i], b[i], t)!);
     }
   }
 }
