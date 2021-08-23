@@ -19,23 +19,33 @@ class SessionsContent extends StatelessWidget {
           if (list.isEmpty) {
             return _NoSessionWidget();
           } else {
-            return ListView.builder(
-              physics: BouncingScrollPhysics(),
-              itemCount: list.length + 1,
-              itemBuilder: (context, index) {
-                if (index == 0) {
-                  return Padding(
-                    padding: const EdgeInsets.only(top: 70.0),
-                    child: _buildHighscore(context),
-                  );
-                } else {
-                  var id = list.length - index + 1;
-                  return _SessionWidget(
-                    session: list[list.length - index],
-                    idToShow: id,
-                  );
-                }
-              },
+            return SingleChildScrollView(
+              child: SafeArea(
+                child: Column(
+                  children: [
+                    for (var i = 0; i < list.length + 2; i++)
+                      if (i == 0)
+                        Padding(
+                          padding: const EdgeInsets.only(top: 70.0),
+                          child: _buildHighscore(context),
+                        )
+                      else if (i == 1) ...[
+                        Container(color: Colors.red, height: 240.0),
+                        const SizedBox(height: 8.0),
+                      ] else ...[
+                        _SessionWidget(
+                          session: list[list.length + 1 - i],
+                          idToShow: list.length - i + 2,
+                        ),
+                        if (i < list.length + 1)
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                            child: const Divider(height: 1.0, color: Colors.white, thickness: 1.0),
+                          ),
+                      ]
+                  ],
+                ),
+              ),
             );
           }
         },
@@ -69,9 +79,13 @@ class _NoSessionWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Center(
-        child: Text(
-          MyLocalizations.of(context).values!['sessions']['empty'],
-          style: TextStyles.body,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+          child: Text(
+            MyLocalizations.of(context).values!['sessions']['empty'],
+            style: TextStyles.body,
+            textAlign: TextAlign.center,
+          ),
         ),
       );
 }
@@ -92,38 +106,46 @@ class _SessionWidget extends StatelessWidget {
         child: Row(
           children: [
             Padding(
-              padding: const EdgeInsets.all(16.0),
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              child: Text(
+                '#$idToShow',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.normal,
+                  fontSize: 16.0,
+                ),
+                textScaleFactor: 1.0,
+              ),
+            ),
+            Expanded(
               child: Container(
-                height: 36.0,
-                width: 36.0,
-                alignment: Alignment.center,
                 decoration: BoxDecoration(
                   color: Colors.white,
-                  shape: BoxShape.circle,
+                  borderRadius: BorderRadius.circular(8.0),
                 ),
-                child: Text(
-                  idToShow.toString(),
-                  style: TextStyle(
-                    color: Theme.of(context).primaryColor,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 22.0,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 8.0),
+                  child: Text(
+                    '${session.count}',
+                    softWrap: true,
+                    style: TextStyles.body.copyWith(color: Theme.of(context).primaryColor),
+                    textAlign: TextAlign.center,
                   ),
                 ),
               ),
             ),
-            Expanded(
-              child: Text(
-                session.count.toString(),
-                softWrap: true,
-                style: TextStyles.body,
+            Material(
+              color: Colors.transparent,
+              child: InkWell(
+                splashColor: Colors.white.withOpacity(0.1),
+                highlightColor: Colors.white.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(1000.0),
+                onTap: () => Get.find<SessionController>().deleteSession(session.id!),
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Icon(Icons.remove_circle_outline, color: Colors.white),
+                ),
               ),
-            ),
-            IconButton(
-              padding: const EdgeInsets.all(16.0),
-              splashColor: Colors.transparent,
-              highlightColor: Colors.transparent,
-              icon: Icon(Icons.remove_circle_outline, color: Colors.white),
-              onPressed: () => Get.find<SessionController>().deleteSession(session.id!),
             ),
           ],
         ),

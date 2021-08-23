@@ -3,7 +3,7 @@ description: A minimalistic push-up application.
 
 publish_to: 'none' # do not remove
 
-version: 1.6.1+37
+version: 1.7.0+38
 
 environment:
   sdk: '>=2.13.0 <3.0.0'

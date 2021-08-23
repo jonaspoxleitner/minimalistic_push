@@ -29,6 +29,7 @@ class LocationText extends StatelessWidget {
                 fontWeight: FontWeight.w300,
                 color: Colors.white,
               ),
+              textScaleFactor: 1.0,
             ),
           ),
         ),
