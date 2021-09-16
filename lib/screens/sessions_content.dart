@@ -17,7 +17,7 @@ class SessionsContent extends StatelessWidget {
           var list = sessionController.sessions.toList();
 
           if (list.isEmpty) {
-            return _NoSessionWidget();
+            return const _NoSessionWidget();
           } else {
             return SingleChildScrollView(
               child: SafeArea(
@@ -38,9 +38,9 @@ class SessionsContent extends StatelessWidget {
                           idToShow: list.length - i + 2,
                         ),
                         if (i < list.length + 1)
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                            child: const Divider(height: 1.0, color: Colors.white, thickness: 1.0),
+                          const Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 16.0),
+                            child: Divider(height: 1.0, color: Colors.white, thickness: 1.0),
                           ),
                       ]
                   ],
@@ -55,8 +55,8 @@ class SessionsContent extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Padding(
-            padding: const EdgeInsets.all(16.0),
+          const Padding(
+            padding: EdgeInsets.all(16.0),
             child: Icon(
               Icons.emoji_events,
               color: Colors.white,
@@ -109,7 +109,7 @@ class _SessionWidget extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 8.0),
               child: Text(
                 '#$idToShow',
-                style: TextStyle(
+                style: const TextStyle(
                   color: Colors.white,
                   fontWeight: FontWeight.normal,
                   fontSize: 16.0,
@@ -141,8 +141,8 @@ class _SessionWidget extends StatelessWidget {
                 highlightColor: Colors.white.withOpacity(0.1),
                 borderRadius: BorderRadius.circular(1000.0),
                 onTap: () => Get.find<SessionController>().deleteSession(session.id!),
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
+                child: const Padding(
+                  padding: EdgeInsets.all(8.0),
                   child: Icon(Icons.remove_circle_outline, color: Colors.white),
                 ),
               ),

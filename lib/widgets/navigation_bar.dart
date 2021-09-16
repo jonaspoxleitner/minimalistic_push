@@ -28,7 +28,7 @@ class NavigationBar extends StatelessWidget {
       options.add(leftOption!);
     }
 
-    options.add(Spacer());
+    options.add(const Spacer());
 
     if (rightOption != null) {
       options.add(rightOption!);

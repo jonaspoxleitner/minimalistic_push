@@ -32,7 +32,7 @@ class _MainScreenState extends State<MainScreen> with SingleTickerProviderStateM
     trainingModeNotifier.addListener(() => super.setState(() {}));
 
     _animationController = AnimationController(
-      duration: Duration(milliseconds: 500),
+      duration: const Duration(milliseconds: 500),
       vsync: this,
     );
 
@@ -237,9 +237,7 @@ class _TrainingWidgetState extends State<_TrainingWidget> {
                   color: Colors.white,
                 ),
                 onPressed: () {
-                  Get.find<SessionController>().insertSession(Session(
-                    count: counter,
-                  ));
+                  Get.find<SessionController>().insertSession(Session(count: counter));
                   widget.trainingMode.value = false;
                 },
               ),
@@ -254,7 +252,7 @@ class _TrainingWidgetState extends State<_TrainingWidget> {
                   padding: const EdgeInsets.all(16.0),
                   child: Text(
                     counter.toString(),
-                    style: TextStyle(
+                    style: const TextStyle(
                       color: Colors.white,
                       fontWeight: FontWeight.bold,
                       fontSize: 64.0,

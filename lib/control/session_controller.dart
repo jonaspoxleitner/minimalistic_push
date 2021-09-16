@@ -41,8 +41,8 @@ class SessionController extends GetxController {
   Future<void> insertSession(Session session) async {
     if (session.id == null && sessions.isEmpty) {
       session.id = 1;
-    } else if (session.id == null) {
-      session.id = sessions.last.id! + 1;
+    } else {
+      session.id ??= sessions.last.id! + 1;
     }
 
     await database.then((db) => db.insert(

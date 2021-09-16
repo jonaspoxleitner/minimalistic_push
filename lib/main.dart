@@ -13,11 +13,14 @@ void main() async {
   await GetStorage.init();
   await GetStorage().writeIfNull('theme', 'outdoor');
 
-  Get..put(BackgroundController())..put(PreferencesController())..put(SessionController());
+  Get
+    ..put(BackgroundController())
+    ..put(PreferencesController())
+    ..put(SessionController());
 
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light);
 
   await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
 
-  runApp(MinimalisticPush());
+  runApp(const MinimalisticPush());
 }

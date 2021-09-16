@@ -71,7 +71,7 @@ class NamedOverlayRoute extends OverlayRoute {
                     ),
                   ),
                   animationNotifier: animationNotifier,
-                  child: SessionsContent(),
+                  child: const SessionsContent(),
                 );
                 break;
               case 'settings':
@@ -84,16 +84,14 @@ class NamedOverlayRoute extends OverlayRoute {
                     ),
                   ),
                   animationNotifier: animationNotifier,
-                  child: SettingsContent(),
+                  child: const SettingsContent(),
                 );
                 break;
               default:
                 current = _CustomOverlayEntry(
-                  navigationBar: NavigationBar(
-                    text: 'Error',
-                  ),
+                  navigationBar: const NavigationBar(text: 'Error'),
                   animationNotifier: animationNotifier,
-                  child: ErrorScreen(),
+                  child: const ErrorScreen(),
                 );
                 break;
             }
@@ -130,7 +128,7 @@ class _CustomOverlayEntryState extends State<_CustomOverlayEntry> with SingleTic
   @override
   void initState() {
     _animationController = AnimationController(
-      duration: Duration(milliseconds: 750),
+      duration: const Duration(milliseconds: 750),
       vsync: this,
     );
 
@@ -190,7 +188,7 @@ class _CustomOverlayEntryState extends State<_CustomOverlayEntry> with SingleTic
 }
 
 void _callShareImage(BuildContext context, List<double> peaks) async {
-  var size = Size(900.0, 450.0);
+  const size = Size(900.0, 450.0);
 
   await DavinciCapture.offStage(
     ShareImage(

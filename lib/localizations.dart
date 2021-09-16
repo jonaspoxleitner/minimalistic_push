@@ -10,9 +10,7 @@ class MyLocalizations {
   final Locale locale;
 
   /// Returns the instance for the current locale.
-  static MyLocalizations of(BuildContext context) {
-    return Localizations.of<MyLocalizations>(context, MyLocalizations)!;
-  }
+  static MyLocalizations of(BuildContext context) => Localizations.of<MyLocalizations>(context, MyLocalizations)!;
 
   static final Map<String, Map<String, dynamic>> _localizedValues = {
     'en': {
@@ -56,10 +54,7 @@ class MyLocalizations {
           'continue': 'I want to continue.',
           'end': 'I\'m done.',
         },
-        'hardcore': {
-          true: 'Hardcore is active.',
-          false: 'Hardcore is deactivated.'
-        }
+        'hardcore': {true: 'Hardcore is active.', false: 'Hardcore is deactivated.'}
       },
       'sessions': {
         'title': 'Sessions Overview',
@@ -69,9 +64,8 @@ class MyLocalizations {
         'title': 'Settings',
         'themes': {
           'title': 'Themes',
-          'description':
-              'You can choose your preferred theme. You have a theme idea? '
-                  'Check my website for instructions.',
+          'description': 'You can choose your preferred theme. You have a theme idea? '
+              'Check my website for instructions.',
         },
         'hardcore': {
           'title': 'Hardcore',
@@ -95,10 +89,7 @@ class MyLocalizations {
             'fail': 'Unfortunately, something went wrong. Please make '
                 'sure your copied data is in the right format.'
           },
-          'export': {
-            'title': 'Export',
-            'success': 'Your data has been copied to your clipboard.'
-          },
+          'export': {'title': 'Export', 'success': 'Your data has been copied to your clipboard.'},
           'cancel': 'Cancel.',
           'okay': 'Okay.',
         },
@@ -149,10 +140,7 @@ class MyLocalizations {
           'continue': 'Ich will weitermachen.',
           'end': 'Bin fertig.',
         },
-        'hardcore': {
-          true: 'Hardcore ist aktiv.',
-          false: 'Hardcore ist deaktiviert.'
-        }
+        'hardcore': {true: 'Hardcore ist aktiv.', false: 'Hardcore ist deaktiviert.'}
       },
       'sessions': {
         'title': 'Sessions Überblick',
@@ -185,8 +173,7 @@ class MyLocalizations {
                 'löschen und neue Sessions importieren möchtest? Falls ein '
                 'Fehler auftritt werden deine aktuellen Sessions natürlich '
                 'nicht gelöscht.',
-            'success':
-                'Super! Deine neuen Daten sollten in der App gespeichert sein.',
+            'success': 'Super! Deine neuen Daten sollten in der App gespeichert sein.',
             'fail': 'Leider ist etwas schief gelaufen. Bitte stelle sicher, '
                 'dass deine Daten im richtigen Format sind.'
           },
@@ -208,9 +195,7 @@ class MyLocalizations {
   };
 
   /// Returns the localization.
-  Map<String, dynamic>? get values {
-    return _localizedValues[locale.languageCode];
-  }
+  Map<String, dynamic>? get values => _localizedValues[locale.languageCode];
 }
 
 /// The localizations delegate.
@@ -222,9 +207,7 @@ class MyLocalizationsDelegate extends LocalizationsDelegate<MyLocalizations> {
   bool isSupported(Locale locale) => ['en', 'de'].contains(locale.languageCode);
 
   @override
-  Future<MyLocalizations> load(Locale locale) {
-    return SynchronousFuture<MyLocalizations>(MyLocalizations(locale));
-  }
+  Future<MyLocalizations> load(Locale locale) => SynchronousFuture<MyLocalizations>(MyLocalizations(locale));
 
   @override
   bool shouldReload(MyLocalizationsDelegate old) => false;

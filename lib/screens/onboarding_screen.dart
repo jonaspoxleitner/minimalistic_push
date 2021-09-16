@@ -24,7 +24,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> with SingleTickerPr
 
   @override
   void initState() {
-    _animationController = AnimationController(duration: Duration(milliseconds: 500), vsync: this);
+    _animationController = AnimationController(duration: const Duration(milliseconds: 500), vsync: this);
 
     _pageController = PageController(initialPage: 0);
 
@@ -52,7 +52,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> with SingleTickerPr
         },
         child: Container(
           alignment: Alignment.center,
-          constraints: BoxConstraints.expand(),
+          constraints: const BoxConstraints.expand(),
           child: PageView.builder(
             onPageChanged: (value) {
               var backgroundController = Get.find<BackgroundController>();
@@ -82,7 +82,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> with SingleTickerPr
                 case 2:
                   return _buildThirdPage(context, index);
                 default:
-                  return ErrorScreen();
+                  return const ErrorScreen();
               }
             },
           ),
@@ -97,7 +97,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> with SingleTickerPr
             LocationText(
               text: MyLocalizations.of(context).values!['onboarding']['locations'][index],
             ),
-            Spacer(),
+            const Spacer(),
             _IconDescriptionList(
               elements: [
                 _ListElement(
@@ -114,7 +114,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> with SingleTickerPr
                 ),
               ],
             ),
-            Spacer(),
+            const Spacer(),
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: CustomButton(
@@ -139,7 +139,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> with SingleTickerPr
             LocationText(
               text: MyLocalizations.of(context).values!['onboarding']['locations'][index],
             ),
-            Spacer(),
+            const Spacer(),
             _IconDescriptionList(
               elements: [
                 _ListElement(
@@ -156,7 +156,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> with SingleTickerPr
                 ),
               ],
             ),
-            Spacer(),
+            const Spacer(),
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: CustomButton(
@@ -164,7 +164,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> with SingleTickerPr
                 onTap: () {
                   _pageController.animateToPage(
                     2,
-                    duration: Duration(milliseconds: 300),
+                    duration: const Duration(milliseconds: 300),
                     curve: Curves.easeInOutQuart,
                   );
                 },
@@ -182,7 +182,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> with SingleTickerPr
             LocationText(
               text: MyLocalizations.of(context).values!['onboarding']['locations'][index],
             ),
-            Spacer(),
+            const Spacer(),
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Text(
@@ -207,7 +207,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> with SingleTickerPr
                 textAlign: TextAlign.center,
               ),
             ),
-            Spacer(),
+            const Spacer(),
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: CustomButton(
@@ -215,7 +215,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> with SingleTickerPr
                 onTap: () {
                   _pageController.animateToPage(
                     1,
-                    duration: Duration(milliseconds: 300),
+                    duration: const Duration(milliseconds: 300),
                     curve: Curves.easeInOutQuart,
                   );
                 },
@@ -229,10 +229,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> with SingleTickerPr
 class _IconDescriptionList extends StatelessWidget {
   final List<_ListElement> elements;
 
-  const _IconDescriptionList({
-    Key? key,
-    required this.elements,
-  }) : super(key: key);
+  const _IconDescriptionList({Key? key, required this.elements}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -264,16 +261,15 @@ class _IconDescriptionList extends StatelessWidget {
                     height: 36.0,
                     width: 36.0,
                     alignment: Alignment.center,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      shape: BoxShape.circle,
+                    decoration: const BoxDecoration(color: Colors.white, shape: BoxShape.circle),
+                    child: Text(
+                      e.number.toString(),
+                      style: TextStyle(
+                        color: Theme.of(context).primaryColor,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 22.0,
+                      ),
                     ),
-                    child: Text(e.number.toString(),
-                        style: TextStyle(
-                          color: Theme.of(context).primaryColor,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 22.0,
-                        )),
                   ),
                 ),
                 Flexible(

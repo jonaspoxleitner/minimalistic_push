@@ -35,7 +35,7 @@ class SettingsContent extends StatelessWidget {
     }
 
     return ListView(
-      physics: BouncingScrollPhysics(),
+      physics: const BouncingScrollPhysics(),
       children: widgets,
     );
   }
@@ -69,7 +69,7 @@ class SettingsContent extends StatelessWidget {
                     child: Text(
                       MyLocalizations.of(context).values!['settings']['github button'],
                       textAlign: TextAlign.center,
-                      style: TextStyle(decoration: TextDecoration.underline),
+                      style: const TextStyle(decoration: TextDecoration.underline),
                     ),
                   ),
                 ),
@@ -172,7 +172,7 @@ class SettingsContent extends StatelessWidget {
   _SettingsBlock _buildHardcoreBlock(BuildContext context) => _SettingsBlock(
         title: MyLocalizations.of(context).values!['settings']['hardcore']['title'],
         description: MyLocalizations.of(context).values!['settings']['hardcore']['description'],
-        children: [_HardcoreToggle()],
+        children: [const _HardcoreToggle()],
       );
 
   _SettingsBlock _buildThemesBlock(BuildContext context) => _SettingsBlock(
@@ -291,7 +291,7 @@ class _SettingsBlock extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.all(8.0),
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.all(Radius.circular(16.0)),
+          borderRadius: const BorderRadius.all(Radius.circular(16.0)),
           color: Colors.black26.withOpacity(0.1),
         ),
         child: Column(children: children),
