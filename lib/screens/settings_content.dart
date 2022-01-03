@@ -21,29 +21,42 @@ class SettingsContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light);
-
-    var widgets = <Widget>[
-      Container(padding: const EdgeInsets.only(top: 70.0)),
-      _buildThemesBlock(context),
-      _buildHardcoreBlock(context),
-      _buildBackupBlock(context),
-      _buildAboutButton(context),
-    ];
-
-    if (!kReleaseMode) {
-      widgets.insert(1, _buildDebugBlock(context));
-    }
-
-    return ListView(
+    return SingleChildScrollView(
       physics: const BouncingScrollPhysics(),
-      children: widgets,
+      child: SafeArea(
+        child: Column(
+          children: [
+            Container(padding: const EdgeInsets.only(top: 70.0)),
+            if (!kReleaseMode) _buildDebugBlock(context),
+            _buildThemesBlock(context),
+            _buildHardcoreBlock(context),
+            _buildBackupBlock(context),
+            _buildAboutButton(context),
+            // _buildLicenseBlock(context),
+          ],
+        ),
+      ),
     );
   }
+
+  // Widget _buildLicenseBlock(BuildContext context) => _SettingsBlock(children: [
+  //       FutureBuilder<_LicenseData>(
+  //         future: LicenseRegistry.licenses
+  //             .fold<_LicenseData>(_LicenseData(), (prev, license) => prev..addLicense(license))
+  //             .then((licenseData) => licenseData..sortPackages()),
+  //         builder: (context, data) => Column(
+  //             children: [
+  //               for (var l in data.data!.licenses)
+  //               Text(l.),
+  //             ],
+  //           ),
+  //       ),
+  //     ]);
 
   CustomButton _buildAboutButton(BuildContext context) => CustomButton(
         text: '${MyLocalizations.of(context).values!['settings']['about']} '
             '${MyLocalizations.of(context).values!['title']}',
-        onTap: () {
+        onTap: () async {
           showLicensePage(
             context: context,
             applicationName: MyLocalizations.of(context).values!['title'],
@@ -248,54 +261,38 @@ class _SettingsBlock extends StatelessWidget {
   final String? description;
   final List<Widget> children;
 
-  const _SettingsBlock({
-    Key? key,
-    this.title,
-    this.description,
-    required this.children,
-  }) : super(key: key);
+  const _SettingsBlock({Key? key, this.title, this.description, required this.children}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    var children = <Widget>[];
-    children.addAll(this.children);
-
-    if (description != null) {
-      children.insertAll(0, [
-        Padding(
+  Widget build(BuildContext context) => Padding(
+        padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+        child: Container(
           padding: const EdgeInsets.all(8.0),
-          child: Text(
-            description!,
-            textAlign: TextAlign.center,
-            style: TextStyles.body,
+          decoration: BoxDecoration(
+            borderRadius: const BorderRadius.all(Radius.circular(16.0)),
+            color: Colors.black26.withOpacity(0.1),
           ),
+          child: Column(children: [
+            if (title != null)
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(
+                  title!,
+                  textAlign: TextAlign.center,
+                  style: TextStyles.subHeading,
+                ),
+              ),
+            if (description != null)
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(
+                  description!,
+                  textAlign: TextAlign.center,
+                  style: TextStyles.body,
+                ),
+              ),
+            ...children,
+          ]),
         ),
-      ]);
-    }
-
-    if (title != null) {
-      children.insertAll(0, [
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Text(
-            title!,
-            textAlign: TextAlign.center,
-            style: TextStyles.subHeading,
-          ),
-        ),
-      ]);
-    }
-
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-      child: Container(
-        padding: const EdgeInsets.all(8.0),
-        decoration: BoxDecoration(
-          borderRadius: const BorderRadius.all(Radius.circular(16.0)),
-          color: Colors.black26.withOpacity(0.1),
-        ),
-        child: Column(children: children),
-      ),
-    );
-  }
+      );
 }
