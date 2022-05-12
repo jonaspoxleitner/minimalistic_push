@@ -12,7 +12,7 @@ import 'package:minimalistic_push/minimalistic_push.dart';
 void main() {
   testWidgets('Counter increments smoke test', (tester) async {
     // Build our app and trigger a frame.
-    await tester.pumpWidget(MinimalisticPush());
+    await tester.pumpWidget(const MinimalisticPush());
 
     // Verify that our counter starts at 0.
     expect(find.text('0'), findsOneWidget);

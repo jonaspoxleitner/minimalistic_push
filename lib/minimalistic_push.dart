@@ -8,6 +8,8 @@ import 'package:minimalistic_push/styles/styles.dart';
 
 /// The application.
 class MinimalisticPush extends StatelessWidget {
+  const MinimalisticPush({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) => GetMaterialApp(
         localizationsDelegates: [
@@ -23,6 +25,6 @@ class MinimalisticPush extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         theme: AppThemes.getById(GetStorage().read('theme')).data,
         themeMode: ThemeMode.light,
-        home: RouteManager(),
+        home: const RouteManager(),
       );
 }

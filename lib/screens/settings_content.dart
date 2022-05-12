@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:clipboard/clipboard.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:minimalistic_push/control/preferences_controller.dart';
@@ -11,7 +10,7 @@ import 'package:minimalistic_push/control/session_controller.dart';
 import 'package:minimalistic_push/localizations.dart';
 import 'package:minimalistic_push/styles/styles.dart';
 import 'package:minimalistic_push/widgets/custom_button.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 /// The settings content for the overlay route.
 class SettingsContent extends StatelessWidget {
@@ -21,29 +20,42 @@ class SettingsContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light);
-
-    var widgets = <Widget>[
-      Container(padding: const EdgeInsets.only(top: 70.0)),
-      _buildThemesBlock(context),
-      _buildHardcoreBlock(context),
-      _buildBackupBlock(context),
-      _buildAboutButton(context),
-    ];
-
-    if (!kReleaseMode) {
-      widgets.insert(1, _buildDebugBlock(context));
-    }
-
-    return ListView(
-      physics: BouncingScrollPhysics(),
-      children: widgets,
+    return SingleChildScrollView(
+      physics: const BouncingScrollPhysics(),
+      child: SafeArea(
+        child: Column(
+          children: [
+            Container(padding: const EdgeInsets.only(top: 70.0)),
+            if (!kReleaseMode) _buildDebugBlock(context),
+            _buildThemesBlock(context),
+            _buildHardcoreBlock(context),
+            _buildBackupBlock(context),
+            _buildAboutButton(context),
+            // _buildLicenseBlock(context),
+          ],
+        ),
+      ),
     );
   }
+
+  // Widget _buildLicenseBlock(BuildContext context) => _SettingsBlock(children: [
+  //       FutureBuilder<_LicenseData>(
+  //         future: LicenseRegistry.licenses
+  //             .fold<_LicenseData>(_LicenseData(), (prev, license) => prev..addLicense(license))
+  //             .then((licenseData) => licenseData..sortPackages()),
+  //         builder: (context, data) => Column(
+  //             children: [
+  //               for (var l in data.data!.licenses)
+  //               Text(l.),
+  //             ],
+  //           ),
+  //       ),
+  //     ]);
 
   CustomButton _buildAboutButton(BuildContext context) => CustomButton(
         text: '${MyLocalizations.of(context).values!['settings']['about']} '
             '${MyLocalizations.of(context).values!['title']}',
-        onTap: () {
+        onTap: () async {
           showLicensePage(
             context: context,
             applicationName: MyLocalizations.of(context).values!['title'],
@@ -62,14 +74,11 @@ class SettingsContent extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.only(top: 8.0),
                   child: GestureDetector(
-                    onTap: () => launch(
-                      'https://github.com/jonaspoxleitner/minimalistic_push',
-                      forceSafariVC: false,
-                    ),
+                    onTap: () => launchUrlString('https://github.com/jonaspoxleitner/minimalistic_push'),
                     child: Text(
                       MyLocalizations.of(context).values!['settings']['github button'],
                       textAlign: TextAlign.center,
-                      style: TextStyle(decoration: TextDecoration.underline),
+                      style: const TextStyle(decoration: TextDecoration.underline),
                     ),
                   ),
                 ),
@@ -86,9 +95,7 @@ class SettingsContent extends StatelessWidget {
         children: [
           CustomButton(
             text: MyLocalizations.of(context).values!['settings']['backup']['import']['title'],
-            onTap: () => _showAlertDialog(
-                context,
-                MyLocalizations.of(context).values!['settings']['backup']['import']['title'],
+            onTap: () => _showAlertDialog(context, MyLocalizations.of(context).values!['settings']['backup']['import']['title'],
                 MyLocalizations.of(context).values!['settings']['backup']['import']['description'], [
               TextButton(
                 style: TextButton.styleFrom(primary: Theme.of(context).primaryColor),
@@ -172,7 +179,7 @@ class SettingsContent extends StatelessWidget {
   _SettingsBlock _buildHardcoreBlock(BuildContext context) => _SettingsBlock(
         title: MyLocalizations.of(context).values!['settings']['hardcore']['title'],
         description: MyLocalizations.of(context).values!['settings']['hardcore']['description'],
-        children: [_HardcoreToggle()],
+        children: [const _HardcoreToggle()],
       );
 
   _SettingsBlock _buildThemesBlock(BuildContext context) => _SettingsBlock(
@@ -230,9 +237,8 @@ class _HardcoreToggle extends StatelessWidget {
   @override
   Widget build(BuildContext context) => GetBuilder<PreferencesController>(
         builder: (preferencesController) => GestureDetector(
-          onTap: () => preferencesController.hardcore.isTrue
-              ? preferencesController.disableHardcore()
-              : preferencesController.enableHardcore(),
+          onTap: () =>
+              preferencesController.hardcore.isTrue ? preferencesController.disableHardcore() : preferencesController.enableHardcore(),
           child: Icon(
             preferencesController.hardcore.isTrue ? Icons.check_box : Icons.check_box_outline_blank,
             size: 30.0,
@@ -248,54 +254,38 @@ class _SettingsBlock extends StatelessWidget {
   final String? description;
   final List<Widget> children;
 
-  const _SettingsBlock({
-    Key? key,
-    this.title,
-    this.description,
-    required this.children,
-  }) : super(key: key);
+  const _SettingsBlock({Key? key, this.title, this.description, required this.children}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    var children = <Widget>[];
-    children.addAll(this.children);
-
-    if (description != null) {
-      children.insertAll(0, [
-        Padding(
+  Widget build(BuildContext context) => Padding(
+        padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+        child: Container(
           padding: const EdgeInsets.all(8.0),
-          child: Text(
-            description!,
-            textAlign: TextAlign.center,
-            style: TextStyles.body,
+          decoration: BoxDecoration(
+            borderRadius: const BorderRadius.all(Radius.circular(16.0)),
+            color: Colors.black26.withOpacity(0.1),
           ),
+          child: Column(children: [
+            if (title != null)
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(
+                  title!,
+                  textAlign: TextAlign.center,
+                  style: TextStyles.subHeading,
+                ),
+              ),
+            if (description != null)
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(
+                  description!,
+                  textAlign: TextAlign.center,
+                  style: TextStyles.body,
+                ),
+              ),
+            ...children,
+          ]),
         ),
-      ]);
-    }
-
-    if (title != null) {
-      children.insertAll(0, [
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Text(
-            title!,
-            textAlign: TextAlign.center,
-            style: TextStyles.subHeading,
-          ),
-        ),
-      ]);
-    }
-
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-      child: Container(
-        padding: const EdgeInsets.all(8.0),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.all(Radius.circular(16.0)),
-          color: Colors.black26.withOpacity(0.1),
-        ),
-        child: Column(children: children),
-      ),
-    );
-  }
+      );
 }

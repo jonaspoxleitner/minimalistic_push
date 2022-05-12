@@ -4,7 +4,7 @@ import 'package:minimalistic_push/widgets/location_text.dart';
 /// The custom navigation bar of the app.
 class NavigationBar extends StatelessWidget {
   /// The text for the location.
-  final String text;
+  final String? text;
 
   /// The left option.
   final NavigationOption? leftOption;
@@ -28,7 +28,7 @@ class NavigationBar extends StatelessWidget {
       options.add(leftOption!);
     }
 
-    options.add(Spacer());
+    options.add(const Spacer());
 
     if (rightOption != null) {
       options.add(rightOption!);
@@ -37,11 +37,16 @@ class NavigationBar extends StatelessWidget {
     return Stack(
       alignment: Alignment.center,
       children: [
-        LocationText(text: text),
+        if (text != null) ...[
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24.0 + 32.0),
+            child: LocationText(text: text!),
+          ),
+        ],
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: options,
-        )
+        ),
       ],
     );
   }
@@ -63,11 +68,17 @@ class NavigationOption extends StatelessWidget {
   }) : super(key: key);
 
   @override
-  Widget build(BuildContext context) => IconButton(
-        padding: const EdgeInsets.all(16.0),
-        splashColor: Colors.transparent,
-        highlightColor: Colors.transparent,
-        icon: Icon(icon, color: Colors.white),
-        onPressed: onPressed,
+  Widget build(BuildContext context) => Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Material(
+          color: Colors.transparent,
+          child: InkWell(
+            splashColor: Colors.white.withOpacity(0.1),
+            highlightColor: Colors.white.withOpacity(0.1),
+            borderRadius: BorderRadius.circular(1000.0),
+            onTap: onPressed,
+            child: Padding(padding: const EdgeInsets.all(8.0), child: Icon(icon, color: Colors.white, size: 24.0)),
+          ),
+        ),
       );
 }

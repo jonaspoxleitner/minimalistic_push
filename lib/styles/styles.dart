@@ -11,8 +11,8 @@ class AppThemes {
     id: 'outdoor',
     name: 'Outdoor',
     data: ThemeData(
-      primaryColor: Color(0xFF263D42),
-      accentColor: Color(0xFF3F5E5A),
+      primaryColor: const Color(0xFF263D42),
+      accentColor: const Color(0xFF3F5E5A),
       visualDensity: VisualDensity.adaptivePlatformDensity,
     ),
   );
@@ -22,8 +22,8 @@ class AppThemes {
     id: 'ocean',
     name: 'Ocean',
     data: ThemeData(
-      primaryColor: Color(0xFF2A4158),
-      accentColor: Color(0xFF597387),
+      primaryColor: const Color(0xFF2A4158),
+      accentColor: const Color(0xFF597387),
       visualDensity: VisualDensity.adaptivePlatformDensity,
     ),
   );
@@ -33,8 +33,8 @@ class AppThemes {
     id: 'wine',
     name: 'Wine',
     data: ThemeData(
-      primaryColor: Color(0xFF5C3C4B),
-      accentColor: Color(0xFF385F71),
+      primaryColor: const Color(0xFF5C3C4B),
+      accentColor: const Color(0xFF385F71),
       visualDensity: VisualDensity.adaptivePlatformDensity,
     ),
   );
@@ -44,8 +44,8 @@ class AppThemes {
     id: 'vulcano',
     name: 'Vulcano',
     data: ThemeData(
-      primaryColor: Color(0xFF880044),
-      accentColor: Color(0xFFAA1155),
+      primaryColor: const Color(0xFF880044),
+      accentColor: const Color(0xFFAA1155),
       visualDensity: VisualDensity.adaptivePlatformDensity,
     ),
   );
@@ -55,8 +55,8 @@ class AppThemes {
     id: 'space',
     name: 'Space',
     data: ThemeData(
-      primaryColor: Color(0xFF2D3142),
-      accentColor: Color(0xFF4F5D75),
+      primaryColor: const Color(0xFF2D3142),
+      accentColor: const Color(0xFF4F5D75),
       visualDensity: VisualDensity.adaptivePlatformDensity,
     ),
   );

@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:minimalistic_push/control/background_controller.dart';
@@ -10,7 +9,7 @@ import 'package:minimalistic_push/localizations.dart';
 import 'package:minimalistic_push/models/session.dart';
 import 'package:minimalistic_push/screens/named_overlay_route.dart';
 import 'package:minimalistic_push/styles/styles.dart';
-import 'package:minimalistic_push/widgets/navigation_bar.dart';
+import 'package:minimalistic_push/widgets/navigation_bar.dart' as mp;
 import 'package:proximity_sensor/proximity_sensor.dart';
 
 /// The main screen of the application.
@@ -23,6 +22,7 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> with SingleTickerProviderStateMixin {
+  final backgroundController = Get.find<BackgroundController>();
   late AnimationController _animationController;
   final ValueNotifier<double> animationNotifier = ValueNotifier(0.0);
   final ValueNotifier<bool> trainingModeNotifier = ValueNotifier(false);
@@ -32,7 +32,7 @@ class _MainScreenState extends State<MainScreen> with SingleTickerProviderStateM
     trainingModeNotifier.addListener(() => super.setState(() {}));
 
     _animationController = AnimationController(
-      duration: Duration(milliseconds: 500),
+      duration: const Duration(milliseconds: 500),
       vsync: this,
     );
 
@@ -50,6 +50,12 @@ class _MainScreenState extends State<MainScreen> with SingleTickerProviderStateM
     });
 
     super.initState();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (backgroundController.factor.value <= 0.6) {
+        backgroundController.updateFactor(0.6);
+      }
+    });
   }
 
   @override
@@ -60,12 +66,6 @@ class _MainScreenState extends State<MainScreen> with SingleTickerProviderStateM
 
   @override
   Widget build(BuildContext context) {
-    var backgroundController = Get.find<BackgroundController>();
-
-    if (backgroundController.factor.value <= 0.6) {
-      backgroundController.updateFactor(0.6);
-    }
-
     if (!trainingModeNotifier.value) {
       return AnimatedBuilder(
         animation: _animationController,
@@ -83,9 +83,9 @@ class _MainScreenState extends State<MainScreen> with SingleTickerProviderStateM
                 offset: Offset(0.0, -20 + _animationController.value * 20),
                 child: child,
               ),
-              child: NavigationBar(
+              child: mp.NavigationBar(
                 text: MyLocalizations.of(context).values!['training']['title'],
-                leftOption: NavigationOption(
+                leftOption: mp.NavigationOption(
                   icon: Icons.list,
                   onPressed: () => Navigator.push(
                     context,
@@ -96,7 +96,7 @@ class _MainScreenState extends State<MainScreen> with SingleTickerProviderStateM
                     ),
                   ),
                 ),
-                rightOption: NavigationOption(
+                rightOption: mp.NavigationOption(
                   icon: Icons.settings,
                   onPressed: () => Navigator.push(
                     context,
@@ -219,31 +219,19 @@ class _TrainingWidgetState extends State<_TrainingWidget> {
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              IconButton(
-                padding: const EdgeInsets.all(16.0),
-                icon: const Icon(
-                  Icons.close,
-                  color: Colors.white,
-                ),
-                onPressed: () => _showCancelDialog(counter),
-              ),
-              IconButton(
-                padding: const EdgeInsets.all(16.0),
-                icon: const Icon(
-                  Icons.done_all,
-                  color: Colors.white,
-                ),
-                onPressed: () {
-                  Get.find<SessionController>().insertSession(Session(
-                    count: counter,
-                  ));
-                  widget.trainingMode.value = false;
-                },
-              ),
-            ],
+          mp.NavigationBar(
+            text: null,
+            leftOption: mp.NavigationOption(
+              icon: Icons.close,
+              onPressed: () => _showCancelDialog(counter),
+            ),
+            rightOption: mp.NavigationOption(
+              icon: Icons.done_all,
+              onPressed: () {
+                Get.find<SessionController>().insertSession(Session(count: counter));
+                widget.trainingMode.value = false;
+              },
+            ),
           ),
           Expanded(
             child: GestureDetector(
@@ -254,7 +242,7 @@ class _TrainingWidgetState extends State<_TrainingWidget> {
                   padding: const EdgeInsets.all(16.0),
                   child: Text(
                     counter.toString(),
-                    style: TextStyle(
+                    style: const TextStyle(
                       color: Colors.white,
                       fontWeight: FontWeight.bold,
                       fontSize: 64.0,

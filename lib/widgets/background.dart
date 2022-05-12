@@ -11,7 +11,7 @@ class Background extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Container(
-        constraints: BoxConstraints.expand(),
+        constraints: const BoxConstraints.expand(),
         color: Theme.of(context).accentColor,
         alignment: Alignment.bottomCenter,
         child: GetBuilder<SessionController>(
@@ -19,7 +19,7 @@ class Background extends StatelessWidget {
             builder: (backgroundcontroller) => _AnimatedPeaks(
               peaks: Peaks(list: sessionController.normalized.toList()),
               factor: backgroundcontroller.factor.toDouble(),
-              duration: Duration(milliseconds: 1000),
+              duration: const Duration(milliseconds: 1000),
               curve: Curves.easeInOutQuart,
             ),
           ),
