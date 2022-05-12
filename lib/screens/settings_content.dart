@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:clipboard/clipboard.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:minimalistic_push/control/preferences_controller.dart';
@@ -11,7 +10,7 @@ import 'package:minimalistic_push/control/session_controller.dart';
 import 'package:minimalistic_push/localizations.dart';
 import 'package:minimalistic_push/styles/styles.dart';
 import 'package:minimalistic_push/widgets/custom_button.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 /// The settings content for the overlay route.
 class SettingsContent extends StatelessWidget {
@@ -75,10 +74,7 @@ class SettingsContent extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.only(top: 8.0),
                   child: GestureDetector(
-                    onTap: () => launch(
-                      'https://github.com/jonaspoxleitner/minimalistic_push',
-                      forceSafariVC: false,
-                    ),
+                    onTap: () => launchUrlString('https://github.com/jonaspoxleitner/minimalistic_push'),
                     child: Text(
                       MyLocalizations.of(context).values!['settings']['github button'],
                       textAlign: TextAlign.center,
@@ -99,9 +95,7 @@ class SettingsContent extends StatelessWidget {
         children: [
           CustomButton(
             text: MyLocalizations.of(context).values!['settings']['backup']['import']['title'],
-            onTap: () => _showAlertDialog(
-                context,
-                MyLocalizations.of(context).values!['settings']['backup']['import']['title'],
+            onTap: () => _showAlertDialog(context, MyLocalizations.of(context).values!['settings']['backup']['import']['title'],
                 MyLocalizations.of(context).values!['settings']['backup']['import']['description'], [
               TextButton(
                 style: TextButton.styleFrom(primary: Theme.of(context).primaryColor),
@@ -243,9 +237,8 @@ class _HardcoreToggle extends StatelessWidget {
   @override
   Widget build(BuildContext context) => GetBuilder<PreferencesController>(
         builder: (preferencesController) => GestureDetector(
-          onTap: () => preferencesController.hardcore.isTrue
-              ? preferencesController.disableHardcore()
-              : preferencesController.enableHardcore(),
+          onTap: () =>
+              preferencesController.hardcore.isTrue ? preferencesController.disableHardcore() : preferencesController.enableHardcore(),
           child: Icon(
             preferencesController.hardcore.isTrue ? Icons.check_box : Icons.check_box_outline_blank,
             size: 30.0,

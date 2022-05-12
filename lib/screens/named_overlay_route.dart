@@ -1,16 +1,13 @@
 import 'dart:ui' as ui;
 
-import 'package:davinci/davinci.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:minimalistic_push/control/background_controller.dart';
-import 'package:minimalistic_push/control/session_controller.dart';
 import 'package:minimalistic_push/localizations.dart';
 import 'package:minimalistic_push/screens/error_screen.dart';
 import 'package:minimalistic_push/screens/sessions_content.dart';
 import 'package:minimalistic_push/screens/settings_content.dart';
-import 'package:minimalistic_push/widgets/navigation_bar.dart';
-import 'package:minimalistic_push/widgets/share_image.dart';
+import 'package:minimalistic_push/widgets/navigation_bar.dart' as mp;
 
 /// This OverlayRoute handles the name and the ValueNotifier for the animation.
 class NamedOverlayRoute extends OverlayRoute {
@@ -56,16 +53,16 @@ class NamedOverlayRoute extends OverlayRoute {
             switch (overlayName) {
               case 'sessions':
                 current = _CustomOverlayEntry(
-                  navigationBar: NavigationBar(
+                  navigationBar: mp.NavigationBar(
                     text: MyLocalizations.of(context).values!['sessions']['title'],
-                    leftOption: NavigationOption(
-                      icon: Icons.reply,
-                      onPressed: () => _callShareImage(
-                        context,
-                        Get.find<SessionController>().normalized.toList(),
-                      ),
-                    ),
-                    rightOption: NavigationOption(
+                    // leftOption: mp.NavigationOption(
+                    //   icon: Icons.reply,
+                    //   onPressed: () => _callShareImage(
+                    //     context,
+                    //     Get.find<SessionController>().normalized.toList(),
+                    //   ),
+                    // ),
+                    rightOption: mp.NavigationOption(
                       icon: Icons.close,
                       onPressed: _close,
                     ),
@@ -76,9 +73,9 @@ class NamedOverlayRoute extends OverlayRoute {
                 break;
               case 'settings':
                 current = _CustomOverlayEntry(
-                  navigationBar: NavigationBar(
+                  navigationBar: mp.NavigationBar(
                     text: MyLocalizations.of(context).values!['settings']['title'],
-                    rightOption: NavigationOption(
+                    rightOption: mp.NavigationOption(
                       icon: Icons.close,
                       onPressed: _close,
                     ),
@@ -89,7 +86,7 @@ class NamedOverlayRoute extends OverlayRoute {
                 break;
               default:
                 current = _CustomOverlayEntry(
-                  navigationBar: const NavigationBar(text: 'Error'),
+                  navigationBar: const mp.NavigationBar(text: 'Error'),
                   animationNotifier: animationNotifier,
                   child: const ErrorScreen(),
                 );
@@ -103,7 +100,7 @@ class NamedOverlayRoute extends OverlayRoute {
 }
 
 class _CustomOverlayEntry extends StatefulWidget {
-  final NavigationBar navigationBar;
+  final mp.NavigationBar navigationBar;
   final Widget child;
   final ValueNotifier<double> animationNotifier;
 
@@ -171,8 +168,8 @@ class _CustomOverlayEntryState extends State<_CustomOverlayEntry> with SingleTic
                         ClipRRect(
                           child: BackdropFilter(
                             filter: (_animationController.value == 1.0)
-                                ? ui.ImageFilter.blur(sigmaX: 7, sigmaY: 7)
-                                : ui.ImageFilter.blur(sigmaX: 0, sigmaY: 0),
+                                ? ui.ImageFilter.blur(sigmaX: 4.0, sigmaY: 4.0)
+                                : ui.ImageFilter.blur(sigmaX: 0.0, sigmaY: 0.0),
                             child: SafeArea(bottom: false, child: widget.navigationBar),
                           ),
                         ),
@@ -187,18 +184,18 @@ class _CustomOverlayEntryState extends State<_CustomOverlayEntry> with SingleTic
       );
 }
 
-void _callShareImage(BuildContext context, List<double> peaks) async {
-  const size = Size(900.0, 450.0);
+// void _callShareImage(BuildContext context, List<double> peaks) async {
+//   const size = Size(900.0, 450.0);
 
-  await DavinciCapture.offStage(
-    ShareImage(
-      primaryColor: Theme.of(context).primaryColor,
-      accentColor: Theme.of(context).accentColor,
-      size: size,
-      peaks: peaks,
-    ),
-    imageSize: size,
-    logicalSize: size,
-    fileName: 'curve',
-  );
-}
+//   await DavinciCapture.offStage(
+//     ShareImage(
+//       primaryColor: Theme.of(context).primaryColor,
+//       accentColor: Theme.of(context).accentColor,
+//       size: size,
+//       peaks: peaks,
+//     ),
+//     imageSize: size,
+//     logicalSize: size,
+//     fileName: 'curve',
+//   );
+// }

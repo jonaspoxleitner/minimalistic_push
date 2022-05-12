@@ -4,7 +4,7 @@ import 'package:minimalistic_push/widgets/location_text.dart';
 /// The custom navigation bar of the app.
 class NavigationBar extends StatelessWidget {
   /// The text for the location.
-  final String text;
+  final String? text;
 
   /// The left option.
   final NavigationOption? leftOption;
@@ -37,10 +37,12 @@ class NavigationBar extends StatelessWidget {
     return Stack(
       alignment: Alignment.center,
       children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24.0 + 32.0),
-          child: LocationText(text: text),
-        ),
+        if (text != null) ...[
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24.0 + 32.0),
+            child: LocationText(text: text!),
+          ),
+        ],
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: options,

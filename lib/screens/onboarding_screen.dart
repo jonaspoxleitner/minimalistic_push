@@ -28,9 +28,11 @@ class _OnboardingScreenState extends State<OnboardingScreen> with SingleTickerPr
 
     _pageController = PageController(initialPage: 0);
 
-    Get.find<BackgroundController>().updateFactor(0.0);
-
     super.initState();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Get.find<BackgroundController>().updateFactor(0.0);
+    });
   }
 
   @override
